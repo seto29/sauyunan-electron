@@ -20,42 +20,15 @@ const TheHeaderDropdown = (props) => {
   }
 
   return (
-    <CDropdown
-      inNav
-      className="c-header-nav-items mx-2"
-      direction="down"
-    >
-      <CDropdownToggle className="c-header-nav-link" caret={false}>
         <div className="c-avatar">
           <CImg
-            src={'avatars/6.jpg'}
+            title="logout"
+            src={'avatars/logout.png'}
             className="c-avatar-img"
             alt="admin@bootstrapmaster.com"
+            onClick={()=>Logout()}
           />
         </div>
-      </CDropdownToggle>
-      <CDropdownMenu className="pt-0" placement="bottom-end">
-        <CDropdownItem
-          header
-          tag="div"
-          color="light"
-          className="text-center"
-        >
-          <strong>Akun</strong>
-        </CDropdownItem>
-        {/* <CDropdownItem>
-          <CIcon name="cil-settings" className="mfe-2" />
-          Pengaturan
-        </CDropdownItem> */}
-        
-        <CDropdownItem onClick={()=>Logout()}>
-              {/* <CIcon name="cil-account-logout" className="mfe-2" /> */}
-              Logout
-          </CDropdownItem>
-       
-        
-      </CDropdownMenu>
-    </CDropdown>
   )
 }
 

@@ -9,7 +9,7 @@ export const getAll = async () => {
 
 export const getDropdown = async () => {
   let list = []
-  const response = await axios.get('/categories/GetDropdown.php')
+  const response = await axios.get('/products-code/GetDropdown.php')
   let i = 0;
   response['data']['categories'].map(value => {
       list[i] = {
@@ -40,7 +40,7 @@ export const fUpdate = async (id, name) => {
     bodyFormData.append('name',name);
     const response = await axios({
       method: 'post',
-      url: '/categories/Update.php',
+      url: '/products-code/Update.php',
       data: bodyFormData,
       headers: {'Content-Type' : 'multipart/form-data'}
     });

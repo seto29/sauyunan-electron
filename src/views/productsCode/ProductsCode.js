@@ -24,7 +24,7 @@ import SaveAlt from '@material-ui/icons/SaveAlt';
 import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
 import Toaster from '../components/Toaster'
-import {getAll, fDelete, fUpdate, fInsert} from '../../services/Categories'
+import {getAll, fDelete, fUpdate, fInsert} from '../../services/ProductsCode'
 import Download from './Download'
 import AddModal from './AddModal'
 import UpdateModal from './UpdateModal'
@@ -48,17 +48,22 @@ const tableIcons = {
     ThirdStateCheck: forwardRef((props, ref) => <Remove {...props} ref={ref} />),
     ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
 };
-function Categories({ }) {
+
+const initialProductsCodeState = { kode:'', nama:'', komisi:'', nilai_minimum:'' }
+
+function ProductsCode(props) {
   const [toastM, setToastM] = useState("")
+  const [notifMsg, setNotifMsg] = useState("")
   const [toasts, setToasts] = useState([])
   const [position] = useState('top-right')
   const [autohide] = useState(true)
   const [autohideValue] = useState(1000)
   const [closeButton] = useState(true)
   const [fade] = useState(true)
-  const [categories, setCategories] = useState([]);
-  const [name, setName] = useState("");
-  const[idUpdate, setIDUpdate] = useState("");
+  const [productsCode, setProductCode] = useState([]);
+  const [productsCodeAdd, setProductsCodeAdd] = useState(initialProductsCodeState)
+  const [productsCodeUpdate, setProductsCodeUpdate] = useState(initialProductsCodeState)
+  const [idUpdate, setIDUpdate] = useState("");
   const [nameUpdate, setNameUpdate] = useState("");
   const [showAddModal, setShowAddModal] = useState(false)
   const [edit, setEdit] = useState(false)
@@ -71,69 +76,86 @@ function Categories({ }) {
     ])
   }
 
-  let tableData = categories && categories.map(({ id, name }) => {
+  let tableData = productsCode && productsCode.map(({ kode, nama, komisi, nilai_minimum }) => {
     number++
     const data = {
         no: number,
-        id: id,
-        name: name,
+        kode: kode,
+        nama: nama,
+        komisi: komisi,
+        nilai_minimum: nilai_minimum,
     }
     return data;
   });
 
-  function editModal(edit, id, name){
-    setIDUpdate(id);
-    setNameUpdate(name);
-  
+  function editModal(edit, slctd){
+    setProductsCodeUpdate(slctd)
     setEdit(!edit);
   }
 
-  async function fetchCategories() {
+  async function fetchProductsCode() {
     const response = await getAll()
     if(response.success===1){
-      setCategories(response.categories)
+      setProductCode(response.productsCode)
     }
   }
 
   useEffect(() => {
-    fetchCategories()
+    fetchProductsCode()
   }, [])
 
   async function insert(){
-    const response = await fInsert(name)
+    const response = await fInsert(productsCodeAdd.kode, productsCodeAdd.nama, productsCodeAdd.komisi, productsCodeAdd.nilai_minimum)
     if (response['success'] === 1) {
-      fetchCategories()
-      setName('')
+      fetchProductsCode()
+      setProductsCodeAdd(initialProductsCodeState)
       setToastM("insert")
       setShowAddModal(false)
     }else{
       setToastM("failed")
     }
+    setNotifMsg(response['msg'])
     addToast()
   }
 
   async function update(){
-    const response = await fUpdate(idUpdate, nameUpdate)
+    const response = await fUpdate(productsCodeUpdate.kode, productsCodeUpdate.nama, productsCodeUpdate.komisi, productsCodeUpdate.nilai_minimum)
     if (response['success'] === 1) {
-      fetchCategories()
+      fetchProductsCode()
+      setProductsCodeUpdate(initialProductsCodeState)
       setToastM("update")
       setEdit(false)
     }else{
       setToastM("failed")
     }
+    setNotifMsg(response['msg'])
     addToast()
   }
 
   async function deleteCat(){
-    const response = await fDelete(idUpdate)
+    const response = await fDelete(productsCodeUpdate.kode)
     if (response['success'] === 1) {
-      fetchCategories()
+      fetchProductsCode()
+      setProductsCodeUpdate(initialProductsCodeState)
       setToastM("delete")
       setEdit(false)
     }else{
       setToastM("failed")
     }
+    setNotifMsg(response['msg'])
     addToast()
+  }
+
+  const handleAddInput = ({ target }) => {
+    const name = target.name;
+    const value = target.value;
+    setProductsCodeAdd(prevState => ({ ...prevState, [ name ]: value }));
+  }
+
+  const handleUpdateInput = ({ target }) => {
+    const name = target.name;
+    const value = target.value;
+    setProductsCodeUpdate(prevState => ({ ...prevState, [ name ]: value }));
   }
 
     return (
@@ -141,14 +163,15 @@ function Categories({ }) {
             <AddModal
               showAddModal={showAddModal}
               setShowAddModal={setShowAddModal}
-              name={name}
-              setName={setName}
+              productsCodeAdd={productsCodeAdd}
+              handleAddInput={handleAddInput}
               insert={insert}
             />
             <UpdateModal
               edit={edit}
               setEdit={setEdit}
-              idUpdate={idUpdate}
+              productsCodeUpdate={productsCodeUpdate}
+              handleUpdateInput={handleUpdateInput}
               nameUpdate={nameUpdate}
               setNameUpdate={setNameUpdate}
               deleteCat={deleteCat}
@@ -157,6 +180,7 @@ function Categories({ }) {
             <Toaster
                 toaster={toasts}
                 toastM={toastM}
+                notifMsg={notifMsg}
             />
             <CRow>
                 <CCol>
@@ -164,7 +188,7 @@ function Categories({ }) {
                         <CCardHeader>
                           <CRow className="align-items-center">
                             <CCol col="10" l className="mb-3 mb-xl-0">
-                              <h4>Kategori Produk</h4>
+                              <h4>Kode Barang</h4>
                             </CCol>
                             <CCol col="6" sm="4" md="2" m className="mb-3 mb-xl-0">
                                 <CButton block color="primary" onClick={() => setShowAddModal(!showAddModal)} className="mr-1">Tambah Data</CButton>
@@ -187,14 +211,16 @@ function Categories({ }) {
                                         width: '10%',
                                     },
                                 },
-                                { title: 'Nama', field: 'name' },
+                                { title: 'Kode', field: 'kode' },
+                                { title: 'Nama', field: 'nama' },
+                                { title: 'Komisi', field: 'komisi' },
+                                { title: 'Nilai Minimum', field: 'nilai_minimum' },
                             ]}
                             data={tableData}
-                            // onRowClick={((evt, selectedRow) => editModal(edit,id, name))}
-                            onRowClick={((evt, selectedRow) => editModal(edit,selectedRow.id, selectedRow.name))}
+                            onRowClick={((evt, selectedRow) => editModal(edit,selectedRow))}
                             options={{
                                 rowStyle: rowData => ({
-                                    backgroundColor: (rowData.tableData.id%2===0) ? '#EEE' : '#FFF'
+                                    backgroundColor: (rowData.tableData.kode%2===0) ? '#EEE' : '#FFF'
                                 }),
                                 filtering: true
                             }}
@@ -207,4 +233,4 @@ function Categories({ }) {
     )
 };
 
-export default Categories
+export default ProductsCode

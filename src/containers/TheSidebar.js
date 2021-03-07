@@ -33,21 +33,11 @@ const TheSidebar = () => {
     >
       <CSidebarBrand className="d-md-down-none" to="/">
         <h3>Jopex</h3>
-        {/* <CIcon
-          className="c-sidebar-brand-full"
-          name="logo-negative"
-          height={35}
-        />
-        <CIcon
-          className="c-sidebar-brand-minimized"
-          name="sygnet"
-          height={35}
-        /> */}
       </CSidebarBrand>
       <CSidebarNav>
 
         <CCreateElement
-          items={Cookies.get('role')==='1'?navigation: Cookies.get('role')==='2'?navigationA:Cookies.get('role')==='3'?navigationSG:Cookies.get('role')==='4'?navigationSDv:navigationSGR}
+          items={navigation}
           components={{
             CSidebarNavDivider,
             CSidebarNavDropdown,

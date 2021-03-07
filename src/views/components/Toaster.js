@@ -41,12 +41,7 @@ function Toaster(props){
                                         }
                                     </CToastHeader>
                                     <CToastBody>
-                                        {
-                                            props.toastM==="failed"?
-                                                "Gagal Melakukan Perintah"
-                                            :
-                                                props.toastM==="delete"?"Data Berhasil Dihapus": props.toastM==="insert"?"Data Berhasil Ditambahkan": "Data Berhasil Diubah"
-                                        }
+                                        {props.notifMsg}
                                     </CToastBody>
                                 </CToast>
                             )

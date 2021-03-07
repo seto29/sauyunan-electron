@@ -27,8 +27,8 @@ const _nav = [
     _children: [
       {
         _tag: 'CSidebarNavItem',
-        name: 'Kategori',
-        to: '/categories',
+        name: 'Kode Barang',
+        to: '/products-code',
       },
       {
         _tag: 'CSidebarNavItem',
