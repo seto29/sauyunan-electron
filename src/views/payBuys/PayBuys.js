@@ -25,7 +25,7 @@ import Remove from '@material-ui/icons/Remove';
 import SaveAlt from '@material-ui/icons/SaveAlt';
 import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
-import {getAll} from '../../services/GrossProfit'
+import {getAll} from '../../services/PaySells'
 import Download from './Download'
 
 const tableIcons = {
@@ -76,11 +76,6 @@ function Grossprofit({ }) {
           code: code,
           sName: sName,
           eName: eName,
-          received: Intl.DateTimeFormat("id-ID", {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          }).format(Date.parse(created_at)),
           itemCount: itemCount,
           qtySum: qtySum,
           total: total,
@@ -109,7 +104,7 @@ function Grossprofit({ }) {
     async function fetchGrossprofit(dateTo, dateFrom) {
       const response = await getAll(dateTo, dateFrom)
       if(response['success']===1){
-        setGrossprofit(response['grossprofit'])
+        setGrossprofit(response['paySells'])
       }else{
         setGrossprofit([])
       }

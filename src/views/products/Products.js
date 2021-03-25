@@ -30,6 +30,7 @@ import AddModal from './AddModal';
 import UpdateModal from './UpdateModal';
 import Toaster from '../components/Toaster'
 import {getAll, fDelete, fUpdate, fInsert} from '../../services/Products'
+import {getAll as getPercents} from '../../services/SellPercent'
 import {getDropdown} from '../../services/ProductsCode'
 import {getDropdown as getDropdownM} from '../../services/Metrics'
 
@@ -66,26 +67,13 @@ function Products({ }) {
     const [fade] = useState(true)
     const [products, setProducts] = useState([]);
     const [productsCode, setProductsCode] = useState([]);
-    const [name, setName] = useState("")
-    const [cID, setCID] = useState("")
-    const [cName, setCName] = useState("")
-    const [cogs, setCOGS] = useState("")
-    const [price, setPrice] = useState("")
-    const [stock, setStock] = useState("")
-    const [part_number, setSKU] = useState("")
-    const [idUpdate, setIDUpdate] = useState("")
-    const [nameUpdate, setNameUpdate] = useState("")
-    const [cIDUpdate, setCIDUpdate] = useState("")
-    const [cNameUpdate, setCNameUpdate] = useState("")
-    const [cogsUpdate, setCOGSUpdate] = useState("")
-    const [priceUpdate, setPriceUpdate] = useState("")
-    const [stockUpdate, setStockUpdate] = useState("")
     const [skuUpdate, setSKUUpdate] = useState("")
     const [large, setLarge] = useState(false)
     const [edit, setEdit] = useState(false)
     const [productAdd, setProductAdd]=useState(initialProductsState)
     const [productUpdate, setProductUpdate]=useState(initialProductsState)
     const [metrics, setMetrics]=useState([])
+    const [percents, setPercents]=useState([])
 
     let number = 0
 
@@ -119,23 +107,11 @@ function Products({ }) {
         return data;
     });
   
-    function editModal(kode, part_number, cID, cName, name, cogs, price, stock){
-      setIDUpdate(kode)
-      setSKUUpdate(part_number)
-      setCIDUpdate(cID)
-      setCNameUpdate(cName)
-      setNameUpdate(name)
-      setCOGSUpdate(cogs)
-      setPriceUpdate(price)
-      setStockUpdate(stock)
+    function editModal(e){
+        setProductUpdate(e)
   
       setEdit(!edit);
 
-    }
-
-    function updateCID(e) {
-      setCNameUpdate(e.target.label);
-      setCIDUpdate(e.target.value);
     }
 
     async function fetchProducts() {
@@ -155,10 +131,16 @@ function Products({ }) {
         setMetrics(response)
     }
 
+    async function fetchPercent() {
+        const response = await getPercents()
+        setPercents(response.jual)
+    }
+
     useEffect(() => {
         fetchProducts()
         fetchProductsCode()
         fetchMetric()
+        fetchPercent()
     }, [])
 
 
@@ -176,47 +158,27 @@ function Products({ }) {
             addToast()
     }
 
-    async function update(){
-        let skuRegistered = false
-        products.forEach(element => {
-            if(part_number===element.part_number && idUpdate!==element.kode){
-                skuRegistered = true
-            }
-        });
-        if(skuRegistered===false){
-            var bodyFormData = new FormData();
-            bodyFormData.append('kode',idUpdate);
-            bodyFormData.append('part_number', skuUpdate)
-            bodyFormData.append('cID', cIDUpdate)
-            bodyFormData.append('name', nameUpdate)
-            bodyFormData.append('cogs', cogsUpdate)
-            bodyFormData.append('price', priceUpdate)
-            bodyFormData.append('stock', stockUpdate)
-            const response = await fUpdate(idUpdate, nameUpdate, skuUpdate, cIDUpdate, cogsUpdate, priceUpdate, stockUpdate)
-            if(response.success ===1) {
-                setIDUpdate("")
-                setNameUpdate("")
-                setCIDUpdate("")
-                setCOGSUpdate("")
-                setPriceUpdate("")
-                setStockUpdate("")
-                fetchProducts();
-                setToastM("update")
-                setEdit(false);
-            }else{
-                setToastM("failed")
-            }
-            addToast()
+    async function update(url){
+        
+        const response = await fUpdate(productUpdate, url)
+        if(response.success ===1) {
+            setProductUpdate(initialProductsState)
+            fetchProducts();
+            setToastM("update")
+            setEdit(!edit);
         }else{
-            alert("SKU SUDAH TERDAFTAR")
+            setToastM("failed")
         }
+        setNotifMsg(response['msg'])
+        addToast()
     }
 
-    async function deleteCat(){
-        const response = await fDelete(idUpdate)
+    async function deleteCat(id){
+        const response = await fDelete(id)
         if(response.success === 1){
             fetchProducts();
             setToastM("delete")
+            setNotifMsg("Berhasil Menghapus")
             setEdit(false);
         }else{
             setToastM("failed")
@@ -241,16 +203,33 @@ function Products({ }) {
             }else{
                 value = "Tidak";
             }
+            setProductAdd(prevState => ({ ...prevState, [ name ]: value }));
+        }else if(target.name==='beli'){
+            value = target.value;
+            setProductAdd(prevState => ({ ...prevState, [ name ]: value, jual1: Math.ceil(value)+Math.ceil(value*percents[0]['jual1'])/100, jual2: Math.ceil(value)+Math.ceil(value*percents[0]['jual2'])/100, jual3: Math.ceil(value)+Math.ceil(value*percents[0]['jual3'])/100 }));
         }else{
             value = target.value;
+            setProductAdd(prevState => ({ ...prevState, [ name ]: value }));
         }
-        setProductAdd(prevState => ({ ...prevState, [ name ]: value }));
       }
     
     const handleUpdateInput = ({ target }) => {
         const name = target.name;
-        const value = target.value;
-        setProductUpdate(prevState => ({ ...prevState, [ name ]: value }));
+        let value = "";
+        if(target.name==='fast_moving'){
+            if(target.checked === true){
+                value = "Ya";
+            }else{
+                value = "Tidak";
+            }
+            setProductUpdate(prevState => ({ ...prevState, [ name ]: value }));
+        }else if(target.name==='beli'){
+            value = target.value;
+            setProductUpdate(prevState => ({ ...prevState, [ name ]: value, jual1: Math.ceil(value)+Math.ceil(value*percents[0]['jual1'])/100, jual2: Math.ceil(value)+Math.ceil(value*percents[0]['jual2'])/100, jual3: Math.ceil(value)+Math.ceil(value*percents[0]['jual3'])/100 }));
+        }else{
+            value = target.value;
+            setProductUpdate(prevState => ({ ...prevState, [ name ]: value }));
+        }
     }
 
     return (
@@ -264,25 +243,13 @@ function Products({ }) {
                 handleAddInput={handleAddInput}
                 setProductAdd={setProductAdd}
                 insert={insert}
-            />
+                />
             <UpdateModal
                 edit={edit}
                 setEdit={setEdit}
-                idUpdate={idUpdate}
-                skuUpdate={skuUpdate}
-                setSKUUpdate={setSKUUpdate}
-                productsCode={productsCode}
-                cNameUpdate={cNameUpdate}
-                cIDUpdate={cIDUpdate}
-                updateCID={updateCID}
-                nameUpdate={nameUpdate}
-                setNameUpdate={setNameUpdate}
-                cogsUpdate={cogsUpdate}
-                setCOGSUpdate={setCOGSUpdate}
-                priceUpdate={priceUpdate}
-                setPriceUpdate={setPriceUpdate}
-                stockUpdate={stockUpdate}
-                setStockUpdate={setStockUpdate}
+                metrics={metrics}
+                productUpdate={productUpdate}
+                handleUpdateInput={handleUpdateInput}
                 deleteCat={deleteCat}
                 update={update}
             />
@@ -297,7 +264,7 @@ function Products({ }) {
                         <CCardHeader>
                             <CRow className="align-items-center">
                                 <CCol col="10" l className="mb-3 mb-xl-0">
-                                    <h4>Produk</h4>
+                                    <h4>Barang</h4>
                                     
                                     <BarcodeReader
                                         onError={handleError}

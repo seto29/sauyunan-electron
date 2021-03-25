@@ -69,6 +69,8 @@ function Suppliers({ }) {
     ])
   }
 
+  
+const initialState = {kode:'', nama:'', alamat:'', kota:'', telepon:'', fax:'', hp:''}
 
   const toasters = (()=>{
     return toasts.reduce((toasters, toast) => {
@@ -86,37 +88,29 @@ function Suppliers({ }) {
     const [nameUpdate, setNameUpdate] = useState("")
     const [phoneUpdate, setPhoneUpdate] = useState("")
     const [addressUpdate, setAddressUpdate] = useState("")
-    const [idDetail, setIDDetail] = useState("")
-    const [nameDetail, setNameDetail] = useState("")
+    const [supplierAdd, setSupplierAdd]=useState(initialState)
+    const [supplierUpdate, setSupplierUpdate]=useState(initialState)
     const [large, setLarge] = useState(false)
     const [edit, setEdit] = useState(false)
     const [detail, setDetail] = useState(false)
     let number = 0
 
-    let tableData = suppliers && suppliers.map(({ id, name, phone, address }) => {
+    let tableData = suppliers && suppliers.map(({ kode, nama, alamat, kota, telepon, fax, hp }) => {
         number++
         const data = {
             no: number,
-            id: id,
-            name: name,
-            phone: phone,
-            address: address,
-            button: <CButton block color="primary" onClick={() =>editModal(id, name, address, phone)}>
-            <CIcon name="cil-settings" />
-        </CButton>
-        }
-        return data;
-    });
-    let tableDetailData = products && products.map(({ name, cName }) => {
-        number++
-        const data = {
-            name: name,
-            cName: cName,
+            kode: kode,
+            nama: nama,
+            alamat: alamat,
+            kota: kota,
+            telepon: telepon,
+            fax: fax,
+            hp: hp
         }
         return data;
     });
     
-    function editModal(id, name, address, phone){
+    function editModal(id, name, address, alamat){
         setIDUpdate(id)
         setNameUpdate(name)
         setAddressUpdate(address)
@@ -124,13 +118,7 @@ function Suppliers({ }) {
         
         setEdit(!edit)
     }
-
-    function detailModal(id, name){
-        setIDDetail(id)
-        setNameDetail(name)
-        fetchProducts(id)
-        setDetail(true)
-    }
+    
     async function fetchSuppliers() {
       const response = await getAll()
       if(response.success===1){
@@ -140,16 +128,7 @@ function Suppliers({ }) {
       }
       return response
   }
-    async function fetchProducts(id){
-      const response = await GetBySupplierID(id)
-      if(response.success===1){
-        setProducts(response.supplierproducts)
-    }else{
-        setProducts([])
-    }
-      return response
-    }
-    
+  
     useEffect(() => {
         //if [], run once pas load dan ga run lagi only on page load
         fetchSuppliers()
@@ -169,6 +148,7 @@ function Suppliers({ }) {
         }
         addToast()
     }
+
     async function update(){
         const response = await fUpdate(idUpdate, nameUpdate, addressUpdate, phoneUpdate)
         if(response.success ===1) {
@@ -183,6 +163,7 @@ function Suppliers({ }) {
         }
         addToast()
     }
+
     async function deleteCat(){
       const response = await fDelete(idUpdate)
         if(response.success === 1){
@@ -194,6 +175,38 @@ function Suppliers({ }) {
         }
         addToast()
     }
+
+    const handleAddInput = ({ target }) => {
+        const name = target.name;
+        let value = ""
+        if(target.name==='fast_moving'){
+            if(target.checked === true){
+                value = "Ya";
+            }else{
+                value = "Tidak";
+            }
+        }else{
+            value = target.value;
+        }
+        setSupplierAdd(prevState => ({ ...prevState, [ name ]: value }));
+      }
+    
+    const handleUpdateInput = ({ target }) => {
+        const name = target.name;
+        let value = "";
+        if(target.name==='fast_moving'){
+            console.log("anu")
+            if(target.checked === true){
+                value = "Ya";
+            }else{
+                value = "Tidak";
+            }
+        }else{
+            value = target.value;
+        }
+        setSupplierUpdate(prevState => ({ ...prevState, [ name ]: value }));
+    }
+
     return (
         <>
             <AddModal
@@ -204,6 +217,7 @@ function Suppliers({ }) {
                 address={address}
                 setAddress={setAddress}
                 phone={phone}
+                handleAddInput={handleAddInput}
                 setPhone={setPhone}
                 insert={insert}
             />
@@ -220,14 +234,7 @@ function Suppliers({ }) {
                 setPhoneUpdate={setPhoneUpdate}
                 deleteCat={deleteCat}
                 update={update}
-            />
-            <DetailModal
-                detail={detail}
-                setDetail={setDetail}
-                nameDetail={nameDetail}
-                tableIcons={tableIcons}
-                tableDetailData={tableDetailData}
-                setProducts={setProducts}
+                handleUpdateInput={handleUpdateInput}
             />
             <Toaster
                 toaster={toasts}
@@ -260,18 +267,16 @@ function Suppliers({ }) {
                                             width: '10%',
                                         },
                                     },
-                                    { title: 'Nama', field: 'name' },
-                                    { title: 'Alamat', field: 'address' },
-                                    { title: 'No. Telepon', field: 'phone' },
-                    
-                                    { title: 'Aksi', field: 'button', 
-                                        cellStyle: {
-                                            width: '5%',
-                                        },
-                                    }
+                                    { title: 'Kode', field: 'kode' },
+                                    { title: 'Nama', field: 'nama' },
+                                    { title: 'Alamat', field: 'alamat' },
+                                    { title: 'Kota', field: 'kota' },
+                                    { title: 'No. Telepon', field: 'telepon' },
+                                    { title: 'No. Telepon HP', field: 'hp' },
+                                    { title: 'Fax', field: 'fax' },
                                 ]}
                                 data={tableData}
-                                onRowClick={((evt, selectedRow) => detailModal(selectedRow.id, selectedRow.name))}
+                                onRowClick={((evt, selectedRow) => editModal(selectedRow.kode, selectedRow.nama, selectedRow.kota, selectedRow.alamat, selectedRow.telepon, selectedRow.fax, selectedRow.hp))}
                                 options={{
                                     rowStyle: rowData => ({
                                         backgroundColor: (rowData.tableData.id%2===0) ? '#EEE' : '#FFF'

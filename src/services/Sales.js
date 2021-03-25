@@ -1,8 +1,8 @@
 import axios from '../axios';
 import Cookies from 'js-cookie';
 
-export const getAll = async (dateTo, dateFrom) => {
-    const response = await axios.get('/sales/GetByDate.php?dateTo='+dateTo+'&dateFrom='+dateFrom)
+export const getAll = async () => {
+    const response = await axios.get('/sales/GetAll.php')
     return response.data
 }
 

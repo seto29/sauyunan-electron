@@ -3,7 +3,7 @@ import axios from '../axios';
 
 
 export const getAll = async () => {
-    const response = await axios.get('/metrics/')
+    const response = await axios.get('/metrics/GetDropdown.php')
     return response.data
 };
 

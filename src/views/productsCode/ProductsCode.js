@@ -147,9 +147,17 @@ function ProductsCode(props) {
   }
 
   const handleAddInput = ({ target }) => {
-    const name = target.name;
-    const value = target.value;
-    setProductsCodeAdd(prevState => ({ ...prevState, [ name ]: value }));
+    let name = target.name;
+    let value = "";
+    if(name==="kode"){
+      if(target.value.length<=2){
+        value = target.value;
+        setProductsCodeAdd(prevState => ({ ...prevState, [ name ]: value }));
+      }
+    }else{
+      value = target.value;
+      setProductsCodeAdd(prevState => ({ ...prevState, [ name ]: value }));
+    }
   }
 
   const handleUpdateInput = ({ target }) => {

@@ -9,31 +9,25 @@ const _nav = [
     _tag: 'CSidebarNavItem',
     name: 'Dashboard',
     to: '/dashboard',
-    icon: <CIcon name="cil-speedometer" customClasses="c-sidebar-nav-icon" />,
     badge: {
       color: 'info',
       text: 'NEW',
     }
   },
   {
-    _tag: 'CSidebarNavTitle',
-    _children: ['Master Data']
-  },
-  {
     _tag: 'CSidebarNavDropdown',
-    name: 'Master Data',
+    name: 'Data Entry',
     route: '/base',
-    icon: <StoreOutlined color="red" className="c-sidebar-nav-icon" />,
     _children: [
       {
         _tag: 'CSidebarNavItem',
-        name: 'Kode Barang',
-        to: '/products-code',
+        name: 'Barang',
+        to: '/products',
       },
       {
         _tag: 'CSidebarNavItem',
-        name: 'Produk',
-        to: '/products',
+        name: 'Pelanggan',
+        to: '/customers',
       },
       {
         _tag: 'CSidebarNavItem',
@@ -42,13 +36,40 @@ const _nav = [
       },
       {
         _tag: 'CSidebarNavItem',
-        name: 'Toko',
-        to: '/shops',
+        name: 'Sales',
+        to: '/sales',
       },
       {
         _tag: 'CSidebarNavItem',
-        name: 'Karyawan',
-        to: '/employees',
+        name: 'Edit Qty Barang',
+        to: '/qty-products',
+      },
+      {
+        _tag: 'CSidebarNavItem',
+        name: 'Sopir',
+        to: '/drivers',
+      },
+    ],
+  },
+  {
+    _tag: 'CSidebarNavDropdown',
+    name: 'Data Setup',
+    route: '/base',
+    _children: [
+      {
+        _tag: 'CSidebarNavItem',
+        name: 'Kode Barang',
+        to: '/products-code',
+      },
+      {
+        _tag: 'CSidebarNavItem',
+        name: 'Satuan',
+        to: '/metrics',
+      },
+      {
+        _tag: 'CSidebarNavItem',
+        name: 'Persen Harga Jual',
+        to: '/users',
       },
     ],
   },
@@ -56,83 +77,71 @@ const _nav = [
     _tag: 'CSidebarNavDropdown',
     name: 'Transaksi',
     route: '/base',
-    icon: <BarChartOutlinedIcon color="red" className="c-sidebar-nav-icon" />,
     _children: [
-      // {
-      //   _tag: 'CSidebarNavItem',
-      //   name: 'Pemasukan',
-      //   to: '/incomes',
-      // },
-      {
-        _tag: 'CSidebarNavItem',
-        name: 'Pengeluaran',
-        to: '/expenses',
-      },
       {
         _tag: 'CSidebarNavItem',
         name: 'Penjualan',
-        to: '/sales',
+        to: '/sale-transactions',
       },
       {
         _tag: 'CSidebarNavItem',
-        name: 'Pembayaran',
-        to: '/payments',
+        name: 'Pembelian',
+        to: '/buy-transactions',
+      },
+      {
+        _tag: 'CSidebarNavItem',
+        name: 'Retur Penjualan',
+        to: '/return-sale-transactions',
+      },
+      {
+        _tag: 'CSidebarNavItem',
+        name: 'Kasbon',
+        to: '/debts',
+      },
+      {
+        _tag: 'CSidebarNavItem',
+        name: 'Kanvas Ambil Stock',
+        to: '/kanvas-take-stocks',
+      },
+      {
+        _tag: 'CSidebarNavItem',
+        name: 'Kanvas Kembalikan Stock',
+        to: '/kanvas-return-stocks',
+      },
+      {
+        _tag: 'CSidebarNavItem',
+        name: 'Kanvas Transaksi',
+        to: '/kanvas-transactions',
       },
     ],
   },
   {
     _tag: 'CSidebarNavDropdown',
-    name: 'Laporan',
+    name: 'Pembayaran',
     route: '/base',
-    icon: <BarChartOutlinedIcon color="red" className="c-sidebar-nav-icon" />,
     _children: [
       {
         _tag: 'CSidebarNavItem',
-        name: 'Keuangan',
-        to: '/balance',
+        name: 'Pembelian (Utang)',
+        to: '/pay-buys',
       },
       {
         _tag: 'CSidebarNavItem',
-        name: 'Laba Kotor',
-        to: '/gross-profit',
+        name: 'Penjualan (Piutang)',
+        to: '/pay-sells',
       },
-      {
-        _tag: 'CSidebarNavItem',
-        name: 'Laba Bersih',
-        to: '/nett-profit',
-      },
-      // {
-      //   _tag: 'CSidebarNavItem',
-      //   name: 'Daftar Transaksi',
-      //   to: '/base/carousels',
-      // },
     ],
   },
-  {
-    _tag: 'CSidebarNavItem',
-    name: 'Barang Masuk',
-    to: '/goods-receipt',
-    icon: 'cil-chevron-right',
-  },
-  {
-    _tag: 'CSidebarNavItem',
-    name: 'Barang Keluar',
-    to: '/deliveries',
-    icon: 'cil-chevron-right',
-  },
-  
  
   {
     _tag: 'CSidebarNavItem',
     name: 'Pengaturan Akun',
     to: '/settings',
-    icon: <HelpOutlineOutlinedIcon color="red" className="c-sidebar-nav-icon" />,
   },
   {
     _tag: 'CSidebarNavItem',
     name: 'Bantuan',
     to: '/help',
-    icon: <HelpOutlineOutlinedIcon color="red" className="c-sidebar-nav-icon" />,
   },
   // {
   //   _tag: 'CSidebarNavTitle',

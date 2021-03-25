@@ -57,7 +57,7 @@ function AddModal(props) {
                 size="lg"
             >
                 <CModalHeader closeButton>
-                    <CModalTitle>Produk Baru</CModalTitle>
+                    <CModalTitle>Barang Baru</CModalTitle>
                 </CModalHeader>
                 <CModalBody>
                     <CCol xs="20" md="10">
