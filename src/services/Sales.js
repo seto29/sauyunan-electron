@@ -41,40 +41,48 @@ export const getShops = async () => {
     return list
 }
 
-export const fDelete = async (id) => {
+export const fDelete = async (kode) => {
     
     var bodyFormData = new FormData();
-    bodyFormData.append('id',id);
+    bodyFormData.append('kode',kode);
     const response = await axios({
       method: 'post',
       url: '/sales/Delete.php',
       data: bodyFormData,
       headers: {'Content-Type' : 'multipart/form-data'}
     });
-    
+      return response.data;
+  };
+  
+  export const fUpdate = async (kode ,nama, alamat, kota, telepon, fax) => {
+    var bodyFormData = new FormData()
+    bodyFormData.append('kode', kode)
+    bodyFormData.append('nama', nama)
+    bodyFormData.append('alamat', alamat)
+    bodyFormData.append('kota', kota)
+    bodyFormData.append('telepon', telepon)
+    bodyFormData.append('fax', fax)
+    const response = await axios({
+      method: 'post',
+      url: '/sales/Update.php',
+      data: bodyFormData,
+      headers: {'Content-Type': 'multipart/form-data' }
+    });
     return response.data;
-};
-
-export const fInsert = async (don, dod, sID, inputList,payments,isDelivery,paidOff,notes,bayar, priceTot) => {
-    
-    let insertData = {
-        "don": don,
-        "dod": dod,
-        "sID": sID,
-        "createdBy": JSON.parse(Cookies.get('user')).id,
-        "details": JSON.stringify(inputList),
-        "payments": JSON.stringify(payments),
-        "isDelivery": isDelivery,
-        "paidOff": paidOff,
-        "notes": notes,
-        "terminPay": bayar,
-        "salesPrice": priceTot
-      }
-      const response = await axios({
-        method: 'post',
-        url: '/sales/HandleJSON.php',
-        data: JSON.stringify(insertData),
-        headers: { 'Content-Type': 'multipart/form-data' }
-      });
-    return response.data;
-};
+  };
+  
+  export const fInsert = async (nama, alamat, kota, telepon, fax) => {
+    var bodyFormData = new FormData()
+    bodyFormData.append('nama', nama)
+    bodyFormData.append('alamat', alamat)
+    bodyFormData.append('kota', kota)
+    bodyFormData.append('telepon', telepon)
+    bodyFormData.append('fax', fax)
+    const response = await axios({
+      method: 'post',
+      url: '/sales/Insert.php',
+      data: bodyFormData,
+      headers: {'Content-Type': 'multipart/form-data' }
+    });
+      return response.data;
+  };

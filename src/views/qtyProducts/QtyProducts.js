@@ -1,6 +1,7 @@
 import React, { useEffect, useState, forwardRef } from 'react'
 import MaterialTable from 'material-table';
 import NumberFormat from 'react-number-format';
+import Cookies from 'js-cookie'
 import {
     CCard,
     CCardBody,
@@ -30,8 +31,7 @@ import AddModal from './AddModal';
 import UpdateModal from './UpdateModal';
 import Toaster from '../components/Toaster'
 import {getAll, fDelete, fUpdate, fInsert} from '../../services/QtyProducts'
-import {getAll as getDropdownP} from '../../services/Products'
-import {getDropdown} from '../../services/ProductsCode'
+import {getAll as getAllProducts} from '../../services/Products'
 import {getDropdown as getDropdownM} from '../../services/Metrics'
 
 const tableIcons = {
@@ -66,14 +66,8 @@ function Products({ }) {
     const [closeButton] = useState(true)
     const [fade] = useState(true)
     const [products, setProducts] = useState([]);
+    const [selectedProduct, setSelectedProduct] = useState({});
     const [qtyProducts, setQtyProducts] = useState([]);
-    const [part_number, setSKU] = useState("")
-    const [idUpdate, setIDUpdate] = useState("")
-    const [nameUpdate, setNameUpdate] = useState("")
-    const [cIDUpdate, setCIDUpdate] = useState("")
-    const [cogsUpdate, setCOGSUpdate] = useState("")
-    const [priceUpdate, setPriceUpdate] = useState("")
-    const [stockUpdate, setStockUpdate] = useState("")
     const [skuUpdate, setSKUUpdate] = useState("")
     const [large, setLarge] = useState(false)
     const [edit, setEdit] = useState(false)
@@ -126,14 +120,14 @@ function Products({ }) {
     }
     
     async function fetchProductsCode() {
-        const response = await getDropdownP()
+        const response = await getAllProducts()
         if(response.success===1){
             let list = []
             let i = 0;
-            response['products'].map(value => {
+            response.products.map(value => {
                 list[i] = {
                     id: value.kode, value: value.kode, label: value.nama +' - '+value.kode,
-                    target: { type: 'select', name: 'products', value: value.kode, label: value.nama, kode:value.kode, nama:value.nama, part_number:value.part_number, merk:value.merk, qty:value.qty}
+                    target: { type: 'select', name: 'kode_barang', value: value.kode, label: value.nama +' - '+value.kode, kode: value.kode, part_number: value.part_number, merk: value.merk, qty: value.qty, nama:value.nama}
                 }
                 i++;
                 return i;
@@ -155,10 +149,11 @@ function Products({ }) {
     }, [])
 
 
-    async function insert(url){
-            const response = await fInsert(qtyProductAdd, url)
+    async function insert(){
+            const response = await fInsert(qtyProductAdd.kode_barang, qtyProductAdd.nama_barang, qtyProductAdd.part_number, qtyProductAdd.merk, qtyProductAdd.qty_asal, qtyProductAdd.qty_edit, qtyProductAdd.alasan, JSON.parse(Cookies.get('user')).kode, JSON.parse(Cookies.get('user')).nama)
             if(response.success ===1) {
                 setqtyProductAdd(initialProductsState)
+                setSelectedProduct({})
                 fetchQtyProducts();
                 setToastM("insert")
                 setLarge(!large);
@@ -208,28 +203,20 @@ function Products({ }) {
     const handleAddInput = ({ target }) => {
         const name = target.name;
         let value = ""
-        if(target.name==='fast_moving'){
-            if(target.checked === true){
-                value = "Ya";
-            }else{
-                value = "Tidak";
-            }
+        if(target.name==='kode_barang'){
+            console.log(target)
+            setSelectedProduct({value:target.kode, label:target.label})
+            setqtyProductAdd(prevState => ({ ...prevState, [ name ]: target.value, merk : target.merk, part_number : target.part_number, qty_asal : target.qty, merk : target.merk, nama_barang : target.nama}));
         }else{
             value = target.value;
+            setqtyProductAdd(prevState => ({ ...prevState, [ name ]: value }));
         }
-        setqtyProductAdd(prevState => ({ ...prevState, [ name ]: value }));
       }
     
     const handleUpdateInput = ({ target }) => {
         const name = target.name;
         let value = "";
         if(target.name==='fast_moving'){
-            console.log("anu")
-            if(target.checked === true){
-                value = "Ya";
-            }else{
-                value = "Tidak";
-            }
         }else{
             value = target.value;
         }
@@ -246,6 +233,8 @@ function Products({ }) {
                 metrics={metrics}
                 handleAddInput={handleAddInput}
                 setqtyProductAdd={setqtyProductAdd}
+                selectedProduct={selectedProduct}
+                setSelectedProduct={setSelectedProduct}
                 insert={insert}
                 />
             <UpdateModal
@@ -268,7 +257,7 @@ function Products({ }) {
                         <CCardHeader>
                             <CRow className="align-items-center">
                                 <CCol col="10" l className="mb-3 mb-xl-0">
-                                    <h4>Qty Barang</h4>
+                                    <h4>Edit Qty Barang</h4>
                                     
                                     <BarcodeReader
                                         onError={handleError}
@@ -295,9 +284,9 @@ function Products({ }) {
                                         },
                                     },
                                     { title: 'Kode Transaksi', field: 'kode_transaksi' },
-                                    // { title: 'Kode Barang', field: 'kode_barang' },
+                                    { title: 'Kode Barang', field: 'kode_barang' },
                                     { title: 'Nama Barang', field: 'nama_barang' },
-                                    // { title: 'Part Number', field: 'part_number' },
+                                    { title: 'Part Number', field: 'part_number' },
                                     { title: 'Merk', field: 'merk' },
                                     { title: 'Qty Asal', field: 'qty_asal' },
                                     { title: 'Qty Edit', field: 'qty_edit' },

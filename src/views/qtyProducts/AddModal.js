@@ -32,22 +32,6 @@ import 'filepond/dist/filepond.min.css'
 registerPlugin(FilePondPluginImageExifOrientation, FilePondPluginImagePreview, FilePondPluginImageValidateSize,FilePondPluginFileValidateSize)
 
 function AddModal(props) {
-    const [files, setFiles] = useState([])
-
-    async function handleInsert(){
-        if(files.length>0){
-            await fUpload(files[0].file, '../../cdn/categories/').then(({status, url}) =>{
-                        if(status===200){
-                            props.insert(url)
-                            setFiles([])
-                        }else{
-                            alert("Gagal Mengupload Gambar")
-                        }
-                    })
-        }else{
-            props.insert()
-        }
-    }
 
     return (
         <>
@@ -58,7 +42,7 @@ function AddModal(props) {
                 size="lg"
             >
                 <CModalHeader closeButton>
-                    <CModalTitle>Barang Baru</CModalTitle>
+                    <CModalTitle>Tambah Edit Qty Barang</CModalTitle>
                 </CModalHeader>
                 <CModalBody>
                     <CCol xs="20" md="10">
@@ -69,13 +53,45 @@ function AddModal(props) {
                                     </CCol>
                                     <CCol xs="12" md="9">
                                         <Select
-                                            options={props.productsCode}
+                                            options={props.products}
                                             name='kode'
                                             placeholder="Pilih Kode Barang"
-                                            value={{id:props.qtyProductAdd.kode, label:props.qtyProductAdd.kode}}
+                                            value={props.selectedProduct}
                                             onChange={(e) => props.handleAddInput(e)}
                                         />
                                     </CCol>
+                            </CFormGroup>
+                            <CFormGroup row>
+                                <CCol md="3">
+                                    <CLabel htmlFor="name">Nama Barang</CLabel>
+                                </CCol>
+                                <CCol xs="12" md="9">
+                                    <CInput id="appendedPrependedInput" size="12" type="text" name="nama_barang" value={props.qtyProductAdd.nama_barang} disabled onChange={(e) => props.handleAddInput(e)} />    
+                                </CCol>
+                            </CFormGroup>
+                            <CFormGroup row>
+                                <CCol md="3">
+                                    <CLabel htmlFor="name">Part Number</CLabel>
+                                </CCol>
+                                <CCol xs="12" md="9">
+                                    <CInput id="appendedPrependedInput" size="12" type="text" name="part_number" value={props.qtyProductAdd.part_number} disabled onChange={(e) => props.handleAddInput(e)} />    
+                                </CCol>
+                            </CFormGroup>
+                            <CFormGroup row>
+                                <CCol md="3">
+                                    <CLabel htmlFor="name">Merk</CLabel>
+                                </CCol>
+                                <CCol xs="12" md="9">
+                                    <CInput id="appendedPrependedInput" size="12" type="text" name="merk" value={props.qtyProductAdd.merk} disabled onChange={(e) => props.handleAddInput(e)} />    
+                                </CCol>
+                            </CFormGroup>
+                            <CFormGroup row>
+                                <CCol md="3">
+                                    <CLabel htmlFor="name">Qty Asal</CLabel>
+                                </CCol>
+                                <CCol xs="12" md="9">
+                                    <CInput id="appendedPrependedInput" size="12" type="number" name="qty_asal" value={props.qtyProductAdd.qty_asal} disabled onChange={(e) => props.handleAddInput(e)} />    
+                                </CCol>
                             </CFormGroup>
                             <CFormGroup row>
                                 <CCol md="3">
@@ -90,7 +106,7 @@ function AddModal(props) {
                                     <CLabel htmlFor="name">Alasan <CBadge color="warning">Wajib</CBadge></CLabel>
                                 </CCol>
                                 <CCol xs="12" md="9">
-                                    <CTextarea id="appendedPrependedInput" name="alasan" value={props.qtyProductAdd.alasan} onChange={(e) => props.handleAddInput(e)} />    
+                                    <CInput id="appendedPrependedInput" size="12" type="text" name="alasan" value={props.qtyProductAdd.alasan} onChange={(e) => props.handleAddInput(e)} />    
                                 </CCol>
                             </CFormGroup>
                             
@@ -99,7 +115,7 @@ function AddModal(props) {
                     </CCol>
                 </CModalBody>
                 <CModalFooter>
-                    <CButton color="primary" onClick={() => handleInsert()}>Simpan</CButton>{' '}
+                    <CButton color="primary" onClick={() => props.insert()}>Simpan</CButton>{' '}
                     <CButton color="secondary" onClick={() => props.setLarge(false)}>Batal</CButton>
                 </CModalFooter>
             </CModal>

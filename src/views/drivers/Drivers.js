@@ -24,8 +24,7 @@ import SaveAlt from '@material-ui/icons/SaveAlt';
 import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
 import Toaster from '../components/Toaster'
-import {fDelete, fUpdate, fInsert} from '../../services/ProductsCode'
-import {getAll} from '../../services/Drivers'
+import {getAll, fInsert, fDelete, fUpdate} from '../../services/Drivers'
 import Download from './Download'
 import AddModal from './AddModal'
 import UpdateModal from './UpdateModal'
@@ -50,7 +49,7 @@ const tableIcons = {
     ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
 };
 
-const initialProductsCodeState = { id:'', label:'' }
+const initialProductsCodeState = {nama:'', alamat:'', kota:'', telepon:'', fax:''}
 
 function ProductsCode(props) {
   const [toastM, setToastM] = useState("")
@@ -78,12 +77,16 @@ function ProductsCode(props) {
     ])
   }
 
-  let tableData = metrics && metrics.map(({kode, nama}) => {
+  let tableData = metrics && metrics.map(({kode, nama, alamat, kota, telepon, fax}) => {
     number++
     const data = {
       no:number,
       kode:kode,
-      nama:nama
+      nama:nama,
+      alamat:alamat,
+      kota:kota,
+      telepon:telepon,
+      fax:fax,
     }
     return data;
   });
@@ -103,7 +106,7 @@ function ProductsCode(props) {
   }, [])
 
   async function insert(){
-    const response = await fInsert(productsCodeAdd.kode, productsCodeAdd.nama, productsCodeAdd.komisi, productsCodeAdd.nilai_minimum)
+    const response = await fInsert(productsCodeAdd.nama, productsCodeAdd.alamat, productsCodeAdd.kota, productsCodeAdd.telepon, productsCodeAdd.fax)
     if (response['success'] === 1) {
       fetchProductsCode()
       setProductsCodeAdd(initialProductsCodeState)
@@ -117,7 +120,7 @@ function ProductsCode(props) {
   }
 
   async function update(){
-    const response = await fUpdate(productsCodeUpdate.kode, productsCodeUpdate.nama, productsCodeUpdate.komisi, productsCodeUpdate.nilai_minimum)
+    const response = await fUpdate(productsCodeUpdate.kode, productsCodeUpdate.nama, productsCodeUpdate.alamat, productsCodeUpdate.telepon, productsCodeUpdate.fax)
     if (response['success'] === 1) {
       fetchProductsCode()
       setProductsCodeUpdate(initialProductsCodeState)
@@ -211,6 +214,10 @@ function ProductsCode(props) {
                                 },
                                 { title: 'Kode', field: 'kode' },
                                 { title: 'Nama', field: 'nama' },
+                                { title: 'Alamat', field: 'alamat' },
+                                { title: 'Kota', field: 'kota' },
+                                { title: 'Telepon', field: 'telepon' },
+                                { title: 'Fax', field: 'fax' },
                             ]}
                             data={tableData}
                             onRowClick={((evt, selectedRow) => editModal(edit,selectedRow))}

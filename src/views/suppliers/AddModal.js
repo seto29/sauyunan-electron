@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import Select from 'react-select';
 import {
     CCol,
     CButton,
@@ -11,8 +12,9 @@ import {
     CForm,
     CLabel,
     CInput,
+    CBadge,
+    CTextarea
 } from '@coreui/react'
-
 function AddModal(props) {
         
     return (
@@ -23,33 +25,65 @@ function AddModal(props) {
                 size="lg"
             >
                 <CModalHeader closeButton>
-                    <CModalTitle>Supplier Baru</CModalTitle>
+                    <CModalTitle>Tambah Supplier</CModalTitle>
                 </CModalHeader>
                 <CModalBody>
-                    <CCol xs="20" md="10">
+                    <CCol xs="12" md="12">
                         <CForm action="" method="post" className="form-horizontal">
                             <CFormGroup row>
                                 <CCol md="3">
-                                    <CLabel htmlFor="name">Nama</CLabel>
+                                    <CLabel htmlFor="name">Nama <CBadge color="warning">Wajib</CBadge></CLabel>
                                 </CCol>
                                 <CCol xs="12" md="9">
-                                    <CInput type="text" placeholder="PT. Rahmat Tuhan Lestari" value={props.name} onChange={(e)=> props.setName(e.target.value)} />
+                                    <CInput type="text" placeholder="Nama" name="nama" value={props.supplierAdd.nama} onChange={(e)=> props.handleAddInput(e)} />
                                 </CCol>
                             </CFormGroup>
                             <CFormGroup row>
                                 <CCol md="3">
-                                    <CLabel htmlFor="name">Alamat</CLabel>
+                                    <CLabel htmlFor="name">Alamat <CBadge color="warning">Wajib</CBadge></CLabel>
                                 </CCol>
                                 <CCol xs="12" md="9">
-                                    <CInput type="text" value={props.address} onChange={(e)=> props.setAddress(e.target.value)} />
+                                    <CTextarea type="text" placeholder="Jln. Anggrek No. 145" name="alamat" value={props.supplierAdd.alamat} onChange={(e)=> props.handleAddInput(e)} />
                                 </CCol>
                             </CFormGroup>
                             <CFormGroup row>
                                 <CCol md="3">
-                                    <CLabel htmlFor="name">No. Telepon</CLabel>
+                                    <CLabel htmlFor="name">Kota</CLabel>
                                 </CCol>
                                 <CCol xs="12" md="9">
-                                    <CInput type="phone" value={props.phone} onChange={(e)=> props.setPhone(e.target.value)} />
+                                    <CInput type="text" placeholder="Jakarta" name="kota" value={props.supplierAdd.kota} onChange={(e)=> props.handleAddInput(e)} />
+                                </CCol>
+                            </CFormGroup>
+                            <CFormGroup row>
+                                <CCol md="3">
+                                    <CLabel htmlFor="name">telepon</CLabel>
+                                </CCol>
+                                <CCol xs="12" md="9">
+                                    <CInput type="text" placeholder="08123456789" name="telepon" value={props.supplierAdd.telepon} onChange={(e)=> props.handleAddInput(e)} />
+                                </CCol>
+                            </CFormGroup>
+                            <CFormGroup row>
+                                <CCol md="3">
+                                    <CLabel htmlFor="fax">Fax</CLabel>
+                                </CCol>
+                                <CCol xs="12" md="9">
+                                    <CInput type="text" placeholder="022-222 222 222" name="fax" value={props.supplierAdd.fax} onChange={(e)=> props.handleAddInput(e)} />
+                                </CCol>
+                            </CFormGroup>
+                            <CFormGroup row>
+                                <CCol md="3">
+                                    <CLabel htmlFor="contact">Kontak</CLabel>
+                                </CCol>
+                                <CCol xs="12" md="9">
+                                    <CInput type="text" placeholder="08123456789" name="contact" value={props.supplierAdd.contact} onChange={(e)=> props.handleAddInput(e)} />
+                                </CCol>
+                            </CFormGroup>
+                            <CFormGroup row>
+                                <CCol md="3">
+                                    <CLabel htmlFor="hp">HP</CLabel>
+                                </CCol>
+                                <CCol xs="12" md="9">
+                                    <CInput type="text" placeholder="08123456789" name="hp" value={props.supplierAdd.hp} onChange={(e)=> props.handleAddInput(e)} />
                                 </CCol>
                             </CFormGroup>
                         </CForm>

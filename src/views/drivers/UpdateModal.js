@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import {
     CCol,
     CButton,
@@ -10,62 +10,69 @@ import {
     CFormGroup,
     CForm,
     CLabel,
-    CInput
+    CInput,
+    CBadge,
+    CTextarea
 } from '@coreui/react'
-function AddModal(props) {
-        
+
+function UpdateModal(props) {
     return (
         <>
         <CModal
             show={props.edit}
             onClose={() => props.setEdit(false)}
+            closeOnBackdrop={false}
             size="lg"
         >
             <CModalHeader closeButton>
-                <CModalTitle>Ubah Kode Barang</CModalTitle>
+                <CModalTitle>Ubah Supplier</CModalTitle>
             </CModalHeader>
             <CModalBody>
-                <CCol xs="12" md="12">
-                    <CForm action="" method="post" className="form-horizontal">
-                        
-                        <CFormGroup row>
-                            <CCol md="3">
-                                <CLabel htmlFor="hf-email">Kode</CLabel>
-                            </CCol>
-                            <CCol xs="12" md="9">
-                                <CInput type="text" placeholder="Kd" disabled name="kode" value={props.productsCodeUpdate.kode} onChange={(e)=> props.handleUpdateInput(e)} />
-                            </CCol>
-                        </CFormGroup>
+            <CCol xs="12" md="12">
+                        <CForm action="" method="post" className="form-horizontal">
+                            <CFormGroup row>
+                                <CCol md="3">
+                                    <CLabel htmlFor="name">Nama <CBadge color="warning">Wajib</CBadge></CLabel>
+                                </CCol>
+                                <CCol xs="12" md="9">
+                                    <CInput type="text" name="nama" value={props.productsCodeUpdate.nama} onChange={(e)=> props.handleUpdateInput(e)} />
+                                </CCol>
+                            </CFormGroup>
+                            <CFormGroup row>
+                                <CCol md="3">
+                                    <CLabel htmlFor="name">Alamat <CBadge color="warning">Wajib</CBadge></CLabel>
+                                </CCol>
+                                <CCol xs="12" md="9">
+                                    <CTextarea type="text"  name="alamat" value={props.productsCodeUpdate.alamat} onChange={(e)=> props.handleUpdateInput(e)} />
+                                </CCol>
+                            </CFormGroup>
+                            <CFormGroup row>
+                                <CCol md="3">
+                                    <CLabel htmlFor="name">Kota</CLabel>
+                                </CCol>
+                                <CCol xs="12" md="9">
+                                    <CInput type="text" name="kota" value={props.productsCodeUpdate.kota} onChange={(e)=> props.handleUpdateInput(e)} />
+                                </CCol>
+                            </CFormGroup>
+                            <CFormGroup row>
+                                <CCol md="3">
+                                    <CLabel htmlFor="name">telepon</CLabel>
+                                </CCol>
+                                <CCol xs="12" md="9">
+                                    <CInput type="text" name="telepon" value={props.productsCodeUpdate.telepon} onChange={(e)=> props.handleUpdateInput(e)} />
+                                </CCol>
+                            </CFormGroup>
+                            <CFormGroup row>
+                                <CCol md="3">
+                                    <CLabel htmlFor="fax">Fax</CLabel>
+                                </CCol>
+                                <CCol xs="12" md="9">
+                                    <CInput type="text" name="fax" value={props.productsCodeUpdate.fax} onChange={(e)=> props.handleUpdateInput(e)} />
+                                </CCol>
+                            </CFormGroup>
+                        </CForm>
 
-                        <CFormGroup row>
-                            <CCol md="3">
-                                <CLabel htmlFor="hf-email">Nama</CLabel>
-                            </CCol>
-                            <CCol xs="12" md="9">
-                                <CInput type="text" placeholder="Nama" name="nama" value={props.productsCodeUpdate.nama} onChange={(e)=> props.handleUpdateInput(e)} />
-                            </CCol>
-                        </CFormGroup>
-
-                        <CFormGroup row>
-                            <CCol md="3">
-                                <CLabel htmlFor="hf-email">Komisi</CLabel>
-                            </CCol>
-                            <CCol xs="12" md="9">
-                                <CInput type="number" step="0.1" placeholder="Komisi" name="komisi" value={props.productsCodeUpdate.komisi} onChange={(e)=> props.handleUpdateInput(e)} />
-                            </CCol>
-                        </CFormGroup>
-
-                        <CFormGroup row>
-                            <CCol md="3">
-                                <CLabel htmlFor="hf-email">Nilai Minimum</CLabel>
-                            </CCol>
-                            <CCol xs="12" md="9">
-                                <CInput type="number" step="0.1" placeholder="Nilai Minimum" name="nilai_minimum" value={props.productsCodeUpdate.nilai_minimum} onChange={(e)=> props.handleUpdateInput(e)} />
-                            </CCol>
-                        </CFormGroup>
-                
-                    </CForm>
-                </CCol>
+                    </CCol>
             </CModalBody>
             <CModalFooter>
             <CButton color="danger" onClick={() => props.deleteCat()}>Hapus</CButton>
@@ -77,4 +84,4 @@ function AddModal(props) {
     )
 };
 
-export default AddModal
+export default UpdateModal

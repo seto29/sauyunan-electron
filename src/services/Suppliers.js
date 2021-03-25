@@ -6,10 +6,10 @@ export const getAll = async () => {
     return response.data
 };
 
-export const fDelete = async (id) => {
+export const fDelete = async (kode) => {
     
   var bodyFormData = new FormData();
-  bodyFormData.append('id',id);
+  bodyFormData.append('kode',kode);
   const response = await axios({
     method: 'post',
     url: '/suppliers/Delete.php',
@@ -19,12 +19,16 @@ export const fDelete = async (id) => {
     return response.data;
 };
 
-export const fUpdate = async (idUpdate, nameUpdate, addressUpdate, phoneUpdate) => {
+export const fUpdate = async (kode ,nama, alamat, kota, telepon, fax, contact, hp) => {
   var bodyFormData = new FormData()
-  bodyFormData.append('id',idUpdate)
-  bodyFormData.append('name', nameUpdate)
-  bodyFormData.append('address', addressUpdate)
-  bodyFormData.append('phone', phoneUpdate)
+  bodyFormData.append('kode', kode)
+  bodyFormData.append('nama', nama)
+  bodyFormData.append('alamat', alamat)
+  bodyFormData.append('kota', kota)
+  bodyFormData.append('telepon', telepon)
+  bodyFormData.append('fax', fax)
+  bodyFormData.append('contact', contact)
+  bodyFormData.append('hp', hp)
   const response = await axios({
     method: 'post',
     url: '/suppliers/Update.php',
@@ -34,11 +38,15 @@ export const fUpdate = async (idUpdate, nameUpdate, addressUpdate, phoneUpdate) 
   return response.data;
 };
 
-export const fInsert = async (name, address, phone) => {
+export const fInsert = async (nama, alamat, kota, telepon, fax, contact, hp) => {
   var bodyFormData = new FormData()
-  bodyFormData.append('name', name)
-  bodyFormData.append('address', address)
-  bodyFormData.append('phone', phone)
+  bodyFormData.append('nama', nama)
+  bodyFormData.append('alamat', alamat)
+  bodyFormData.append('kota', kota)
+  bodyFormData.append('telepon', telepon)
+  bodyFormData.append('fax', fax)
+  bodyFormData.append('contact', contact)
+  bodyFormData.append('hp', hp)
   const response = await axios({
     method: 'post',
     url: '/suppliers/Insert.php',

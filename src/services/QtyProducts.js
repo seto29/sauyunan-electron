@@ -50,27 +50,20 @@ export const fUpdate = async (productUpdate, url) => {
   return response.data;
 };
 
-export const fInsert = async ( productAdd, url) => {
+export const fInsert = async ( kode_barang, nama_barang, part_number, merk, qty_asal, qty_edit, alasan, kode_user, nama_user) => {
     var bodyFormData = new FormData();
-    bodyFormData.append('kode', productAdd.kode)
-    bodyFormData.append('nama', productAdd.nama)
-    bodyFormData.append('merk', productAdd.merk)
-    bodyFormData.append('barcode', productAdd.barcode)
-    bodyFormData.append('part_number', productAdd.part_number)
-    bodyFormData.append('merk', productAdd.merk)
-    bodyFormData.append('satuan', productAdd.satuan)
-    bodyFormData.append('foto', url)
-    bodyFormData.append('beli', productAdd.beli)
-    bodyFormData.append('jual1', productAdd.jual1)
-    bodyFormData.append('jual2', productAdd.jual2)
-    bodyFormData.append('jual3', productAdd.jual3)
-    bodyFormData.append('fast_moving', productAdd.fast_moving)
-    bodyFormData.append('stock_minimal', productAdd.stock_minimal)
-    bodyFormData.append('jumlah_grosir', productAdd.jumlah_grosir)
-    bodyFormData.append('harga_grosir', productAdd.harga_grosir)
+    bodyFormData.append('kode_barang', kode_barang)
+    bodyFormData.append('nama_barang', nama_barang)
+    bodyFormData.append('part_number', part_number)
+    bodyFormData.append('merk', merk)
+    bodyFormData.append('qty_asal', qty_asal)
+    bodyFormData.append('qty_edit', qty_edit)
+    bodyFormData.append('alasan', alasan)
+    bodyFormData.append('kode_user', kode_user)
+    bodyFormData.append('nama_user', nama_user)
     const response = await axios({
       method: 'post',
-      url: '/products/Insert.php',
+      url: '/qtyProducts/Insert.php',
       data: bodyFormData,
       headers: {'Content-Type': 'multipart/form-data' }
       });
