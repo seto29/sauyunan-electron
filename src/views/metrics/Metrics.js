@@ -24,8 +24,7 @@ import SaveAlt from '@material-ui/icons/SaveAlt';
 import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
 import Toaster from '../components/Toaster'
-import {fDelete, fUpdate, fInsert} from '../../services/ProductsCode'
-import {getAll} from '../../services/Metrics'
+import {getAll, fDelete, fUpdate, fInsert} from '../../services/Metrics'
 import Download from './Download'
 import AddModal from './AddModal'
 import UpdateModal from './UpdateModal'
@@ -50,7 +49,7 @@ const tableIcons = {
     ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
 };
 
-const initialProductsCodeState = { id:'', label:'' }
+const initialProductsCodeState = { kode:'', nama:'' }
 
 function ProductsCode(props) {
   const [toastM, setToastM] = useState("")

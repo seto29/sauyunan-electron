@@ -23,7 +23,7 @@ function AddModal(props) {
                 size="lg"
             >
                 <CModalHeader closeButton>
-                    <CModalTitle>Tambah Kode Barang</CModalTitle>
+                    <CModalTitle>Tambah Satuan</CModalTitle>
                 </CModalHeader>
                 <CModalBody>
                     <CCol xs="12" md="12">
@@ -42,22 +42,6 @@ function AddModal(props) {
                                 </CCol>
                                 <CCol xs="12" md="9">
                                     <CInput type="text" placeholder="Nama" name="nama" value={props.productsCodeAdd.nama} onChange={(e)=> props.handleAddInput(e)} />
-                                </CCol>
-                            </CFormGroup>
-                            <CFormGroup row>
-                                <CCol md="3">
-                                    <CLabel htmlFor="name">Komisi</CLabel>
-                                </CCol>
-                                <CCol xs="12" md="9">
-                                    <CInput type="number" step="0.1" placeholder="Komisi" name="komisi" value={props.productsCodeAdd.komisi} onChange={(e)=> props.handleAddInput(e)} />
-                                </CCol>
-                            </CFormGroup>
-                            <CFormGroup row>
-                                <CCol md="3">
-                                    <CLabel htmlFor="name">Nilai Minimum</CLabel>
-                                </CCol>
-                                <CCol xs="12" md="9">
-                                    <CInput type="number" step="0.1" placeholder="Nilai Minimum" name="nilai_minimum" value={props.productsCodeAdd.nilai_minimum} onChange={(e)=> props.handleAddInput(e)} />
                                 </CCol>
                             </CFormGroup>
                         </CForm>

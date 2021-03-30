@@ -120,7 +120,7 @@ function ProductsCode(props) {
   }
 
   async function update(){
-    const response = await fUpdate(productsCodeUpdate.kode, productsCodeUpdate.nama, productsCodeUpdate.alamat, productsCodeUpdate.telepon, productsCodeUpdate.fax)
+    const response = await fUpdate(productsCodeUpdate.kode, productsCodeUpdate.nama, productsCodeUpdate.alamat, productsCodeUpdate.kota,productsCodeUpdate.telepon, productsCodeUpdate.fax)
     if (response['success'] === 1) {
       fetchProductsCode()
       setProductsCodeUpdate(initialProductsCodeState)

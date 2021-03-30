@@ -84,7 +84,7 @@ const Login = (props) => {
                           <CIcon name="cil-user" />
                         </CInputGroupText>
                       </CInputGroupPrepend>
-                      <CInput type="text" placeholder="username" autoComplete="username" onChange={(e) => setUsername(e.target.value)}/>
+                      <CInput type="text" placeholder="username" autoComplete="username" style={{textTransform:"uppercase"}} onChange={(e) => setUsername(e.target.value)}/>
                     </CInputGroup>
                     <CInputGroup className="mb-4">
                       <CInputGroupPrepend>

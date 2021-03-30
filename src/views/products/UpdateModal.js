@@ -85,7 +85,7 @@ function UpdateModal(props) {
                                     <CLabel htmlFor="name">Nama Barang <CBadge color="warning">Wajib</CBadge></CLabel>
                                 </CCol>
                                 <CCol xs="12" md="9">
-                                    <CInput type="text" placeholder="Nama Barang" name="nama" value={props.productUpdate.nama} onChange={(e)=> props.handleUpdateInput(e)} />
+                                    <CInput type="text" style={{textTransform:'uppercase'}} placeholder="Nama Barang" name="nama" value={props.productUpdate.nama} onChange={(e)=> props.handleUpdateInput(e)} />
                                 </CCol>
                             </CFormGroup>
                             <CFormGroup row>
@@ -93,7 +93,7 @@ function UpdateModal(props) {
                                     <CLabel htmlFor="name">Part Number <CBadge color="warning">Wajib</CBadge></CLabel>
                                 </CCol>
                                 <CCol xs="12" md="9">
-                                    <CInput type="text" placeholder="Part Number" name="part_number" value={props.productUpdate.part_number} onChange={(e)=> props.handleUpdateInput(e)} />
+                                    <CInput type="text" style={{textTransform:'uppercase'}} placeholder="Part Number" name="part_number" value={props.productUpdate.part_number} onChange={(e)=> props.handleUpdateInput(e)} />
                                 </CCol>
                             </CFormGroup>
                             <CFormGroup row>
@@ -101,7 +101,7 @@ function UpdateModal(props) {
                                     <CLabel htmlFor="name">Merek <CBadge color="warning">Wajib</CBadge></CLabel>
                                 </CCol>
                                 <CCol xs="12" md="9">
-                                    <CInput type="text" placeholder="Merek" name="merk" value={props.productUpdate.merk} onChange={(e)=> props.handleUpdateInput(e)} />
+                                    <CInput type="text" style={{textTransform:'uppercase'}} placeholder="Merek" name="merk" value={props.productUpdate.merk} onChange={(e)=> props.handleUpdateInput(e)} />
                                 </CCol>
                             </CFormGroup>
                             <CFormGroup row>

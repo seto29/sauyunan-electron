@@ -16,65 +16,6 @@ const _nav = [
   },
   {
     _tag: 'CSidebarNavDropdown',
-    name: 'Data Entry',
-    route: '/base',
-    _children: [
-      {
-        _tag: 'CSidebarNavItem',
-        name: 'Barang',
-        to: '/products',
-      },
-      {
-        _tag: 'CSidebarNavItem',
-        name: 'Pelanggan',
-        to: '/customers',
-      },
-      {
-        _tag: 'CSidebarNavItem',
-        name: 'Supplier',
-        to: '/suppliers',
-      },
-      {
-        _tag: 'CSidebarNavItem',
-        name: 'Sales',
-        to: '/sales',
-      },
-      {
-        _tag: 'CSidebarNavItem',
-        name: 'Edit Qty Barang',
-        to: '/qty-products',
-      },
-      {
-        _tag: 'CSidebarNavItem',
-        name: 'Sopir',
-        to: '/drivers',
-      },
-    ],
-  },
-  {
-    _tag: 'CSidebarNavDropdown',
-    name: 'Data Setup',
-    route: '/base',
-    _children: [
-      {
-        _tag: 'CSidebarNavItem',
-        name: 'Kode Barang',
-        to: '/products-code',
-      },
-      {
-        _tag: 'CSidebarNavItem',
-        name: 'Satuan',
-        to: '/metrics',
-      },
-      {
-        _tag: 'CSidebarNavItem',
-        name: 'Persen Harga Jual',
-        to: '/users',
-      },
-    ],
-  },
-  {
-    _tag: 'CSidebarNavDropdown',
     name: 'Transaksi',
     route: '/base',
     _children: [
@@ -132,7 +73,65 @@ const _nav = [
       },
     ],
   },
- 
+  {
+    _tag: 'CSidebarNavDropdown',
+    name: 'Data Entry',
+    route: '/base',
+    _children: [
+      {
+        _tag: 'CSidebarNavItem',
+        name: 'Barang',
+        to: '/products',
+      },
+      {
+        _tag: 'CSidebarNavItem',
+        name: 'Pelanggan',
+        to: '/customers',
+      },
+      {
+        _tag: 'CSidebarNavItem',
+        name: 'Supplier',
+        to: '/suppliers',
+      },
+      {
+        _tag: 'CSidebarNavItem',
+        name: 'Sales',
+        to: '/sales',
+      },
+      {
+        _tag: 'CSidebarNavItem',
+        name: 'Edit Qty Barang',
+        to: '/qty-products',
+      },
+      {
+        _tag: 'CSidebarNavItem',
+        name: 'Sopir',
+        to: '/drivers',
+      },
+    ],
+  },
+  {
+    _tag: 'CSidebarNavDropdown',
+    name: 'Data Setup',
+    route: '/base',
+    _children: [
+      {
+        _tag: 'CSidebarNavItem',
+        name: 'Kode Barang',
+        to: '/products-code',
+      },
+      {
+        _tag: 'CSidebarNavItem',
+        name: 'Satuan',
+        to: '/metrics',
+      },
+      {
+        _tag: 'CSidebarNavItem',
+        name: 'Persen Harga Jual',
+        to: '/price-percents',
+      },
+    ],
+  },
   {
     _tag: 'CSidebarNavItem',
     name: 'Pengaturan Akun',

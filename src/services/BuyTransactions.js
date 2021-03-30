@@ -55,26 +55,24 @@ export const fDelete = async (id) => {
     return response.data;
 };
 
-export const fInsert = async (don, dod, sID, inputList,payments,isDelivery,paidOff,notes,bayar, priceTot) => {
-    
-    let insertData = {
-        "don": don,
-        "dod": dod,
-        "sID": sID,
-        "createdBy": JSON.parse(Cookies.get('user')).id,
-        "details": JSON.stringify(inputList),
-        "payments": JSON.stringify(payments),
-        "isDelivery": isDelivery,
-        "paidOff": paidOff,
-        "notes": notes,
-        "terminPay": bayar,
-        "salesPrice": priceTot
-      }
-      const response = await axios({
-        method: 'post',
-        url: '/sales/HandleJSON.php',
-        data: JSON.stringify(insertData),
-        headers: { 'Content-Type': 'multipart/form-data' }
+export const fInsert = async ( jatuh_tempo, tanggal_beli, kode_sales, kode_supplier, nama_supplier, alamat_supplier, kota, telepon, inputList) => {
+    var bodyFormData = new FormData();
+    bodyFormData.append('jatuh_tempo', jatuh_tempo)
+    bodyFormData.append('tanggal_beli', tanggal_beli)
+    bodyFormData.append('kode_sales', kode_sales)
+    bodyFormData.append('kode_supplier', kode_supplier)
+    bodyFormData.append('nama_supplier', nama_supplier)
+    bodyFormData.append('alamat_supplier', alamat_supplier)
+    bodyFormData.append('kota', kota)
+    bodyFormData.append('telepon', telepon)
+    bodyFormData.append('inputList', JSON.stringify(inputList))
+    bodyFormData.append('kode_user', JSON.parse(Cookies.get('user')).kode)
+    bodyFormData.append('nama_user', JSON.parse(Cookies.get('user')).nama)
+    const response = await axios({
+      method: 'post',
+      url: '/buyTransactions/Insert.php',
+      data: bodyFormData,
+      headers: {'Content-Type': 'multipart/form-data' }
       });
     return response.data;
 };

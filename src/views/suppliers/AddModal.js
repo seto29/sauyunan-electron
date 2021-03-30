@@ -35,7 +35,7 @@ function AddModal(props) {
                                     <CLabel htmlFor="name">Nama <CBadge color="warning">Wajib</CBadge></CLabel>
                                 </CCol>
                                 <CCol xs="12" md="9">
-                                    <CInput type="text" placeholder="Nama" name="nama" value={props.supplierAdd.nama} onChange={(e)=> props.handleAddInput(e)} />
+                                    <CInput type="text" placeholder="Nama" name="nama" style={{textTransform:'uppercase'}} value={props.supplierAdd.nama} onChange={(e)=> props.handleAddInput(e)} />
                                 </CCol>
                             </CFormGroup>
                             <CFormGroup row>
@@ -43,7 +43,7 @@ function AddModal(props) {
                                     <CLabel htmlFor="name">Alamat <CBadge color="warning">Wajib</CBadge></CLabel>
                                 </CCol>
                                 <CCol xs="12" md="9">
-                                    <CTextarea type="text" placeholder="Jln. Anggrek No. 145" name="alamat" value={props.supplierAdd.alamat} onChange={(e)=> props.handleAddInput(e)} />
+                                    <CTextarea type="text" placeholder="Jln. Anggrek No. 145" style={{textTransform:'uppercase'}} name="alamat" value={props.supplierAdd.alamat} onChange={(e)=> props.handleAddInput(e)} />
                                 </CCol>
                             </CFormGroup>
                             <CFormGroup row>
@@ -51,7 +51,7 @@ function AddModal(props) {
                                     <CLabel htmlFor="name">Kota</CLabel>
                                 </CCol>
                                 <CCol xs="12" md="9">
-                                    <CInput type="text" placeholder="Jakarta" name="kota" value={props.supplierAdd.kota} onChange={(e)=> props.handleAddInput(e)} />
+                                    <CInput type="text" placeholder="Jakarta" style={{textTransform:'uppercase'}} name="kota" value={props.supplierAdd.kota} onChange={(e)=> props.handleAddInput(e)} />
                                 </CCol>
                             </CFormGroup>
                             <CFormGroup row>

@@ -36,7 +36,7 @@ export const fInsert = async (nama, alamat, kota, telepon, fax) => {
       return response.data;
   };
   
-  export const fUpdate = async (kode ,nama, alamat, kota, telepon, fax) => {
+  export const fUpdate = async (kode, nama, alamat, kota,telepon, fax) => {
     var bodyFormData = new FormData()
     bodyFormData.append('kode', kode)
     bodyFormData.append('nama', nama)

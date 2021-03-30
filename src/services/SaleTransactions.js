@@ -34,7 +34,7 @@ export const getShops = async () => {
         list[i] = {
           id: value.id, value: value.name, label: value.name + " " + value.address,
           target: { type: 'select', name: 'list', value: value.id, label: value.name + "-" + value.address }
-    }
+        }
         i++;
         return i;
     })
@@ -55,26 +55,24 @@ export const fDelete = async (id) => {
     return response.data;
 };
 
-export const fInsert = async (don, dod, sID, inputList,payments,isDelivery,paidOff,notes,bayar, priceTot) => {
-    
-    let insertData = {
-        "don": don,
-        "dod": dod,
-        "sID": sID,
-        "createdBy": JSON.parse(Cookies.get('user')).id,
-        "details": JSON.stringify(inputList),
-        "payments": JSON.stringify(payments),
-        "isDelivery": isDelivery,
-        "paidOff": paidOff,
-        "notes": notes,
-        "terminPay": bayar,
-        "salesPrice": priceTot
-      }
-      const response = await axios({
-        method: 'post',
-        url: '/sales/HandleJSON.php',
-        data: JSON.stringify(insertData),
-        headers: { 'Content-Type': 'multipart/form-data' }
+export const fInsert = async ( jatuh_tempo, tanggal_jual, kode_sales, kode_pelanggan, nama_pelanggan, alamat_pelanggan, kota, telepon, inputList) => {
+    var bodyFormData = new FormData();
+    bodyFormData.append('jatuh_tempo', jatuh_tempo)
+    bodyFormData.append('tanggal_jual', tanggal_jual)
+    bodyFormData.append('kode_sales', kode_sales)
+    bodyFormData.append('kode_pelanggan', kode_pelanggan)
+    bodyFormData.append('nama_pelanggan', nama_pelanggan)
+    bodyFormData.append('alamat_pelanggan', alamat_pelanggan)
+    bodyFormData.append('kota', kota)
+    bodyFormData.append('telepon', telepon)
+    bodyFormData.append('inputList', JSON.stringify(inputList))
+    bodyFormData.append('kode_user', JSON.parse(Cookies.get('user')).kode)
+    bodyFormData.append('nama_user', JSON.parse(Cookies.get('user')).nama)
+    const response = await axios({
+      method: 'post',
+      url: '/salesTransaction/Insert.php',
+      data: bodyFormData,
+      headers: {'Content-Type': 'multipart/form-data' }
       });
     return response.data;
 };

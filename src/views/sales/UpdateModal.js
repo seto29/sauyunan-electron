@@ -34,7 +34,7 @@ function UpdateModal(props) {
                                     <CLabel htmlFor="name">Nama <CBadge color="warning">Wajib</CBadge></CLabel>
                                 </CCol>
                                 <CCol xs="12" md="9">
-                                    <CInput type="text" name="nama" value={props.productsCodeUpdate.nama} onChange={(e)=> props.handleUpdateInput(e)} />
+                                    <CInput type="text" style={{textTransform:'uppercase'}} name="nama" value={props.productsCodeUpdate.nama} onChange={(e)=> props.handleUpdateInput(e)} />
                                 </CCol>
                             </CFormGroup>
                             <CFormGroup row>
@@ -42,7 +42,7 @@ function UpdateModal(props) {
                                     <CLabel htmlFor="name">Alamat <CBadge color="warning">Wajib</CBadge></CLabel>
                                 </CCol>
                                 <CCol xs="12" md="9">
-                                    <CTextarea type="text"  name="alamat" value={props.productsCodeUpdate.alamat} onChange={(e)=> props.handleUpdateInput(e)} />
+                                    <CTextarea type="text" style={{textTransform:'uppercase'}}  name="alamat" value={props.productsCodeUpdate.alamat} onChange={(e)=> props.handleUpdateInput(e)} />
                                 </CCol>
                             </CFormGroup>
                             <CFormGroup row>
@@ -50,7 +50,7 @@ function UpdateModal(props) {
                                     <CLabel htmlFor="name">Kota</CLabel>
                                 </CCol>
                                 <CCol xs="12" md="9">
-                                    <CInput type="text" name="kota" value={props.productsCodeUpdate.kota} onChange={(e)=> props.handleUpdateInput(e)} />
+                                    <CInput type="text" style={{textTransform:'uppercase'}} name="kota" value={props.productsCodeUpdate.kota} onChange={(e)=> props.handleUpdateInput(e)} />
                                 </CCol>
                             </CFormGroup>
                             <CFormGroup row>

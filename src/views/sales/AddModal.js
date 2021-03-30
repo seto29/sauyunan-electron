@@ -35,7 +35,7 @@ function AddModal(props) {
                                     <CLabel htmlFor="name">Nama <CBadge color="warning">Wajib</CBadge></CLabel>
                                 </CCol>
                                 <CCol xs="12" md="9">
-                                    <CInput type="text" placeholder="Nama" name="nama" value={props.productsCodeAdd.nama} onChange={(e)=> props.handleAddInput(e)} />
+                                    <CInput type="text" style={{textTransform:'uppercase'}} placeholder="Nama"  name="nama" value={props.productsCodeAdd.nama} onChange={(e)=> props.handleAddInput(e)} />
                                 </CCol>
                             </CFormGroup>
                             <CFormGroup row>
@@ -43,7 +43,7 @@ function AddModal(props) {
                                     <CLabel htmlFor="name">Alamat <CBadge color="warning">Wajib</CBadge></CLabel>
                                 </CCol>
                                 <CCol xs="12" md="9">
-                                    <CTextarea type="text" placeholder="Jln. Anggrek No. 145" name="alamat" value={props.productsCodeAdd.alamat} onChange={(e)=> props.handleAddInput(e)} />
+                                    <CTextarea type="text"  style={{textTransform:'uppercase'}} placeholder="Jln. Anggrek No. 145" name="alamat" value={props.productsCodeAdd.alamat} onChange={(e)=> props.handleAddInput(e)} />
                                 </CCol>
                             </CFormGroup>
                             <CFormGroup row>
@@ -51,7 +51,7 @@ function AddModal(props) {
                                     <CLabel htmlFor="name">Kota</CLabel>
                                 </CCol>
                                 <CCol xs="12" md="9">
-                                    <CInput type="text" placeholder="Jakarta" name="kota" value={props.productsCodeAdd.kota} onChange={(e)=> props.handleAddInput(e)} />
+                                    <CInput type="text" style={{textTransform:'uppercase'}} placeholder="Jakarta" name="kota" value={props.productsCodeAdd.kota} onChange={(e)=> props.handleAddInput(e)} />
                                 </CCol>
                             </CFormGroup>
                             <CFormGroup row>

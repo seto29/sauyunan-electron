@@ -30,6 +30,7 @@ const Debts = React.lazy(() => import('./views/debts/Debts'))
 const KanvasTakeStocks = React.lazy(() => import('./views/kanvasTakeStocks/KanvasTakeStocks'))
 const KanvasReturnStocks = React.lazy(() => import('./views/kanvasReturnStocks/KanvasReturnStocks'))
 const KanvasTransactions = React.lazy(() => import('./views/kanvasTransactions/KanvasTransactions'))
+const PricePercents = React.lazy(() => import('./views/pricePercents/PricePercents'))
 const routes = [
   { path: '/', exact: true, name: 'Home', auth: 1 },
   { path: '/dashboard', name: 'Dashboard', component: Dashboard, auth: 1 },
@@ -62,6 +63,7 @@ const routes = [
   { path: '/kanvas-take-stocks', name: 'Kanvas Ambil Stock', component: KanvasTakeStocks, auth: 1 },
   { path: '/kanvas-return-stocks', name: 'Kanvas Kembalikan Stock', component: KanvasReturnStocks, auth: 1 },
   { path: '/kanvas-transactions', name: 'Kanvas Transaksi', component: KanvasTransactions, auth: 1 },
+  { path: '/price-percents', name: 'Persentasi Jual', component: PricePercents, auth: 1 },
 
 ]
 

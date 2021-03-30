@@ -33,7 +33,7 @@ function AddModal(props) {
                                 <CLabel htmlFor="hf-email">Kode</CLabel>
                             </CCol>
                             <CCol xs="12" md="9">
-                                <CInput type="text" placeholder="Kd" disabled name="kode" value={props.productsCodeUpdate.kode} onChange={(e)=> props.handleUpdateInput(e)} />
+                                <CInput type="text" disabled placeholder="Kd" name="kode" value={props.productsCodeUpdate.kode} onChange={(e)=> props.handleUpdateInput(e)} />
                             </CCol>
                         </CFormGroup>
 
@@ -43,24 +43,6 @@ function AddModal(props) {
                             </CCol>
                             <CCol xs="12" md="9">
                                 <CInput type="text" placeholder="Nama" name="nama" value={props.productsCodeUpdate.nama} onChange={(e)=> props.handleUpdateInput(e)} />
-                            </CCol>
-                        </CFormGroup>
-
-                        <CFormGroup row>
-                            <CCol md="3">
-                                <CLabel htmlFor="hf-email">Komisi</CLabel>
-                            </CCol>
-                            <CCol xs="12" md="9">
-                                <CInput type="number" step="0.1" placeholder="Komisi" name="komisi" value={props.productsCodeUpdate.komisi} onChange={(e)=> props.handleUpdateInput(e)} />
-                            </CCol>
-                        </CFormGroup>
-
-                        <CFormGroup row>
-                            <CCol md="3">
-                                <CLabel htmlFor="hf-email">Nilai Minimum</CLabel>
-                            </CCol>
-                            <CCol xs="12" md="9">
-                                <CInput type="number" step="0.1" placeholder="Nilai Minimum" name="nilai_minimum" value={props.productsCodeUpdate.nilai_minimum} onChange={(e)=> props.handleUpdateInput(e)} />
                             </CCol>
                         </CFormGroup>
                 

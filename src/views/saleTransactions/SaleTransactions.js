@@ -1,5 +1,6 @@
 import React, { useEffect, useState, forwardRef } from 'react'
 import MaterialTable from 'material-table';
+import NumberFormat from 'react-number-format';
 import {
     CCard,
     CCardBody,
@@ -24,11 +25,15 @@ import SaveAlt from '@material-ui/icons/SaveAlt';
 import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
 import Toaster from '../components/Toaster'
-import {fDelete, fUpdate, fInsert} from '../../services/ProductsCode'
-import {getAll} from '../../services/SaleTransactions'
+import {fDelete, fUpdate} from '../../services/ProductsCode'
+import {getAll, fInsert} from '../../services/SaleTransactions'
+import {getAll as getCostumers} from '../../services/Customers'
+import {getAll as getProducts} from '../../services/Products'
+import {getAll as getSales} from '../../services/Sales'
 import Download from './Download'
 import AddModal from './AddModal'
 import UpdateModal from './UpdateModal'
+import { TrackChangesRounded } from '@material-ui/icons';
 
 const tableIcons = {
     Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -50,7 +55,7 @@ const tableIcons = {
     ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
 };
 
-const initialProductsCodeState = { id:'', label:'' }
+const initialProductsCodeState = { kode_transaksi:'', kode_kanvas:'', kode_barang:'', nama_barang:'', part_number:'', merk:'', kode_pelanggan:'', nama_pelanggan:'', alamat_pelanggan:'', kota:'', telepon:'', kode_sales:'', nama_sales:'', kode_user:'', nama_user:'', harga_beli:'', harga_jual:'', qty:'', satuan:'', total_harga_beli:'', total_harga_jual:'', keuntungan:'', komisi:'', total_keuntungan:'', tanggal_jual:'', jatuh_tempo:'', lama_tempo:'', kw:'', nama_kw:'', retur:'' }
 
 function ProductsCode(props) {
   const [toastM, setToastM] = useState("")
@@ -62,13 +67,22 @@ function ProductsCode(props) {
   const [closeButton] = useState(true)
   const [fade] = useState(true)
   const [productsCode, setProductCode] = useState([]);
-  const [metrics, setMetrics] = useState([]);
+  const [transactions, setTransactions] = useState([]);
+  const [customers, setCustomers] = useState([]);
+  const [customer, setCustomer] = useState({});
+  const [products, setProducts] = useState([]);
+  const [product, setProduct] = useState({});
+  const [sales, setSales] = useState([]);
+  const [sale, setSale] = useState({});
   const [productsCodeAdd, setProductsCodeAdd] = useState(initialProductsCodeState)
   const [productsCodeUpdate, setProductsCodeUpdate] = useState(initialProductsCodeState)
   const [idUpdate, setIDUpdate] = useState("");
   const [nameUpdate, setNameUpdate] = useState("");
   const [showAddModal, setShowAddModal] = useState(false)
   const [edit, setEdit] = useState(false)
+  const [inputList, setInputList] = useState([{ "barang": {}, "kode_barang": "", "nama_barang":"", "part_number":"", "merk":"","qty": 0, "harga_jual": 0 }]);
+  let priceTot = 0;
+  
   let number = 0
 
   const addToast = () => {
@@ -78,7 +92,34 @@ function ProductsCode(props) {
     ])
   }
 
-  let tableData = metrics && metrics.map(({kode_transaksi, kode_kanvas, kode_barang, nama_barang, kode_pelanggan, nama_pelanggan, kode_sales, nama_sales, kode_user, nama_user, harga_beli, harga_jual, qty, satuan, keuntungan, komisi, retur}) => {
+  const handleSelectChange = (e, index) => {
+    const list = [...inputList];
+    list[index]['barang'] = e.target
+    list[index]['kode_barang'] = e.target.value
+    list[index]['nama_barang'] = e.target.label;
+    list[index]['part_number'] = e.target.part_number;
+    list[index]['merk'] = e.target.merk;
+    list[index]['harga_beli'] = e.target.beli
+    {
+      productsCodeAdd.level_harga==='1' || productsCodeAdd.level_harga===1?
+      list[index]['harga_jual'] = e.target.jual1:
+      productsCodeAdd.level_harga==='2' || productsCodeAdd.level_harga===2?
+      list[index]['harga_jual'] = e.target.jual2:
+      list[index]['harga_jual'] = e.target.jual3
+    }
+    list[index]['qty'] = 1;
+    setInputList(list);
+  };
+
+
+  const handleInputChange = (e, index) => {
+    const { name, value } = e.target;
+    const list = [...inputList];
+    list[index][name] = value;
+    setInputList(list);
+  };
+
+  let tableData = transactions && transactions.map(({kode_transaksi, kode_kanvas, kode_barang, nama_barang, part_number, merk, kode_pelanggan, nama_pelanggan, alamat_pelanggan, kota, telepon, kode_sales, nama_sales, kode_user, nama_user, harga_beli, harga_jual, qty, satuan, total_harga_beli, total_harga_jual, keuntungan, komisi, total_keuntungan, tanggal_jual, jatuh_tempo, lama_tempo, kw, nama_kw, retur}) => {
     number++
     const data = {
       no:number,
@@ -86,8 +127,13 @@ function ProductsCode(props) {
       kode_kanvas:kode_kanvas,
       kode_barang:kode_barang,
       nama_barang:nama_barang,
+      part_number:part_number,
+      merk:merk,
       kode_pelanggan:kode_pelanggan,
       nama_pelanggan:nama_pelanggan,
+      alamat_pelanggan:alamat_pelanggan,
+      kota:kota,
+      telepon:telepon,
       kode_sales:kode_sales,
       nama_sales:nama_sales,
       kode_user:kode_user,
@@ -96,8 +142,16 @@ function ProductsCode(props) {
       harga_jual:harga_jual,
       qty:qty,
       satuan:satuan,
+      total_harga_beli:total_harga_beli,
+      total_harga_jual:total_harga_jual,
       keuntungan:keuntungan,
       komisi:komisi,
+      total_keuntungan:total_keuntungan,
+      tanggal_jual:tanggal_jual,
+      jatuh_tempo:jatuh_tempo,
+      lama_tempo:lama_tempo,
+      kw:kw,
+      nama_kw:nama_kw,
       retur:retur,
     }
     return data;
@@ -110,15 +164,69 @@ function ProductsCode(props) {
 
   async function fetchProductsCode() {
     const response = await getAll()
-    setMetrics(response.salesTransactions)
+    setTransactions(response.salesTransactions)
+  }
+
+  async function fetchCustomers() {
+    const response = await getCostumers()
+    if(response.success===1){
+      let list = []
+      let i = 0;
+      response.custumers.map(value => {
+        list[i] = {
+          id: value.kode, value: value.kode, label: value.nama +' - '+value.kode,
+          target: { type: 'select', name: 'kode_pelanggan', value: value.kode, label: value.nama +' - '+value.kode, nama_pelanggan: value.nama, alamat_pelanggan: value.alamat, kota: value.kota, telepon: value.telepon, level_harga:value.harga, plafon:value.plafon, kode_sales:value.kode_sales}
+        }
+        i++;
+        return i;
+      })
+      setCustomers(list)
+    }
+  }
+
+  async function fetchProducts() {
+    const response = await getProducts()
+    if(response.success===1){
+      let list = []
+      let i = 0;
+      response.products.map(value => {
+        list[i] = {
+          id: value.kode, value: value.kode, label: value.nama +' - '+value.kode,
+          target: { type: 'select', name: 'kode_barang', value: value.kode, label: value.nama +' - '+value.kode, part_number: value.part_number, nama_barang: value.nama_barang, merk: value.merk, telepon: value.telepon, satuan:value.satuan, jual1:value.jual1, jual2:value.jual2, jual3:value.jual3, beli:value.beli}
+        }
+        i++;
+        return i;
+      })
+      setProducts(list)
+    }
+  }
+
+  async function fetchSales() {
+    const response = await getSales()
+    if(response.success===1){
+      let list = []
+      let i = 0;
+      response.sales.map(value => {
+        list[i] = {
+          id: value.kode, value: value.kode, label: value.nama +' - '+value.kode,
+          target: { type: 'select', name: 'kode_sales', value: value.kode, label: value.nama +' - '+value.kode, nama: value.nama}
+        }
+        i++;
+        return i;
+      })
+      setSales(list)
+    }
   }
 
   useEffect(() => {
     fetchProductsCode()
+    fetchCustomers()
+    fetchProducts()
+    fetchSales()
   }, [])
 
   async function insert(){
-    const response = await fInsert(productsCodeAdd.kode, productsCodeAdd.nama, productsCodeAdd.komisi, productsCodeAdd.nilai_minimum)
+    const response = await fInsert(productsCodeAdd.jatuh_tempo, productsCodeAdd.tanggal_jual, productsCodeAdd.kode_sales, productsCodeAdd.kode_pelanggan, productsCodeAdd.nama_pelanggan, productsCodeAdd.alamat_pelanggan, productsCodeAdd.kota, productsCodeAdd.telepon, inputList)
     if (response['success'] === 1) {
       fetchProductsCode()
       setProductsCodeAdd(initialProductsCodeState)
@@ -160,9 +268,19 @@ function ProductsCode(props) {
   }
 
   const handleAddInput = ({ target }) => {
-    const name = target.name;
-    const value = target.value;
-    setProductsCodeAdd(prevState => ({ ...prevState, [ name ]: value }));
+    let name = target.name;
+    let value = target.value;
+    if(name==="kode_pelanggan"){
+      setCustomer({value:target.value, label:target.label})
+      setSale({value:target.kode_sales, label:target.kode_sales})
+      setProductsCodeAdd(prevState => ({ ...prevState, [ name ]: value, nama_pelanggan:target.nama_pelanggan, alamat_pelanggan:target.alamat_pelanggan, plafon:target.plafon, level_harga:target.level_harga, kode_sales:target.kode_sales }));
+    }else if(name==="kode_sales"){
+      console.log(target)
+      setSale({value:target.value, label:target.label})
+      setProductsCodeAdd(prevState => ({ ...prevState, [ name ]: value, nama_sales:target.nama_sales}));
+    }else{
+      setProductsCodeAdd(prevState => ({ ...prevState, [ name ]: value }));
+    }
   }
 
   const handleUpdateInput = ({ target }) => {
@@ -171,6 +289,22 @@ function ProductsCode(props) {
     setProductsCodeUpdate(prevState => ({ ...prevState, [ name ]: value }));
   }
 
+  function handleRp(val) {
+    let a = <NumberFormat displayType="text" thousandSeparator="." value={val || 0} decimalSeparator="," />
+    return a
+  }
+
+  // handle click event of the Remove button
+  const handleRemoveClick = index => {
+    const list = [...inputList];
+    list.splice(index, 1);
+    setInputList(list);
+  };
+
+  // handle click event of the Add button
+  const handleAddClick = () => {
+    setInputList([...inputList, { "barang": {}, "kode_barang": "", "nama_barang":"", "part_number":"", "merk":"","qty": 0, "harga_jual": 0 }]);
+  };
     return (
         <>
             <AddModal
@@ -178,7 +312,20 @@ function ProductsCode(props) {
               setShowAddModal={setShowAddModal}
               productsCodeAdd={productsCodeAdd}
               handleAddInput={handleAddInput}
+              sales={sales}
+              sale={sale}
+              products={products}
+              customers={customers}
+              customer={customer}
+              inputList={inputList}
+              setInputList={setInputList}
               insert={insert}
+              priceTot={priceTot}
+              handleRp={handleRp}
+              handleInputChange={handleInputChange}
+              handleSelectChange={handleSelectChange}
+              handleAddClick={handleAddClick}
+              handleRemoveClick={handleRemoveClick}
             />
             <UpdateModal
               edit={edit}
@@ -227,8 +374,14 @@ function ProductsCode(props) {
                                 { title: 'Kode Transaksi', field: 'kode_transaksi' },
                                 { title: 'Kode Barang', field: 'kode_barang' },
                                 { title: 'Nama Barang', field: 'nama_barang' },
+                                { title: 'Part Number', field: 'part_number' },
+                                { title: 'Merk', field: 'merk' },
+                                { title: 'Nama Kode Barang', field: 'nama_kw' },
                                 { title: 'Kode Pelanggan', field: 'kode_pelanggan' },
                                 { title: 'Nama Pelanggan', field: 'nama_pelanggan' },
+                                { title: 'Alamat Pelanggan', field: 'alamat_pelanggan' },
+                                { title: 'Kota Pelanggan', field: 'kota' },
+                                { title: 'Telepon Pelanggan', field: 'telepon' },
                                 { title: 'Kode Sales', field: 'kode_sales' },
                                 { title: 'Nama Sales', field: 'nama_sales' },
                                 { title: 'Kode User', field: 'kode_user' },
@@ -237,12 +390,18 @@ function ProductsCode(props) {
                                 { title: 'Harga Jual', field: 'harga_jual' },
                                 { title: 'Qty', field: 'qty' },
                                 { title: 'Satuan', field: 'satuan' },
+                                { title: 'Total Harga Beli', field: 'total_harga_beli' },
+                                { title: 'Total Harga Jual', field: 'total_harga_jual' },
                                 { title: 'Keuntungan', field: 'keuntungan' },
+                                { title: 'Total Keuntungan', field: 'total_keuntungan' },
                                 { title: 'Komisi', field: 'komisi' },
+                                { title: 'Tanggal Jual', field: 'tanggal_jual' },
+                                { title: 'Jatuh Tempo', field: 'jatuh_tempo' },
+                                { title: 'Lama Tempo', field: 'lama_tempo' },
                                 { title: 'Retur', field: 'retur' },
                             ]}
                             data={tableData}
-                            onRowClick={((evt, selectedRow) => editModal(edit,selectedRow))}
+                            // onRowClick={((evt, selectedRow) => editModal(edit,selectedRow))}
                             options={{
                                 rowStyle: rowData => ({
                                     backgroundColor: (rowData.tableData.kode%2===0) ? '#EEE' : '#FFF'

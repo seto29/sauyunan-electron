@@ -22,14 +22,42 @@ export const getDropdown = async () => {
     return list
 };
 
-export const fDelete = async (id) => {
+export const fDelete = async (kode) => {
     var bodyFormData = new FormData()
-    bodyFormData.append('id', id)
+    bodyFormData.append('kode', kode)
     const response = await axios({
         method: 'post',
-        url: '/incomes/Delete.php',
+        url: '/metrics/Delete.php',
         data: bodyFormData,
         headers: { 'Content-Type': 'multipart/form-data' }
+    });
+    return response.data;
+};
+
+export const fUpdate = async (kode, nama) => {
+    
+    var bodyFormData = new FormData();
+    bodyFormData.append('kode', kode);
+    bodyFormData.append('nama', nama);
+    const response = await axios({
+      method: 'post',
+      url: '/metrics/Update.php',
+      data: bodyFormData,
+      headers: {'Content-Type' : 'multipart/form-data'}
+    });
+    return response.data;
+};
+
+export const fInsert = async (kode, nama) => {
+    
+    var bodyFormData = new FormData();
+    bodyFormData.append('kode', kode);
+    bodyFormData.append('nama', nama);
+    const response = await axios({
+      method: 'post',
+      url: '/metrics/Insert.php',
+      data: bodyFormData,
+      headers: {'Content-Type': 'multipart/form-data' }
     });
     return response.data;
 };

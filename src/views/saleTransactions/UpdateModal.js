@@ -68,9 +68,9 @@ function AddModal(props) {
                 </CCol>
             </CModalBody>
             <CModalFooter>
-            <CButton color="danger" onClick={() => props.deleteCat()}>Hapus</CButton>
-              <CButton color="primary" onClick={() => props.update()}>Simpan</CButton>{' '}
-                <CButton color="secondary" onClick={() => props.setEdit(false)}>Batal</CButton>
+            {/*<CButton color="danger" onClick={() => props.deleteCat()}>Hapus</CButton>
+              <CButton color="primary" onClick={() => props.update()}>Simpan</CButton>{' '} */}
+                <CButton color="secondary" onClick={() => props.setEdit(false)}>Tutup</CButton>
             </CModalFooter>
         </CModal>
         </>
