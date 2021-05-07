@@ -28,25 +28,17 @@ function AddModal(props) {
                 closeOnBackdrop={false}
             >
                 <CModalHeader closeButton>
-                    <CModalTitle>Tambah Transaksi Penjualan</CModalTitle>
+                    <CModalTitle>Tambah Transaksi Pembelian</CModalTitle>
                 </CModalHeader>
                 <CModalBody>
                     <CCol xs="12" md="12">
                         <CForm action="" method="post" className="form-horizontal">
                             <CFormGroup row>
                                 <CCol md="3">
-                                    <CLabel htmlFor="name">Pelanggan <CBadge color="warning">Wajib</CBadge></CLabel>
+                                    <CLabel htmlFor="name">Supplier <CBadge color="warning">Wajib</CBadge></CLabel>
                                 </CCol>
                                 <CCol xs="12" md="9">
-                                    <Select options={props.customers} name="kode_pelanggan" value={props.customer} onChange={(e)=> props.handleAddInput(e)}/>
-                                </CCol>
-                            </CFormGroup>
-                            <CFormGroup row>
-                                <CCol md="3">
-                                    <CLabel htmlFor="name">Kode Kanvas <CBadge color="warning">Wajib</CBadge></CLabel>
-                                </CCol>
-                                <CCol xs="12" md="9">
-                                    <Select options={props.canvases} name="kode_kanvas" value={props.canvas} onChange={(e)=> props.handleAddInput(e)}/>
+                                    <Select options={props.suppliers} name="kode_supplier" value={props.supplier} onChange={(e)=> props.handleAddInput(e)}/>
                                 </CCol>
                             </CFormGroup>
                             <CFormGroup row>
@@ -59,35 +51,10 @@ function AddModal(props) {
                             </CFormGroup>
                             <CFormGroup row>
                                 <CCol md="3">
-                                    <CLabel htmlFor="name">Plafon </CLabel>
+                                    <CLabel htmlFor="name">Tanggal Beli</CLabel>
                                 </CCol>
                                 <CCol xs="12" md="9">
-                                    <NumberFormat value={props.productsCodeAdd.plafon} thousandSeparator={'.'} decimalSeparator={','} displayType="text" prefix={'Rp. '} />
-                                </CCol>
-                            </CFormGroup>
-                            <CFormGroup row>
-                                <CCol md="3">
-                                    <CLabel htmlFor="name">Harga </CLabel>
-                                </CCol>
-                                <CCol xs="12" md="9">
-                                    <p>Level - {props.productsCodeAdd.level_harga}</p>
-                                </CCol>
-                            </CFormGroup>
-
-                            <CFormGroup row>
-                                <CCol md="3">
-                                    <CLabel htmlFor="name">Sales <CBadge color="warning">Wajib</CBadge></CLabel>
-                                </CCol>
-                                <CCol xs="12" md="9">
-                                    <Select options={props.sales} name="kode_sales" value={props.sale} onChange={(e)=> props.handleAddInput(e)}/>
-                                </CCol>
-                            </CFormGroup>
-                            <CFormGroup row>
-                                <CCol md="3">
-                                    <CLabel htmlFor="name">Tanggal Jual</CLabel>
-                                </CCol>
-                                <CCol xs="12" md="9">
-                                    <CInput type="date" name="tanggal_jual" value={props.productsCodeAdd.tanggal_jual} onChange={(e)=> props.handleAddInput(e)} />
+                                    <CInput type="date" name="tanggal_beli" value={props.productsCodeAdd.tanggal_beli} onChange={(e)=> props.handleAddInput(e)} />
                                 </CCol>
                             </CFormGroup>
                             <CFormGroup row>
@@ -113,7 +80,7 @@ function AddModal(props) {
                                         </CCol>
 
                                         <CCol xs="3" md="3">
-                                            Harga Jual
+                                            Harga Beli
                                         </CCol>
 
                                         <CCol xs="1" md="1">
@@ -123,8 +90,8 @@ function AddModal(props) {
                                 
 
                                 {props.inputList.map((x, i) => {
-                                priceTot = priceTot + (parseInt(x.harga_jual) * parseInt(x.qty));
-                                    if(typeof x.barang.name==="undefined" || props.productsCodeAdd.tanggal_jual==="" || typeof props.customer.value==="undefined" || props.productsCodeAdd.jatuh_tempo==="" || typeof props.canvas.value==="undefined"){
+                                priceTot = priceTot + (parseInt(x.harga_beli) * parseInt(x.qty));
+                                    if(typeof x.barang.name==="undefined" || props.productsCodeAdd.tanggal_beli==="" || typeof props.supplier.value==="undefined" || props.productsCodeAdd.jatuh_tempo===""){
                                         checker=true
                                     }
                                 return (
@@ -153,10 +120,10 @@ function AddModal(props) {
                                         <CCol xs="3" md="3">
                                         <CInput
                                             className="ml10"
-                                            name="harga_jual"
+                                            name="harga_beli"
                                             placeholder="Harga"
                                             type="number"
-                                            value={x.harga_jual}
+                                            value={x.harga_beli}
                                             onChange={e => props.handleInputChange(e, i)}
                                         />
                                         </CCol>

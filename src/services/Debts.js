@@ -55,26 +55,17 @@ export const fDelete = async (id) => {
     return response.data;
 };
 
-export const fInsert = async (don, dod, sID, inputList,payments,isDelivery,paidOff,notes,bayar, priceTot) => {
-    
-    let insertData = {
-        "don": don,
-        "dod": dod,
-        "sID": sID,
-        "createdBy": JSON.parse(Cookies.get('user')).id,
-        "details": JSON.stringify(inputList),
-        "payments": JSON.stringify(payments),
-        "isDelivery": isDelivery,
-        "paidOff": paidOff,
-        "notes": notes,
-        "terminPay": bayar,
-        "salesPrice": priceTot
-      }
-      const response = await axios({
-        method: 'post',
-        url: '/sales/HandleJSON.php',
-        data: JSON.stringify(insertData),
-        headers: { 'Content-Type': 'multipart/form-data' }
+export const fInsert = async (nama, kredit, debit, Keterangan) => {
+    var bodyFormData = new FormData();
+    bodyFormData.append('nama', nama)
+    bodyFormData.append('kredit', kredit)
+    bodyFormData.append('debit', debit)
+    bodyFormData.append('Keterangan', Keterangan)
+    const response = await axios({
+      method: 'post',
+      url: '/debts/Insert.php',
+      data: bodyFormData,
+      headers: {'Content-Type': 'multipart/form-data' }
       });
     return response.data;
 };

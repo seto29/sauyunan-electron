@@ -43,14 +43,6 @@ function AddModal(props) {
                             </CFormGroup>
                             <CFormGroup row>
                                 <CCol md="3">
-                                    <CLabel htmlFor="name">Kode Kanvas <CBadge color="warning">Wajib</CBadge></CLabel>
-                                </CCol>
-                                <CCol xs="12" md="9">
-                                    <Select options={props.canvases} name="kode_kanvas" value={props.canvas} onChange={(e)=> props.handleAddInput(e)}/>
-                                </CCol>
-                            </CFormGroup>
-                            <CFormGroup row>
-                                <CCol md="3">
                                     <CLabel htmlFor="name">Alamat </CLabel>
                                 </CCol>
                                 <CCol xs="12" md="9">
@@ -124,7 +116,7 @@ function AddModal(props) {
 
                                 {props.inputList.map((x, i) => {
                                 priceTot = priceTot + (parseInt(x.harga_jual) * parseInt(x.qty));
-                                    if(typeof x.barang.name==="undefined" || props.productsCodeAdd.tanggal_jual==="" || typeof props.customer.value==="undefined" || props.productsCodeAdd.jatuh_tempo==="" || typeof props.canvas.value==="undefined"){
+                                    if(typeof x.barang.name==="undefined" || props.productsCodeAdd.tanggal_jual==="" || typeof props.customer.value==="undefined" || props.productsCodeAdd.jatuh_tempo===""){
                                         checker=true
                                     }
                                 return (

@@ -1,6 +1,5 @@
 import React, { useEffect, useState, forwardRef } from 'react'
 import MaterialTable from 'material-table';
-import ReactExport from "react-data-export";
 import NumberFormat from 'react-number-format';
 import {
     CCard,
@@ -8,21 +7,8 @@ import {
     CCardHeader,
     CCol,
     CRow,
-    CButton,
-    CModal,
-    CModalBody,
-    CModalFooter,
-    CModalHeader,
-    CModalTitle,
-    CFormGroup,
-    CForm,
     CLabel,
     CInput,
-    CFormText,
-    CToaster,
-    CToast,
-    CToastBody,
-    CToastHeader
 } from '@coreui/react'
 import AddBox from '@material-ui/icons/AddBox';
 import ArrowDownward from '@material-ui/icons/ArrowDownward';
@@ -39,16 +25,8 @@ import Remove from '@material-ui/icons/Remove';
 import SaveAlt from '@material-ui/icons/SaveAlt';
 import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
-import {getAll, CountExpenses} from '../../services/NetProfit'
+import {getAll} from '../../services/PaySells'
 import Download from './Download'
-const d = new Date();
-var month = ("0" + (d.getMonth() + 1)).slice(-2); 
-var date = ("0" + d.getDate()).slice(-2); 
-var datestringNow = d.getFullYear()  + "-" + month + "-" + date;
-var datebefore = ("0" + (d.getDate() - 7 < 0 ? 1 : d.getDate() - 7)).slice(-2);
-var datestringFrom = d.getFullYear()  + "-" + month + "-" + datebefore;
-var monthBefore = ("0" + (d.getMonth())).slice(-2);
-var initdateMin = d.getFullYear()  + "-" + monthBefore + "-" + date;
 
 const tableIcons = {
     Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -69,63 +47,26 @@ const tableIcons = {
     ThirdStateCheck: forwardRef((props, ref) => <Remove {...props} ref={ref} />),
     ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
 };
-const fields = ['name', 'registered', 'role', 'status']
 
-function Nettprofit({ }) {
-  
-  let newDate = new Date()
-  let date = Intl.DateTimeFormat("id-ID", {
-            year: "numeric",
-            month: "long"
-          }).format(Date.parse(newDate))
-  let fileName = "Data Laba Bersih Cap per "+date;
-  const positions = [
-    'top-right',
-  ]
+const d = new Date();
+var month = ("0" + (d.getMonth() + 1)).slice(-2); 
+var date = ("0" + d.getDate()).slice(-2); 
+var datestringNow = d.getFullYear()  + "-" + month + "-" + date;
+var datebefore = ("0" + (d.getDate() - 7 < 0 ? 1 : d.getDate() - 7)).slice(-2);
+var datestringFrom = d.getFullYear()  + "-" + month + "-" + datebefore;
+var monthBefore = ("0" + (d.getMonth())).slice(-2);
+var initdateMin = d.getFullYear()  + "-" + monthBefore + "-" + date;
 
-  const [toasts, setToasts] = useState([])
-  
+function Grossprofit({ }) {
   const [ dateTo, setDateTo] = useState(datestringNow)
   const [ dateFrom, setDateFrom] = useState(datestringFrom)
   const dateMin = useState(initdateMin)
   const dateMax = useState(datestringNow)
-  const [position, setPosition] = useState('top-right')
-  const [autohide, setAutohide] = useState(true)
-  const [autohideValue, setAutohideValue] = useState(1000)
-  const [closeButton, setCloseButton] = useState(true)
-  const [fade, setFade] = useState(true)
-
-  const addToast = () => {
-    setToasts([
-      ...toasts,
-      { position, autohide: autohide && autohideValue, closeButton, fade }
-    ])
-  }
-
-
-  const toasters = (()=>{
-    return toasts.reduce((toasters, toast) => {
-      toasters[toast.position] = toasters[toast.position] || []
-      toasters[toast.position].push(toast)
-      return toasters
-    }, {})
-  })()
-    const [nettprofit, setNettprofit] = useState([]);
-    const [expense, setExpense] = useState("")
-    const[id, setID] = useState("")
-    const [name, setName] = useState("")
-    const [phone, setPhone] = useState("")
-    const [address, setAddress] = useState("")
-
-
-    const [idUpdate, setIDUpdate] = useState("")
-    const [nameUpdate, setNameUpdate] = useState("")
-    const [phoneUpdate, setPhoneUpdate] = useState("")
-    const [addressUpdate, setAddressUpdate] = useState("")
+    const [grossprofit, setGrossprofit] = useState([]);
     let number = 0
     let balance2 = 0
     let pBalance2 = ""
-    let tableData = nettprofit && nettprofit.map(({ id, code, created_at, sName, eName, itemCount, qtySum, total, totQty, totP, tot, totC }) => {
+    let tableData = grossprofit && grossprofit.map(({ id, code, created_at, sName, eName, itemCount, qtySum, total, totQty, totP, tot, totC }) => {
         number++
         balance2 += parseInt(tot) - parseInt(totC)
         pBalance2 = <NumberFormat value={balance2} displayType={'text'} thousandSeparator={true} prefix={'Rp. '} />
@@ -135,11 +76,6 @@ function Nettprofit({ }) {
           code: code,
           sName: sName,
           eName: eName,
-          received: Intl.DateTimeFormat("id-ID", {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          }).format(Date.parse(created_at)),
           itemCount: itemCount,
           qtySum: qtySum,
           total: total,
@@ -154,7 +90,7 @@ function Nettprofit({ }) {
         return data;
       });
     let number2 = 0
-    let exportData = nettprofit && nettprofit.map(({ id, name, phone, address }) => {
+    let exportData = grossprofit && grossprofit.map(({ id, name, phone, address }) => {
       number2++
       const data = {
           no: number2,
@@ -165,35 +101,26 @@ function Nettprofit({ }) {
       }
       return data;
   });
-
-    async function fetchNettprofit(dateTo, dateFrom) {
+    async function fetchGrossprofit(dateTo, dateFrom) {
       const response = await getAll(dateTo, dateFrom)
-      
-      setNettprofit(response['nettprofit'])
-      return response
-  }
-  async function fetchExpenses(dateTo, dateFrom) {
-    const response = await CountExpenses(dateTo, dateFrom)
-    setExpense(response['expenses'][0]['credit'])
-    // setGrossprofit(response['data']['expenses'])
-    return response
+      if(response['success']===1){
+        setGrossprofit(response['paySells'])
+      }else{
+        setGrossprofit([])
+      }
   }
     useEffect(() => {
-        //if [], run once pas load dan ga run lagi only on page load
-        fetchNettprofit(dateTo, dateFrom)
-        fetchExpenses(dateTo, dateFrom)
-    }, ['/nettprofit/GetAll.php'])
-
+        fetchGrossprofit(dateTo, dateFrom)
+    }, [])
+    
     async function changeDateFrom(e) {
       setDateFrom(e)
-      fetchNettprofit(dateTo,e)
-      fetchExpenses(dateTo,e)
+      fetchGrossprofit(dateTo,e)
   }
 
   async function changeDateTo(e) {
       setDateTo(e)
-      fetchNettprofit(e,dateFrom)
-      fetchExpenses(e,dateFrom)
+      fetchGrossprofit(e,dateFrom)
   }
     return (
         <>
@@ -208,32 +135,8 @@ function Nettprofit({ }) {
                                 <CCol col="6" sm="4" md="2" m className="mb-3 mb-xl-0">
                                      <h4>{pBalance2}</h4>
                                 </CCol>
-                                <CCol col="6" sm="4" md="2" m className="mb-3 mb-xl-0">
-                                    
-                                </CCol>
-                            </CRow>
-                            <CRow className="align-items-center">
-                                <CCol col="10" l className="mb-3 mb-xl-0">
-                                    <h4>Pengeluaran</h4>
-                                </CCol>
-                                <CCol col="6" sm="4" md="2" m className="mb-3 mb-xl-0">
-                                     <h4>(<NumberFormat value={expense} displayType={'text'} thousandSeparator={true} prefix={'Rp. '} />)</h4>
-                                </CCol>
-                                <CCol col="6" sm="4" md="2" m className="mb-3 mb-xl-0">
-                                </CCol>
-                            
-                            </CRow>
-                            <CRow className="align-items-center">
-                                <CCol col="10" l className="mb-3 mb-xl-0">
-                                    <h4>Laba Bersih</h4>
-                                </CCol>
-                                <CCol col="6" sm="4" md="2" m className="mb-3 mb-xl-0">
-                                     <h4>{<NumberFormat value={balance2-expense} displayType={'text'} thousandSeparator={true} prefix={'Rp. '} />}</h4>
-                                </CCol>
                                 <Download exportData={exportData}/>
                             </CRow>
-
-                            
                         </CCardHeader>
                         <CCardBody>
                             <CRow className="align-items-right">
@@ -298,4 +201,4 @@ function Nettprofit({ }) {
     )
 };
 
-export default Nettprofit
+export default Grossprofit

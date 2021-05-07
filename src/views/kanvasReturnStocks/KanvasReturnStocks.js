@@ -24,8 +24,8 @@ import SaveAlt from '@material-ui/icons/SaveAlt';
 import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
 import Toaster from '../components/Toaster'
-import {fDelete, fUpdate, fInsert} from '../../services/ProductsCode'
-import {getAllReturnStocks} from '../../services/Kanvas'
+import {fDelete, fUpdate} from '../../services/ProductsCode'
+import {getAllReturnStocks, getAllTakeStocks, getAllProductsByIdKanvas, fInsertReturn} from '../../services/Kanvas'
 import Download from './Download'
 import AddModal from './AddModal'
 import UpdateModal from './UpdateModal'
@@ -63,12 +63,15 @@ function ProductsCode(props) {
   const [fade] = useState(true)
   const [productsCode, setProductCode] = useState([]);
   const [metrics, setMetrics] = useState([]);
+  const [kanvases, setKanvases] = useState([]);
+  const [kanvas, setKanvas] = useState({})
   const [productsCodeAdd, setProductsCodeAdd] = useState(initialProductsCodeState)
   const [productsCodeUpdate, setProductsCodeUpdate] = useState(initialProductsCodeState)
   const [idUpdate, setIDUpdate] = useState("");
   const [nameUpdate, setNameUpdate] = useState("");
   const [showAddModal, setShowAddModal] = useState(false)
   const [edit, setEdit] = useState(false)
+  const [inputList, setInputList] = useState([{ "barang": {}, "kode": "", "nama":"", "part_number":"", "merk":"","qty_ambil": 0, "harga_jual": 0, "qty_kembali":0 }]);
   let number = 0
 
   const addToast = () => {
@@ -121,17 +124,69 @@ function ProductsCode(props) {
     setMetrics(response.kanvas)
   }
 
+  async function fetchAllProductsByIdKanvas(id) {
+    const response = await getAllProductsByIdKanvas(id)
+    if(response.success===1){
+      let list = []
+      let list1 = []
+      let i = 0;
+      let j = 0;
+      let bool = false;
+      response.kanvas.map(value => {
+              list[i] = {
+                id: value.kode_barang, value: value.kode_barang, label:value.nama_barang+"-"+value.kode_barang, qty_ambil:value.qty_ambil,qty_kembali:0,
+                target: { type: 'select', name: 'kode_kanvas', value: value.kode_barang, label:value.nama_barang+"-"+value.kode_barang, part_number: value.part_number, nama: value.nama_barang, merk: value.merk, telepon: value.telepon, satuan:value.satuan, qty:value.qty, beli:value.beli, barcode:value.barcode, kode_sales:value.kode_sales, nama_sales:value.nama_sales, kode_sopir:value.kode_sopir, nama_sopir:value.nama_sopir, tujuan:value.tujuan, qty_ambil:value.qty_ambil}
+              }
+              i++;
+          return i;
+        })
+        setInputList(list)
+      }
+  }
+  const handleInputChange = (e, index) => {
+    const { name, value } = e.target;
+    const list = [...inputList];
+    list[index][name] = value;
+    setInputList(list);
+  };
+
+  async function fetchkanvas() {
+    const response = await getAllTakeStocks()
+    if(response.success===1){
+      let list = []
+      let list1 = []
+      let i = 0;
+      let j = 0;
+      let bool = false;
+      response.kanvas.map(value => {
+              list[i] = {
+                id: value.kode_transaksi, value: value.kode_transaksi, label:value.kode_transaksi,
+                target: { type: 'select', name: 'kode_kanvas', value: value.kode_transaksi, label:value.kode_transaksi, part_number: value.part_number, nama: value.nama, merk: value.merk, telepon: value.telepon, satuan:value.satuan, qty:value.qty, beli:value.beli, barcode:value.barcode, kode_sales:value.kode_sales, nama_sales:value.nama_sales, kode_sopir:value.kode_sopir, nama_sopir:value.nama_sopir, tujuan:value.tujuan}
+              }
+              i++;
+          return i;
+        })
+        list1 = list.filter((v,i) => {
+          return list.map((val)=> val.id).indexOf(v.id) == i
+        })
+        setKanvases(list1)
+      }
+  }
+
   useEffect(() => {
     fetchProductsCode()
+    fetchkanvas()
   }, [])
 
   async function insert(){
-    const response = await fInsert(productsCodeAdd.kode, productsCodeAdd.nama, productsCodeAdd.komisi, productsCodeAdd.nilai_minimum)
+    const response = await fInsertReturn(productsCodeUpdate.kode_kanvas, inputList)
     if (response['success'] === 1) {
       fetchProductsCode()
       setProductsCodeAdd(initialProductsCodeState)
+      setProductsCodeUpdate(initialProductsCodeState)
+      setInputList([{ "barang": {}, "kode": "", "nama":"", "part_number":"", "merk":"","qty_ambil": 0, "harga_jual": 0, "qty_kembali":0 }])
       setToastM("insert")
-      setShowAddModal(false)
+      setEdit(false)
     }else{
       setToastM("failed")
     }
@@ -168,9 +223,19 @@ function ProductsCode(props) {
   }
 
   const handleAddInput = ({ target }) => {
+    console.log(target)
     const name = target.name;
     const value = target.value;
-    setProductsCodeAdd(prevState => ({ ...prevState, [ name ]: value }));
+    if(name==="kode_kanvas"){
+      fetchAllProductsByIdKanvas(target.value)
+      setKanvas({value:target.value, label:target.label})
+      setProductsCodeUpdate(prevState => ({ ...prevState, [ name ]: value, nama_sales:target.nama, kode_sales:target.kode_sales, kode_sopir:target.kode_sopir, tujuan:target.tujuan }));
+    }else if(name==="kode_sopir"){
+      // setSopir({value:target.value, label:target.label})
+      setProductsCodeUpdate(prevState => ({ ...prevState, [ name ]: value, nama_sopir: target.nama }));
+    }else{
+      setProductsCodeUpdate(prevState => ({ ...prevState, [ name ]: value }));
+    }
   }
 
   const handleUpdateInput = ({ target }) => {
@@ -181,22 +246,27 @@ function ProductsCode(props) {
 
     return (
         <>
-            <AddModal
+            {/* <AddModal
               showAddModal={showAddModal}
               setShowAddModal={setShowAddModal}
               productsCodeAdd={productsCodeAdd}
               handleAddInput={handleAddInput}
               insert={insert}
-            />
-            <UpdateModal
+            /> */}
+            <AddModal
               edit={edit}
               setEdit={setEdit}
               productsCodeUpdate={productsCodeUpdate}
-              handleUpdateInput={handleUpdateInput}
+              handleAddInput={handleAddInput}
               nameUpdate={nameUpdate}
               setNameUpdate={setNameUpdate}
               deleteCat={deleteCat}
-              update={update}
+              insert={insert}
+              inputList={inputList}
+              setInputList={setInputList}
+              kanvases={kanvases}
+              kanvas={kanvas}
+              handleInputChange={handleInputChange}
             />
             <Toaster
                 toaster={toasts}
@@ -209,10 +279,10 @@ function ProductsCode(props) {
                         <CCardHeader>
                           <CRow className="align-items-center">
                             <CCol col="10" l className="mb-3 mb-xl-0">
-                              <h4>Retur Transaksi Penjualan</h4>
+                              <h4>Kanvas Kembalikan Stok</h4>
                             </CCol>
                             <CCol col="6" sm="4" md="2" m className="mb-3 mb-xl-0">
-                                <CButton block color="primary" onClick={() => setShowAddModal(!showAddModal)} className="mr-1">Tambah Data</CButton>
+                                <CButton block color="primary" onClick={() => setEdit(true)} className="mr-1">Tambah Data</CButton>
                             </CCol>
                             <Download 
                               tableData={tableData}
@@ -259,7 +329,7 @@ function ProductsCode(props) {
                                 { title: 'Jam Kembali', field: 'jam_kembali' },
                             ]}
                             data={tableData}
-                            onRowClick={((evt, selectedRow) => editModal(edit,selectedRow))}
+                            // onRowClick={((evt, selectedRow) => editModal(edit,selectedRow))}
                             options={{
                                 rowStyle: rowData => ({
                                     backgroundColor: (rowData.tableData.kode%2===0) ? '#EEE' : '#FFF'

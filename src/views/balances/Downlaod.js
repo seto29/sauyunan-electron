@@ -16,7 +16,7 @@ function Download(props) {
         year: "numeric",
         month: "long"
     }).format(Date.parse(newDate))
-    let fileName = "Data Keuangan Jopex per " + date;
+    let fileName = "Data Keuangan Cap per " + date;
             
     return (
         <>

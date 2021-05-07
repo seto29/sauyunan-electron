@@ -81,7 +81,7 @@ function Incomes({ }) {
         year: "numeric",
         month: "long"
     }).format(Date.parse(newDate))
-    let fileName = "Data Pemasukan Jopex per " + date;
+    let fileName = "Data Pemasukan Cap per " + date;
     const positions = [
         'top-right',
     ]

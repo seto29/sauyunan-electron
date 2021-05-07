@@ -11,6 +11,7 @@ import {
     CForm,
     CLabel,
     CInput,
+    CTextarea,
     CBadge
 } from '@coreui/react'
 function AddModal(props) {
@@ -23,41 +24,41 @@ function AddModal(props) {
                 size="lg"
             >
                 <CModalHeader closeButton>
-                    <CModalTitle>Tambah Kode Barang</CModalTitle>
+                    <CModalTitle>Tambah Kasbon</CModalTitle>
                 </CModalHeader>
                 <CModalBody>
                     <CCol xs="12" md="12">
                         <CForm action="" method="post" className="form-horizontal">
                             <CFormGroup row>
                                 <CCol md="3">
-                                    <CLabel htmlFor="name">Kode <CBadge color="warning">Wajib</CBadge></CLabel>
+                                    <CLabel htmlFor="name">Nama</CLabel>
                                 </CCol>
                                 <CCol xs="12" md="9">
-                                    <CInput type="text" placeholder="Kode" name="kode" value={props.productsCodeAdd.kode} onChange={(e)=> props.handleAddInput(e)} />
+                                    <CInput type="text" style={{textTransform:"uppercase"}} placeholder="Nama" name="nama" value={props.productsCodeAdd.nama} onChange={(e)=> props.handleAddInput(e)} />
                                 </CCol>
                             </CFormGroup>
                             <CFormGroup row>
                                 <CCol md="3">
-                                    <CLabel htmlFor="name">Nama <CBadge color="warning">Wajib</CBadge></CLabel>
+                                    <CLabel htmlFor="name">Jumlah Piutang</CLabel>
                                 </CCol>
                                 <CCol xs="12" md="9">
-                                    <CInput type="text" placeholder="Nama" name="nama" value={props.productsCodeAdd.nama} onChange={(e)=> props.handleAddInput(e)} />
+                                    <CInput type="number" placeholder="Kredit" name="kredit" value={props.productsCodeAdd.kredit} onChange={(e)=> props.handleAddInput(e)} />
+                                </CCol>
+                            </CFormGroup>
+                            <CFormGroup row hidden>
+                                <CCol md="3">
+                                    <CLabel htmlFor="name">Debit</CLabel>
+                                </CCol>
+                                <CCol xs="12" md="9">
+                                    <CInput type="number" placeholder="Debit" name="debit" value={props.productsCodeAdd.debit} onChange={(e)=> props.handleAddInput(e)} />
                                 </CCol>
                             </CFormGroup>
                             <CFormGroup row>
                                 <CCol md="3">
-                                    <CLabel htmlFor="name">Komisi</CLabel>
+                                    <CLabel htmlFor="name">Keterangan</CLabel>
                                 </CCol>
                                 <CCol xs="12" md="9">
-                                    <CInput type="number" step="0.1" placeholder="Komisi" name="komisi" value={props.productsCodeAdd.komisi} onChange={(e)=> props.handleAddInput(e)} />
-                                </CCol>
-                            </CFormGroup>
-                            <CFormGroup row>
-                                <CCol md="3">
-                                    <CLabel htmlFor="name">Nilai Minimum</CLabel>
-                                </CCol>
-                                <CCol xs="12" md="9">
-                                    <CInput type="number" step="0.1" placeholder="Nilai Minimum" name="nilai_minimum" value={props.productsCodeAdd.nilai_minimum} onChange={(e)=> props.handleAddInput(e)} />
+                                    <CTextarea placeholder="Keterangan" name="Keterangan" value={props.productsCodeAdd.Keterangan} onChange={(e)=> props.handleAddInput(e)} />
                                 </CCol>
                             </CFormGroup>
                         </CForm>

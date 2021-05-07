@@ -8,6 +8,7 @@ import {
     CRow,
     CButton,
 } from '@coreui/react'
+import NumberFormat from 'react-number-format';
 import AddBox from '@material-ui/icons/AddBox';
 import ArrowDownward from '@material-ui/icons/ArrowDownward';
 import Check from '@material-ui/icons/Check';
@@ -24,11 +25,13 @@ import SaveAlt from '@material-ui/icons/SaveAlt';
 import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
 import Toaster from '../components/Toaster'
-import {fDelete, fUpdate, fInsert} from '../../services/ProductsCode'
-import {getAll} from '../../services/ReturnSaleTransactions'
+import {fDelete, fUpdate} from '../../services/ProductsCode'
+import {getAll, fInsert} from '../../services/ReturnSaleTransactions'
 import Download from './Download'
 import AddModal from './AddModal'
+import {getAllBySaleProducts as getProducts} from '../../services/Products'
 import UpdateModal from './UpdateModal'
+import {getAll as getCostumers} from '../../services/Customers'
 
 const tableIcons = {
     Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -50,7 +53,7 @@ const tableIcons = {
     ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
 };
 
-const initialProductsCodeState = { id:'', label:'' }
+const initialProductsCodeState = { kode_transaksi:'', kode_barang:'', part_number:'', nama_barang:'', merk:'', kode_pelanggan:'', nama_pelanggan:'', alamat_pelanggan:'', kota:'', telepon:'', kode_sales:'', nama_sales:'', kode_user:'', nama_user:'', harga_jual:'', qty:'', satuan:'', total_harga_jual: '', tanggal_retur:'', jam:'', komisi:'' }
 
 function ProductsCode(props) {
   const [toastM, setToastM] = useState("")
@@ -61,6 +64,8 @@ function ProductsCode(props) {
   const [autohideValue] = useState(1000)
   const [closeButton] = useState(true)
   const [fade] = useState(true)
+  const [customers, setCustomers] = useState([]);
+  const [customer, setCustomer] = useState({});
   const [productsCode, setProductCode] = useState([]);
   const [metrics, setMetrics] = useState([]);
   const [productsCodeAdd, setProductsCodeAdd] = useState(initialProductsCodeState)
@@ -69,6 +74,10 @@ function ProductsCode(props) {
   const [nameUpdate, setNameUpdate] = useState("");
   const [showAddModal, setShowAddModal] = useState(false)
   const [edit, setEdit] = useState(false)
+  const [products, setProducts] = useState([]);
+  const [product, setProduct] = useState({});
+  const [inputList, setInputList] = useState([{ "barang": {}, "kode_barang": "", "nama_barang":"", "part_number":"", "merk":"","qty_jual": 0, "harga_jual": 0, "qty_jual":0 }]);
+  let priceTot = 0;
   let number = 0
 
   const addToast = () => {
@@ -77,6 +86,72 @@ function ProductsCode(props) {
       { position, autohide: autohide && autohideValue, closeButton, fade }
     ])
   }
+
+  async function fetchCustomers() {
+    const response = await getCostumers()
+    if(response.success===1){
+      let list = []
+      let i = 0;
+      response.custumers.map(value => {
+        list[i] = {
+          id: value.kode, value: value.kode, label: value.nama +' - '+value.kode,
+          target: { type: 'select', name: 'kode_pelanggan', value: value.kode, label: value.nama +' - '+value.kode, nama_pelanggan: value.nama, alamat_pelanggan: value.alamat, kota: value.kota, telepon: value.telepon, level_harga:value.harga, plafon:value.plafon, kode_sales:value.kode_sales}
+        }
+        i++;
+        return i;
+      })
+      setCustomers(list)
+    }
+  }
+
+  async function fetchProducts(id) {
+    const response = await getProducts(id)
+    if(response.success===1){
+      let list = []
+      let i = 0;
+      response.salesTransactions.map(value => {
+        list[i] = {
+          id: value.kode_barang, value: value.kode_barang, label: value.nama_barang +' - '+value.kode_barang,
+          target: { type: 'select', name: 'kode_barang', value: value.kode_barang, label: value.nama_barang +' - '+value.kode_barang, part_number: value.part_number, nama_barang: value.nama_barang, merk: value.merk, telepon: value.telepon, satuan:value.satuan, qty_jual:value.qty, harga_jual:value.harga_jual}
+        }
+        i++;
+        return i;
+      })
+      setProducts(list)
+    }
+  }
+
+  const handleSelectChange = (e, index) => {
+    const list = [...inputList];
+    list[index]['barang'] = e.target
+    list[index]['kode_barang'] = e.target.value
+    list[index]['nama_barang'] = e.target.label;
+    list[index]['part_number'] = e.target.part_number;
+    list[index]['merk'] = e.target.merk;
+      list[index]['harga_jual'] = e.target.harga_jual
+    list[index]['qty'] = 1;
+    list[index]['qty_jual'] = e.target.qty_jual;
+    setInputList(list);
+  };
+
+  const handleInputChange = (e, index) => {
+    const { name, value } = e.target;
+    const list = [...inputList];
+    list[index][name] = value;
+    setInputList(list);
+  };
+
+  // handle click event of the Remove button
+  const handleRemoveClick = index => {
+    const list = [...inputList];
+    list.splice(index, 1);
+    setInputList(list);
+  };
+
+  // handle click event of the Add button
+  const handleAddClick = () => {
+    setInputList([...inputList, { "barang": {}, "kode_barang": "", "nama_barang":"", "part_number":"", "merk":"","qty": 0, "harga_jual": 0 }]);
+  };
 
   let tableData = metrics && metrics.map(({kode_pelanggan, nilai, ambil, sisa}) => {
     number++
@@ -102,13 +177,17 @@ function ProductsCode(props) {
 
   useEffect(() => {
     fetchProductsCode()
+    fetchCustomers()
+    fetchProducts()
   }, [])
 
   async function insert(){
-    const response = await fInsert(productsCodeAdd.kode, productsCodeAdd.nama, productsCodeAdd.komisi, productsCodeAdd.nilai_minimum)
+    const response = await fInsert(productsCodeAdd.jatuh_tempo, productsCodeAdd.tanggal_retur, productsCodeAdd.kode_sales, productsCodeAdd.kode_pelanggan, productsCodeAdd.nama_pelanggan, productsCodeAdd.alamat_pelanggan, productsCodeAdd.kota, productsCodeAdd.telepon, inputList)
     if (response['success'] === 1) {
       fetchProductsCode()
       setProductsCodeAdd(initialProductsCodeState)
+      setCustomer({})
+      setInputList([{ "barang": {}, "kode_barang": "", "nama_barang":"", "part_number":"", "merk":"","qty_jual": 0, "harga_jual": 0, "qty_jual":0 }]);
       setToastM("insert")
       setShowAddModal(false)
     }else{
@@ -147,15 +226,26 @@ function ProductsCode(props) {
   }
 
   const handleAddInput = ({ target }) => {
-    const name = target.name;
-    const value = target.value;
-    setProductsCodeAdd(prevState => ({ ...prevState, [ name ]: value }));
+    let name = target.name;
+    let value = target.value;
+    if(name==="kode_pelanggan"){
+      setCustomer({value:target.value, label:target.label})
+      fetchProducts(target.value)
+      setProductsCodeAdd(prevState => ({ ...prevState, [ name ]: value, nama_pelanggan:target.nama_pelanggan, alamat_pelanggan:target.alamat_pelanggan, plafon:target.plafon, level_harga:target.level_harga, kode_sales:target.kode_sales }));
+    }else{
+      setProductsCodeAdd(prevState => ({ ...prevState, [ name ]: value }));
+    }
   }
 
   const handleUpdateInput = ({ target }) => {
     const name = target.name;
     const value = target.value;
     setProductsCodeUpdate(prevState => ({ ...prevState, [ name ]: value }));
+  }
+
+  function handleRp(val) {
+    let a = <NumberFormat displayType="text" thousandSeparator="." value={val || 0} decimalSeparator="," />
+    return a
   }
 
     return (
@@ -166,6 +256,17 @@ function ProductsCode(props) {
               productsCodeAdd={productsCodeAdd}
               handleAddInput={handleAddInput}
               insert={insert}
+              inputList={inputList}
+              setInputList={setInputList}
+              priceTot={priceTot}
+              handleRp={handleRp}
+              customers={customers}
+              products={products}
+              customer={customer}
+              handleSelectChange={handleSelectChange}
+              handleInputChange={handleInputChange}
+              handleAddClick={handleAddClick}
+              handleRemoveClick={handleRemoveClick}
             />
             <UpdateModal
               edit={edit}
@@ -217,7 +318,7 @@ function ProductsCode(props) {
                                 { title: 'Sisa', field: 'sisa' },
                             ]}
                             data={tableData}
-                            onRowClick={((evt, selectedRow) => editModal(edit,selectedRow))}
+                            // onRowClick={((evt, selectedRow) => editModal(edit,selectedRow))}
                             options={{
                                 rowStyle: rowData => ({
                                     backgroundColor: (rowData.tableData.kode%2===0) ? '#EEE' : '#FFF'

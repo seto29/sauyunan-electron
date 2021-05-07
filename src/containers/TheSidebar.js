@@ -32,7 +32,7 @@ const TheSidebar = () => {
       onShowChange={(val) => dispatch({ type: 'set', sidebarShow: val })}
     >
       <CSidebarBrand className="d-md-down-none" to="/">
-        <h3>Jopex</h3>
+        <h3>Cap</h3>
       </CSidebarBrand>
       <CSidebarNav>
 

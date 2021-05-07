@@ -11,14 +11,17 @@ export const getDropdown = async () => {
   let list = []
   const response = await axios.get('/productscode/GetDropdown.php')
   let i = 0;
-  response['data']['productsCode'].map(value => {
+  if(response['data']['success']===1){
+
+    response['data']['productsCode'].map(value => {
       list[i] = {
-          id: value.kode, value: value.kode, label: value.nama +' - '+value.kode,
-          target: { type: 'select', name: 'kode', value: value.kode, label: value.kode }
+        id: value.kode, value: value.kode, label: value.nama +' - '+value.kode,
+        target: { type: 'select', name: 'kode', value: value.kode, label: value.kode }
       }
       i++;
       return i;
-  })
+    })
+  }
   return list
 };
 

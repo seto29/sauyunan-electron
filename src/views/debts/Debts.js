@@ -24,8 +24,8 @@ import SaveAlt from '@material-ui/icons/SaveAlt';
 import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
 import Toaster from '../components/Toaster'
-import {fDelete, fUpdate, fInsert} from '../../services/ProductsCode'
-import {getAll} from '../../services/Debts'
+import {fDelete, fUpdate} from '../../services/ProductsCode'
+import {getAll, fInsert} from '../../services/Debts'
 import Download from './Download'
 import AddModal from './AddModal'
 import UpdateModal from './UpdateModal'
@@ -50,7 +50,7 @@ const tableIcons = {
     ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
 };
 
-const initialProductsCodeState = { id:'', label:'' }
+const initialProductsCodeState = { kode:'', tanggal:'', jam:'', nama:'', kredit:'', debit:'', Keterangan:'' }
 
 function ProductsCode(props) {
   const [toastM, setToastM] = useState("")
@@ -78,7 +78,7 @@ function ProductsCode(props) {
     ])
   }
 
-  let tableData = metrics && metrics.map(({kode, tanggal, jam, nama, kredit, debit, keterangan}) => {
+  let tableData = metrics && metrics.map(({kode, tanggal, jam, nama, kredit, debit, Keterangan}) => {
     number++
     const data = {
       no:number,
@@ -88,7 +88,7 @@ function ProductsCode(props) {
       nama:nama,
       kredit:kredit,
       debit:debit,
-      keterangan:keterangan,
+      Keterangan:Keterangan,
     }
     return data;
   });
@@ -108,7 +108,7 @@ function ProductsCode(props) {
   }, [])
 
   async function insert(){
-    const response = await fInsert(productsCodeAdd.kode, productsCodeAdd.nama, productsCodeAdd.komisi, productsCodeAdd.nilai_minimum)
+    const response = await fInsert(productsCodeAdd.nama, productsCodeAdd.kredit, productsCodeAdd.debit, productsCodeAdd.Keterangan)
     if (response['success'] === 1) {
       fetchProductsCode()
       setProductsCodeAdd(initialProductsCodeState)
@@ -220,10 +220,10 @@ function ProductsCode(props) {
                                 { title: 'Nama', field: 'nama' },
                                 { title: 'Debit', field: 'debit' },
                                 { title: 'Kredit', field: 'kredit' },
-                                { title: 'Keterangan', field: 'keterangan' },
+                                { title: 'Keterangan', field: 'Keterangan' },
                             ]}
                             data={tableData}
-                            onRowClick={((evt, selectedRow) => editModal(edit,selectedRow))}
+                            // onRowClick={((evt, selectedRow) => editModal(edit,selectedRow))}
                             options={{
                                 rowStyle: rowData => ({
                                     backgroundColor: (rowData.tableData.kode%2===0) ? '#EEE' : '#FFF'

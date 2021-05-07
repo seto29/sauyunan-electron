@@ -21,6 +21,7 @@ import {
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import axios from '../../../axios';
+// const store = new Store();
 
 const Login = (props) => {
   const {history} = props;
@@ -33,6 +34,7 @@ const Login = (props) => {
   const [autohideValue, setAutohideValue] = useState(5000)
   const [closeButton, setCloseButton] = useState(true)
   const [fade, setFade] = useState(true)
+
   const addToast = () => {
     setToasts([
       ...toasts,
@@ -59,7 +61,6 @@ const Login = (props) => {
     
     if (response['data']['success'] === 1) {
      Cookies.set('user', response['data']['msg'][0]);
-     Cookies.set('role', response['data']['msg'][0]['role_id']);
      history.push('/dashboard');
     }else{
       addToast();

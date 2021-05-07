@@ -78,7 +78,7 @@ function Goodsreceipts({ }) {
             year: "numeric",
             month: "long"
           }).format(Date.parse(newDate))
-  let fileName = "Data Barang Keluar Jopex per "+date;
+  let fileName = "Data Barang Keluar Cap per "+date;
   const positions = [
     'top-right',
   ]

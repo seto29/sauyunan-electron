@@ -133,10 +133,27 @@ const _nav = [
     ],
   },
   {
-    _tag: 'CSidebarNavItem',
-    name: 'Pengaturan Akun',
-    to: '/settings',
+    _tag: 'CSidebarNavDropdown',
+    name: 'Laporan',
+    route: '/base',
+    _children: [
+      {
+        _tag: 'CSidebarNavItem',
+        name: 'Transaksi Penjualan',
+        to: '/report-sale-transactions',
+      },
+      {
+        _tag: 'CSidebarNavItem',
+        name: 'Transaksi Pembelian',
+        to: '/report-buy-transactions',
+      },
+    ],
   },
+  // {
+  //   _tag: 'CSidebarNavItem',
+  //   name: 'Pengaturan Akun',
+  //   to: '/settings',
+  // },
   {
     _tag: 'CSidebarNavItem',
     name: 'Bantuan',

@@ -6,6 +6,11 @@ export const getAll = async () => {
     return response.data
 };
 
+export const getAllBySaleProducts = async (id) => {
+    const response = await axios.get('ReturnSaleTransaction/GetAllProductsSales.php?id='+id)
+    return response.data
+};
+
 export const GetBySupplierID = async (id) => {
     const response = await axios.get('/supplierproducts/GetBySupplierID.php?sID='+id)
     return response.data

@@ -1,5 +1,6 @@
 import React, { useEffect, useState, forwardRef } from 'react'
 import MaterialTable from 'material-table';
+import NumberFormat from 'react-number-format';
 import {
     CCard,
     CCardBody,
@@ -25,7 +26,9 @@ import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
 import Toaster from '../components/Toaster'
 import {fDelete, fUpdate} from '../../services/ProductsCode'
-import {getAll, getAllDD, fInsert} from '../../services/PaySells'
+import {getAll, fInsert} from '../../services/BuyTransactions'
+import {getAll as getSuppliers} from '../../services/Suppliers'
+import {getAll as getProducts} from '../../services/Products'
 import Download from './Download'
 import AddModal from './AddModal'
 import UpdateModal from './UpdateModal'
@@ -50,7 +53,7 @@ const tableIcons = {
     ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
 };
 
-const initialProductsCodeState = { kode_pelanggan:'', harga:'', jumlah_bayar:'', sisa:'', komisi:'', nama_pelanggan:'', alamat_pelanggan:'', kota:'', telepon:'', kode_sales:'',nama_sales:'', harga:'', jumlah_bayar:0, jumlah_retur:0, jumlah_giro1:0,jumlah_giro2:0,jumlah_giro3:0,jumlah_potongan:0, sisa:0, tanggal_jual:'', tanggal_bayar:'', jatuh_tempo:'', lama_tempo:0, no_giro1:'', bank1:'', nilai_giro1:0, tanggal_cair1:'', cair1:'Tidak', no_giro2:'', bank2:'', nilai_giro2:0, tanggal_cair2:'', cair2:'Tidak', no_giro3:'', bank3:'', nilai_giro3:0, tanggal_cair3:'', cair3:'Tidak', status:'', komisi:0 }
+const initialProductsCodeState = { kode_transaksi:'', kode_kanvas:'', kode_barang:'', nama_barang:'', part_number:'', merk:'', kode_supplier:'', nama_supplier:'', alamat_supplier:'', kota:'', telepon:'', kode_sales:'', nama_sales:'', kode_user:'', nama_user:'', harga_beli:'', harga_jual:'', qty:'', satuan:'', total_harga_beli:'', total_harga_jual:'', keuntungan:'', komisi:'', total_keuntungan:'', tanggal_beli:'', jatuh_tempo:'', lama_tempo:'', kw:'', nama_kw:'', retur:'' }
 
 function ProductsCode(props) {
   const [toastM, setToastM] = useState("")
@@ -62,15 +65,17 @@ function ProductsCode(props) {
   const [closeButton] = useState(true)
   const [fade] = useState(true)
   const [productsCode, setProductCode] = useState([]);
-  const [salesTransactions, setSalesTransactions] = useState([]);
-  const [salesTransaction, setSalesTransaction] = useState({});
   const [metrics, setMetrics] = useState([]);
+  const [suppliers, setSuppliers] = useState([]);
+  const [supplier, setSupplier] = useState({});
   const [productsCodeAdd, setProductsCodeAdd] = useState(initialProductsCodeState)
   const [productsCodeUpdate, setProductsCodeUpdate] = useState(initialProductsCodeState)
   const [idUpdate, setIDUpdate] = useState("");
+  const [products, setProducts] = useState([]);
   const [nameUpdate, setNameUpdate] = useState("");
   const [showAddModal, setShowAddModal] = useState(false)
   const [edit, setEdit] = useState(false)
+  const [inputList, setInputList] = useState([{ "barang": {}, "kode_barang": "", "nama_barang":"", "part_number":"", "merk":"","qty": 0, "harga_beli": 0 }]);
   let number = 0
 
   const addToast = () => {
@@ -80,20 +85,32 @@ function ProductsCode(props) {
     ])
   }
 
-  let tableData = metrics && metrics.map(({kode_transaksi, kode_penjualan, kode_pelanggan, nama_pelanggan, harga, jumlah_bayar, sisa, komisi, tanggal_jual, jatuh_tempo}) => {
+  let tableData = metrics && metrics.map(({seq, kode_transaksi,  kode_barang, part_number, merk, nama_barang, kode_supplier, nama_supplier, alamat_supplier, kota, telepon, kode_user, nama_user, faktur, harga_beli, qty, satuan, total_harga_beli, tanggal_beli, jam, jatuh_tempo, lama_tempo}) => {
     number++
     const data = {
       no:number,
-      kode_penjualan:kode_penjualan,
+      seq:seq,
       kode_transaksi:kode_transaksi,
-      kode_pelanggan:kode_pelanggan,
-      nama_pelanggan:nama_pelanggan,
-      harga:harga,
-      jumlah_bayar:jumlah_bayar,
-      sisa:sisa,
-      komisi:komisi,
-      tanggal_jual:tanggal_jual,
+      kode_barang:kode_barang,
+      part_number:part_number,
+      nama_barang:nama_barang,
+      merk:merk,
+      kode_supplier:kode_supplier,
+      nama_supplier:nama_supplier,
+      alamat_supplier:alamat_supplier,
+      kota:kota,
+      telepon:telepon,
+      kode_user:kode_user,
+      nama_user:nama_user,
+      harga_beli:harga_beli,
+      qty:qty,
+      satuan:satuan,
+      total_harga_beli:total_harga_beli,
+      faktur:faktur,
+      tanggal_beli:tanggal_beli,
+      jam:jam,
       jatuh_tempo:jatuh_tempo,
+      lama_tempo:lama_tempo,
     }
     return data;
   });
@@ -105,37 +122,39 @@ function ProductsCode(props) {
 
   async function fetchProductsCode() {
     const response = await getAll()
-    setMetrics(response.paySells)
+    setMetrics(response.salesTransactions)
   }
 
-  async function fetchSales() {
-    const response = await getAllDD()
+  async function fetchSuppliers() {
+    const response = await getSuppliers()
     if(response.success===1){
       let list = []
-      let list1 = []
       let i = 0;
-      response.paySells.map(value => {
+      response.suppliers.map(value => {
         list[i] = {
-          id: value.kode_transaksi, value: value.kode_penjualan, label: value.nama_pelanggan +' - '+value.kode_penjualan + ' - ' +value.tanggal_jual,
-          target: { type: 'select', name: 'kode_penjualan', value: value.kode_penjualan, label: value.nama_pelanggan +' - '+value.kode_penjualan + ' - ' +value.tanggal_jual, kode_pelanggan:value.kode_pelanggan, harga:value.harga ,jumlah_bayar:value.jumlah_bayar, sisa:value.sisa, komisi:value.komisi, kode_transaksi:value.kode_transaksi, nama_pelanggan:value.nama_pelanggan}
+          id: value.kode, value: value.kode, label: value.nama +' - '+value.kode,
+          target: { type: 'select', name: 'kode_supplier', value: value.kode, label: value.nama +' - '+value.kode, nama_supplier: value.nama, alamat_supplier: value.alamat, kota: value.kota, telepon: value.telepon, level_harga:value.harga, plafon:value.plafon, kode_sales:value.kode_sales}
         }
         i++;
         return i;
       })
-      setSalesTransactions(list)
+      setSuppliers(list)
     }
   }
 
   useEffect(() => {
     fetchProductsCode()
-    fetchSales()
+    fetchProducts()
+    fetchSuppliers()
   }, [])
 
   async function insert(){
-    const response = await fInsert(productsCodeAdd.kode_penjualan,productsCodeAdd.nama_pelanggan, productsCodeAdd.kode_pelanggan, productsCodeAdd.harga, productsCodeAdd.jumlah_bayar, productsCodeAdd.sisa, productsCodeAdd.kode_transaksi, productsCodeAdd.komisi, productsCodeAdd.tanggal_bayar,  productsCodeAdd.jumlah_retur, productsCodeAdd.no_giro1, productsCodeAdd.bank1, productsCodeAdd.nilai_giro1, productsCodeAdd.tanggal_cair1, productsCodeAdd.no_giro2, productsCodeAdd.bank2, productsCodeAdd.nilai_giro2, productsCodeAdd.tanggal_cair2, productsCodeAdd.no_giro3, productsCodeAdd.bank3, productsCodeAdd.nilai_giro3, productsCodeAdd.tanggal_cair3, productsCodeAdd.jumlah_potongan)
+    const response = await fInsert(productsCodeAdd.jatuh_tempo, productsCodeAdd.tanggal_beli, productsCodeAdd.kode_sales, productsCodeAdd.kode_supplier, productsCodeAdd.nama_supplier, productsCodeAdd.alamat_supplier, productsCodeAdd.kota, productsCodeAdd.telepon, inputList)
     if (response['success'] === 1) {
       fetchProductsCode()
       setProductsCodeAdd(initialProductsCodeState)
+      setSupplier({})
+      setInputList(([{ "barang": {}, "kode_barang": "", "nama_barang":"", "part_number":"", "merk":"","qty": 0, "harga_beli": 0 }]))
       setToastM("insert")
       setShowAddModal(false)
     }else{
@@ -173,25 +192,79 @@ function ProductsCode(props) {
     addToast()
   }
 
-  const handleAddInput = ({ target }) => {
-    const name = target.name;
-    const value = target.value;
-    
-
-    if(name==="kode_penjualan"){
-        setSalesTransaction({value:target.value, label:target.label})
-        setProductsCodeAdd(prevState => ({ ...prevState, [ name ]: value, nama_pelanggan:target.nama_pelanggan, kode_pelanggan:target.kode_pelanggan, harga:target.harga, jumlah_bayar:target.jumlah_bayar, sisa:target.sisa, kode_transaksi:target.kode_transaksi, komisi:target.komisi }));
-      }else{
-          setProductsCodeAdd(prevState => ({ ...prevState, [ name ]: value }));
-      }
-  }
-
   const handleUpdateInput = ({ target }) => {
     const name = target.name;
     const value = target.value;
     setProductsCodeUpdate(prevState => ({ ...prevState, [ name ]: value }));
   }
 
+  async function fetchProducts() {
+    const response = await getProducts()
+    if(response.success===1){
+      let list = []
+      let i = 0;
+      response.products.map(value => {
+        list[i] = {
+          id: value.kode, value: value.kode, label: value.nama +' - '+value.kode,
+          target: { type: 'select', name: 'kode_barang', value: value.kode, label: value.nama +' - '+value.kode, part_number: value.part_number, nama_barang: value.nama_barang, merk: value.merk, telepon: value.telepon, satuan:value.satuan, jual1:value.jual1, jual2:value.jual2, jual3:value.jual3, beli:value.beli}
+        }
+        i++;
+        return i;
+      })
+      setProducts(list)
+    }
+  }
+
+  function handleRp(val) {
+    let a = <NumberFormat displayType="text" thousandSeparator="." value={val || 0} decimalSeparator="," />
+    return a
+  }
+
+  const handleAddInput = ({ target }) => {
+    console.log(target)
+    let name = target.name;
+    let value = target.value;
+    if(name==="kode_supplier"){
+      console.log(target)
+      setSupplier({value:target.value, label:target.label})
+      setProductsCodeAdd(prevState => ({ ...prevState, [ name ]: value, nama_supplier:target.nama_supplier, alamat_supplier:target.alamat_supplier, plafon:target.plafon, level_harga:target.level_harga, kode_sales:target.kode_sales }));
+    }else if(name==="kode_sales"){
+      setProductsCodeAdd(prevState => ({ ...prevState, [ name ]: value, nama_sales:target.nama_sales}));
+    }else{
+      setProductsCodeAdd(prevState => ({ ...prevState, [ name ]: value }));
+    }
+  }
+
+  const handleSelectChange = (e, index) => {
+    const list = [...inputList];
+    list[index]['barang'] = e.target
+    list[index]['kode_barang'] = e.target.value
+    list[index]['nama_barang'] = e.target.label;
+    list[index]['part_number'] = e.target.part_number;
+    list[index]['merk'] = e.target.merk;
+    list[index]['harga_beli'] = e.target.beli
+    list[index]['qty'] = 1;
+    setInputList(list);
+  };
+
+  const handleInputChange = (e, index) => {
+    const { name, value } = e.target;
+    const list = [...inputList];
+    list[index][name] = value;
+    setInputList(list);
+  };
+
+  // handle click event of the Remove button
+  const handleRemoveClick = index => {
+    const list = [...inputList];
+    list.splice(index, 1);
+    setInputList(list);
+  };
+
+  // handle click event of the Add button
+  const handleAddClick = () => {
+    setInputList([...inputList, { "barang": {}, "kode_barang": "", "nama_barang":"", "part_number":"", "merk":"","qty": 0, "harga_jual": 0 }]);
+  };
     return (
         <>
             <AddModal
@@ -199,9 +272,16 @@ function ProductsCode(props) {
               setShowAddModal={setShowAddModal}
               productsCodeAdd={productsCodeAdd}
               handleAddInput={handleAddInput}
-              salesTransactions={salesTransactions}
-              salesTransaction={salesTransaction}
+              handleRp={handleRp}
+              inputList={inputList}
+              suppliers={suppliers}
+              supplier={supplier}
               insert={insert}
+              products={products}
+              handleSelectChange={handleSelectChange}
+              handleInputChange={handleInputChange}
+              handleRemoveClick={handleRemoveClick}
+              handleAddClick={handleAddClick}
             />
             <UpdateModal
               edit={edit}
@@ -224,10 +304,10 @@ function ProductsCode(props) {
                         <CCardHeader>
                           <CRow className="align-items-center">
                             <CCol col="10" l className="mb-3 mb-xl-0">
-                              <h4>Pembayaran Penjualan</h4>
+                              <h4>Transaksi Pembelian</h4>
                             </CCol>
                             <CCol col="6" sm="4" md="2" m className="mb-3 mb-xl-0">
-                                <CButton block color="primary" onClick={() => setShowAddModal(!showAddModal)} className="mr-1">Tambah Data</CButton>
+                                {/* <CButton block color="primary" onClick={() => setShowAddModal(!showAddModal)} className="mr-1">Tambah Data</CButton> */}
                             </CCol>
                             <Download 
                               tableData={tableData}
@@ -247,14 +327,25 @@ function ProductsCode(props) {
                                         width: '10%',
                                     },
                                 },
-                                { title: 'Kode Penjualan', field: 'kode_penjualan' },
-                                { title: 'Kode Pelanggan', field: 'kode_pelanggan' },
-                                { title: 'Nama Pelanggan', field: 'nama_pelanggan' },
-                                { title: 'Tanggal Jual', field: 'tanggal_jual' },
+                                { title: 'Kode Transaksi', field: 'kode_transaksi' },
+                                { title: 'Kode Barang', field: 'kode_barang' },
+                                { title: 'Part Number', field: 'part_number' },
+                                { title: 'Nama Barang', field: 'nama_barang' },
+                                { title: 'Merk', field: 'merk' },
+                                { title: 'Kode Supplier', field: 'kode_supplier' },
+                                { title: 'Nama Supplier', field: 'nama_supplier' },
+                                { title: 'Alamat Supplier', field: 'alamat_supplier' },
+                                { title: 'Kota', field: 'kota' },
+                                { title: 'Telepon', field: 'telepon' },
+                                { title: 'Kode User', field: 'kode_user' },
+                                { title: 'Nama User', field: 'nama_user' },
+                                { title: 'Harga Beli', field: 'harga_beli' },
+                                { title: 'Qty', field: 'qty' },
+                                { title: 'Satuan', field: 'satuan' },
+                                { title: 'Total Harga Beli', field: 'total_harga_beli' },
+                                { title: 'Tanggal Beli', field: 'tanggal_beli' },
                                 { title: 'Jatuh Tempo', field: 'jatuh_tempo' },
-                                { title: 'Harga', field: 'harga' },
-                                { title: 'Jumlah Bayar', field: 'jumlah_bayar' },
-                                { title: 'Sisa', field: 'sisa' },
+                                { title: 'Lama Tempo', field: 'lama_tempo' },
                             ]}
                             data={tableData}
                             // onRowClick={((evt, selectedRow) => editModal(edit,selectedRow))}

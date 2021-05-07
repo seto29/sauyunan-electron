@@ -6,6 +6,11 @@ export const getAll = async () => {
     return response.data
 }
 
+export const getAllKanvas = async () => {
+    const response = await axios.get('/salesTransaction/GetAllKanvas.php')
+    return response.data
+}
+
 export const getDetails = async (id) => {
     const response = await axios.get('/sales/GetDetailByID.php?id=' + id)
     return response.data
@@ -71,6 +76,29 @@ export const fInsert = async ( jatuh_tempo, tanggal_jual, kode_sales, kode_pelan
     const response = await axios({
       method: 'post',
       url: '/salesTransaction/Insert.php',
+      data: bodyFormData,
+      headers: {'Content-Type': 'multipart/form-data' }
+      });
+    return response.data;
+};
+
+export const fInsertC = async ( jatuh_tempo, tanggal_jual, kode_sales, kode_pelanggan, nama_pelanggan, alamat_pelanggan, kota, telepon, inputList, kode_kanvas) => {
+    var bodyFormData = new FormData();
+    bodyFormData.append('jatuh_tempo', jatuh_tempo)
+    bodyFormData.append('tanggal_jual', tanggal_jual)
+    bodyFormData.append('kode_sales', kode_sales)
+    bodyFormData.append('kode_pelanggan', kode_pelanggan)
+    bodyFormData.append('nama_pelanggan', nama_pelanggan)
+    bodyFormData.append('alamat_pelanggan', alamat_pelanggan)
+    bodyFormData.append('kota', kota)
+    bodyFormData.append('telepon', telepon)
+    bodyFormData.append('kode_kanvas', kode_kanvas)
+    bodyFormData.append('inputList', JSON.stringify(inputList))
+    bodyFormData.append('kode_user', JSON.parse(Cookies.get('user')).kode)
+    bodyFormData.append('nama_user', JSON.parse(Cookies.get('user')).nama)
+    const response = await axios({
+      method: 'post',
+      url: '/salesTransaction/InsertC.php',
       data: bodyFormData,
       headers: {'Content-Type': 'multipart/form-data' }
       });

@@ -16,6 +16,11 @@ export const getAllKanvasTransactions = async () => {
     return response.data
 }
 
+export const getAllProductsByIdKanvas = async (id) => {
+    const response = await axios.get('/kanvas/getAllProductsByIdKanvas.php?id='+id)
+    return response.data
+}
+
 export const getDetails = async (id) => {
     const response = await axios.get('/sales/GetDetailByID.php?id=' + id)
     return response.data
@@ -65,26 +70,36 @@ export const fDelete = async (id) => {
     return response.data;
 };
 
-export const fInsert = async (don, dod, sID, inputList,payments,isDelivery,paidOff,notes,bayar, priceTot) => {
-    
-    let insertData = {
-        "don": don,
-        "dod": dod,
-        "sID": sID,
-        "createdBy": JSON.parse(Cookies.get('user')).id,
-        "details": JSON.stringify(inputList),
-        "payments": JSON.stringify(payments),
-        "isDelivery": isDelivery,
-        "paidOff": paidOff,
-        "notes": notes,
-        "terminPay": bayar,
-        "salesPrice": priceTot
-      }
-      const response = await axios({
-        method: 'post',
-        url: '/sales/HandleJSON.php',
-        data: JSON.stringify(insertData),
-        headers: { 'Content-Type': 'multipart/form-data' }
+export const fInsert = async ( kode_sales, nama_sales, kode_sopir, nama_sopir, tujuan, inputList) => {
+    var bodyFormData = new FormData();
+    bodyFormData.append('kode_sales', kode_sales)
+    bodyFormData.append('nama_sales', nama_sales)
+    bodyFormData.append('kode_sopir', kode_sopir)
+    bodyFormData.append('nama_sopir', nama_sopir)
+    bodyFormData.append('tujuan', tujuan)
+    bodyFormData.append('inputList', JSON.stringify(inputList))
+    bodyFormData.append('kode_user', JSON.parse(Cookies.get('user')).kode)
+    bodyFormData.append('nama_user', JSON.parse(Cookies.get('user')).nama)
+    const response = await axios({
+      method: 'post',
+      url: '/kanvas/InsertTakeKanvas.php',
+      data: bodyFormData,
+      headers: {'Content-Type': 'multipart/form-data' }
+      });
+    return response.data;
+};
+
+export const fInsertReturn = async ( kode_transaksi, inputList) => {
+    var bodyFormData = new FormData();
+    bodyFormData.append('kode_transaksi', kode_transaksi)
+    bodyFormData.append('inputList', JSON.stringify(inputList))
+    bodyFormData.append('kode_user', JSON.parse(Cookies.get('user')).kode)
+    bodyFormData.append('nama_user', JSON.parse(Cookies.get('user')).nama)
+    const response = await axios({
+      method: 'post',
+      url: '/kanvas/InsertReturn.php',
+      data: bodyFormData,
+      headers: {'Content-Type': 'multipart/form-data' }
       });
     return response.data;
 };
