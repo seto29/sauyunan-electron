@@ -22,16 +22,16 @@ function Download(props) {
                 <ExcelFile filename={fileName} element={<CButton block color="success" className="mr-1">Download Data</CButton>}>
                     <ExcelSheet data={props.tableData} name="Produk">
                         <ExcelColumn label="No." value="no"/>
-                        <ExcelColumn label="Kode Barang" value="kode"/>
-                        <ExcelColumn label="Nama" value="nama"/>
+                        <ExcelColumn label="Kode Transaksi" value="kode_transaksi"/>
+                        <ExcelColumn label="Kode Barang" value="kode_barang"/>
+                        <ExcelColumn label="nama barang" value="nama_barang"/>
                         <ExcelColumn label="Merk" value="merk"/>
                         <ExcelColumn label="Part Number" value="part_number"/>
-                        <ExcelColumn label="Harga Beli" value="beli"/>
-                        <ExcelColumn label="Harga Jual 1" value="jual1"/>
-                        <ExcelColumn label="Harga Jual 2" value="jual2"/>
-                        <ExcelColumn label="Harga Jual 3" value="jual3"/>
-                        <ExcelColumn label="Stock Minimal" value="stock_minimal"/>
-                        <ExcelColumn label="Satuan" value="satuan"/>
+                        <ExcelColumn label="Qty Asal" value="qty_asal"/>
+                        <ExcelColumn label="Qty Edit" value="qty_edit"/>
+                        <ExcelColumn label="Deskripsi" value="alasan"/>
+                        <ExcelColumn label="Dibuat Oleh" value="nama_user"/>
+                        <ExcelColumn label="Dibuat Tanggal" value="tanggal_edit"/>
                     </ExcelSheet>
                 </ExcelFile>
             </CCol>

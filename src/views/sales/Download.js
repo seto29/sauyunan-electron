@@ -22,10 +22,12 @@ function Download(props) {
         <CCol col="6" sm="4" md="2" m className="mb-3 mb-xl-0">
             <ExcelFile filename={fileName} element={<CButton block color="success" className="mr-1">Download Data</CButton>}>
                 <ExcelSheet data={props.tableData} name="Penjualan">
-                    <ExcelColumn label="No." value="no" />
-                    <ExcelColumn label="Kode" value="code" />
-                    <ExcelColumn label="Toko" value="sName" />
-                    <ExcelColumn label="Total" value="pTotal" />
+                    <ExcelColumn label="No." value="no"/>
+                        <ExcelColumn label="Kode" value="kode"/>
+                        <ExcelColumn label="Nama" value="nama"/>
+                        <ExcelColumn label="Alamat" value="alamat"/>
+                        <ExcelColumn label="Kota" value="kota"/>
+                        <ExcelColumn label="Fax" value="fax"/>
                 </ExcelSheet>
             </ExcelFile>
         </CCol>

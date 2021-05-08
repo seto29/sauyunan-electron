@@ -23,7 +23,10 @@ function Download(props) {
             <ExcelFile filename={fileName} element={<CButton block color="success" className="mr-1">Download Data</CButton>}>
                 <ExcelSheet data={props.tableData} name="Pembayaran">
                     <ExcelColumn label="No." value="no" />
-                    <ExcelColumn label="Nama" value="name" />
+                    <ExcelColumn label="No. Penjualan" value="code" />
+                    <ExcelColumn label="Harga Modal" value="pTotc" />
+                    <ExcelColumn label="Harga Jual" value="pTotal" />
+                    <ExcelColumn label="Laba / Rugi" value="pBalance" />
                 </ExcelSheet>
             </ExcelFile>
         </CCol>

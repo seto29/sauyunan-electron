@@ -24,9 +24,7 @@ function Download(props) {
                     <ExcelSheet data={props.tableData} name="Kode Barang">
                         <ExcelColumn label="No." value="no"/>
                         <ExcelColumn label="Kode" value="kode"/>
-                        <ExcelColumn label="Nama" value="name"/>
-                        <ExcelColumn label="Komisi" value="komisi"/>
-                        <ExcelColumn label="Nilai Minimum" value="nilai_minimum"/>
+                        <ExcelColumn label="Nama" value="nama"/>
                     </ExcelSheet>
                 </ExcelFile>
             </CCol>

@@ -24,7 +24,14 @@ function Download(props) {
                                     <ExcelFile filename={fileName} element={<CButton block color="success" className="mr-1">Download Data</CButton>}>
                                       <ExcelSheet data={props.exportData} name="Laba Kotor">
                                           <ExcelColumn label="No." value="no"/>
-                                          <ExcelColumn label="Nama" value="name"/>
+                                          <ExcelColumn label="Kode Penjualan" value="kode_penjualan"/>
+                                          <ExcelColumn label="Kode Pelanggan" value="kode_pelanggan"/>
+                                          <ExcelColumn label="Nama Pelanggan" value="nama_pelanggan"/>
+                                          <ExcelColumn label="Tanggal Jual" value="tanggal_jual"/>
+                                          <ExcelColumn label="Jatuh Tempo" value="jatuh_tempo"/>
+                                          <ExcelColumn label="Harga" value="harga"/>
+                                          <ExcelColumn label="Jumlah Bayar" value="jumlah_bayar"/>
+                                          <ExcelColumn label="Sisa" value="sisa"/>
                                       </ExcelSheet>
                                     </ExcelFile>
                                 </CCol>

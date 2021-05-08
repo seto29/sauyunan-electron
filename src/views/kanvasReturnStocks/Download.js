@@ -22,11 +22,32 @@ function Download(props) {
             <CCol col="6" sm="4" md="2" m className="mb-3 mb-xl-0">
                 <ExcelFile filename={fileName} element={<CButton block color="success" className="mr-1">Download Data</CButton>}>
                     <ExcelSheet data={props.tableData} name="Kode Barang">
-                        <ExcelColumn label="No." value="no"/>
-                        <ExcelColumn label="Kode" value="kode"/>
-                        <ExcelColumn label="Nama" value="name"/>
-                        <ExcelColumn label="Komisi" value="komisi"/>
-                        <ExcelColumn label="Nilai Minimum" value="nilai_minimum"/>
+                    <ExcelColumn label="No." value="no"/>
+                        <ExcelColumn label="Kode Transaksi" value="kode_transaksi"/>
+                        <ExcelColumn label="Kode Sales" value="kode_sales"/>
+                        <ExcelColumn label="Nama Sales" value="nama_sales"/>
+                        <ExcelColumn label="Kode Sopir" value="kode_sopir"/>
+                        <ExcelColumn label="Nama Sopir" value="nama_sopir"/>
+                        <ExcelColumn label="Kode User" value="kode_user"/>
+                        <ExcelColumn label="Nama User" value="nama_user"/>
+                        <ExcelColumn label="Tujuan" value="tujuan"/>
+                        <ExcelColumn label="Kode Barang" value="kode_barang"/>
+                        <ExcelColumn label="Nama Barang" value="nama_barang"/>
+                        <ExcelColumn label="Merk" value="merk"/>
+                        <ExcelColumn label="Satuan" value="satuan"/>
+                        <ExcelColumn label="Qty Ambil" value="qty_ambil"/>
+                        <ExcelColumn label="Harga Ambil" value="harga_ambil"/>
+                        <ExcelColumn label="Total Harga Ambil" value="total_harga_ambil"/>
+                        <ExcelColumn label="Qty Jual" value="qty_jual"/>
+                        <ExcelColumn label="Harga Jual" value="harga_jual"/>
+                        <ExcelColumn label="Total Harga Jual" value="total_harga_jual"/>
+                        <ExcelColumn label="Qty Sisa" value="qty_sisa"/>
+                        <ExcelColumn label="Tanggal Ambil" value="tanggal_ambil"/>
+                        <ExcelColumn label="Jam Ambil" value="jam_ambil"/>
+                        <ExcelColumn label="Tanggal Jual" value="tanggal_jual"/>
+                        <ExcelColumn label="Jam Jual" value="jam_jual"/>
+                        <ExcelColumn label="Tanggal Kembali" value="tanggal_kembali"/>
+                        <ExcelColumn label="Jam Kembali" value="jam_kembali"/>
                     </ExcelSheet>
                 </ExcelFile>
             </CCol>
