@@ -11,14 +11,14 @@ export const getDropdown = async () => {
     let list =[]
     const response = await axios.get('/metrics/GetDropdown.php')
     let i = 0;
-    if(response['data']['success']==='1'){
-
-        response['data']['metrics'].map(value => {
+    if(response['data'].success===1){
+        response['data'].metrics.map(value => {
             list[i] = {
                 id: value.kode, value: value.kode, label: value.nama,
                 target: { type: 'select', name: 'satuan', value: value.kode, label: value.kode }
             }
             i++;
+            console.log(value)
             return i;
         })
     }

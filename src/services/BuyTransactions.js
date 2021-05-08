@@ -66,8 +66,8 @@ export const fInsert = async ( jatuh_tempo, tanggal_beli, kode_sales, kode_suppl
     bodyFormData.append('kota', kota)
     bodyFormData.append('telepon', telepon)
     bodyFormData.append('inputList', JSON.stringify(inputList))
-    bodyFormData.append('kode_user', JSON.parse(Cookies.get('user')).kode)
-    bodyFormData.append('nama_user', JSON.parse(Cookies.get('user')).nama)
+    bodyFormData.append('kode_user', "A0001")
+    bodyFormData.append('nama_user', "ADMIN")
     const response = await axios({
       method: 'post',
       url: '/buyTransactions/Insert.php',

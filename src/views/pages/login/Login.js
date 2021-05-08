@@ -21,8 +21,6 @@ import {
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import axios from '../../../axios';
-// const store = new Store();
-
 const Login = (props) => {
   const {history} = props;
   const [username, setUsername] = useState("");
@@ -60,8 +58,8 @@ const Login = (props) => {
     });
     
     if (response['data']['success'] === 1) {
-     Cookies.set('user', response['data']['msg'][0]);
-     history.push('/dashboard');
+      Cookies.set('user', response['data']['msg'][0]);
+      history.push('/dashboard');
     }else{
       addToast();
     }
@@ -97,7 +95,7 @@ const Login = (props) => {
                     </CInputGroup>
                     <CRow>
                       <CCol xs="6">
-                        <CButton color="primary" autofocus="true" className="px-4" onClick={() => login()} >Login</CButton>
+                        <CButton color="primary" autoFocus="true" className="px-4" onClick={() => login()} >Login</CButton>
                       </CCol>
                       {/* <CCol xs="6" className="text-right">
                         <CButton color="link" className="px-0">Forgot password?</CButton>

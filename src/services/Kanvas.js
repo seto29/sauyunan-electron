@@ -78,8 +78,8 @@ export const fInsert = async ( kode_sales, nama_sales, kode_sopir, nama_sopir, t
     bodyFormData.append('nama_sopir', nama_sopir)
     bodyFormData.append('tujuan', tujuan)
     bodyFormData.append('inputList', JSON.stringify(inputList))
-    bodyFormData.append('kode_user', JSON.parse(Cookies.get('user')).kode)
-    bodyFormData.append('nama_user', JSON.parse(Cookies.get('user')).nama)
+    bodyFormData.append('kode_user', "A0001")
+    bodyFormData.append('nama_user', "ADMIN")
     const response = await axios({
       method: 'post',
       url: '/kanvas/InsertTakeKanvas.php',
@@ -93,8 +93,8 @@ export const fInsertReturn = async ( kode_transaksi, inputList) => {
     var bodyFormData = new FormData();
     bodyFormData.append('kode_transaksi', kode_transaksi)
     bodyFormData.append('inputList', JSON.stringify(inputList))
-    bodyFormData.append('kode_user', JSON.parse(Cookies.get('user')).kode)
-    bodyFormData.append('nama_user', JSON.parse(Cookies.get('user')).nama)
+    bodyFormData.append('kode_user', "A0001")
+    bodyFormData.append('nama_user', "ADMIN")
     const response = await axios({
       method: 'post',
       url: '/kanvas/InsertReturn.php',

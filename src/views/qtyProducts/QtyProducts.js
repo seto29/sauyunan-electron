@@ -150,7 +150,7 @@ function Products({ }) {
 
 
     async function insert(){
-            const response = await fInsert(qtyProductAdd.kode_barang, qtyProductAdd.nama_barang, qtyProductAdd.part_number, qtyProductAdd.merk, qtyProductAdd.qty_asal, qtyProductAdd.qty_edit, qtyProductAdd.alasan, JSON.parse(Cookies.get('user')).kode, JSON.parse(Cookies.get('user')).nama)
+            const response = await fInsert(qtyProductAdd.kode_barang, qtyProductAdd.nama_barang, qtyProductAdd.part_number, qtyProductAdd.merk, qtyProductAdd.qty_asal, qtyProductAdd.qty_edit, qtyProductAdd.alasan, "A0001", "ADMIN")
             if(response.success ===1) {
                 setqtyProductAdd(initialProductsState)
                 setSelectedProduct({})

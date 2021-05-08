@@ -108,6 +108,11 @@ const _nav = [
         name: 'Sopir',
         to: '/drivers',
       },
+      {
+        _tag: 'CSidebarNavItem',
+        name: 'Pengguna',
+        to: '/employees',
+      },
     ],
   },
   {

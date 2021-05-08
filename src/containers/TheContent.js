@@ -21,8 +21,8 @@ const TheContent = () => {
 
   return (
     <main className="c-main">
-    {
-      user?
+    {/* {
+      user? */}
         <CContainer fluid>
           <Suspense fallback={loading}>
             <Switch>
@@ -40,14 +40,14 @@ const TheContent = () => {
                     )} />
                 )
               })}
-              <Redirect from="/" to="/dashboard" />
+              <Redirect from="/" to="/login" />
             </Switch>
           </Suspense>
         </CContainer>
-      :
+      {/* :
         <Redirect
         to="/login"/>
-    }
+    } */}
     </main>
   )
 }

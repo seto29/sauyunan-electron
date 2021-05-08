@@ -52,6 +52,8 @@ const tableIcons = {
 function Employees({ }) {
   const [toasts, setToasts] = useState([])
   const [toastM, setToastM] = useState("")
+  const [employee, setEmployee] = useState({})
+  const [employeeU, setEmployeeU] = useState({})
   const [position] = useState('top-right')
   const [autohide] = useState(true)
   const [autohideValue] = useState(1000)
@@ -71,6 +73,8 @@ function Employees({ }) {
   const [passwordUpdate, setPasswordUpdate] = useState("")
   const [phoneUpdate, setPhoneUpdate] = useState("")
   const [addressUpdate, setAddressUpdate] = useState("")
+  
+  const [notifMsg, setNotifMsg] = useState("")
   let number = 0
 
   const addToast = () => {
@@ -79,25 +83,22 @@ function Employees({ }) {
       { position, autohide: autohide && autohideValue, closeButton, fade }
     ])
   }
-    let tableData = employees && employees.map(({ id, role_id, rName, name, email }) => {
+    let tableData = employees && employees.map(({ kode, login, nama, alamat, telepon, kota }) => {
         number++
         const data = {
             no: number,
-            id: id,
-            roleID: role_id,
-            rName: rName,
-            name: name,
-            email: email,
+            kode: kode,
+            login: login,
+            nama: nama,
+            alamat: alamat,
+            telepon: telepon,
+            kota: kota,
         }
         return data;
     });
 
-    function editModal(id, name, roleID, roleName, email){
-      setIDUpdate(id)
-      setNameUpdate(name)
-      setRoleIDUpdate(roleID)
-      setRoleNameUpdate(roleName)
-      setEmailUpdate(email)
+    function editModal(e){
+        setEmployeeU(e)
       setEdit(!edit)
 
     }
@@ -126,24 +127,24 @@ function Employees({ }) {
         fetchRoles()
     }, [])
 
-    async function insert(){
-      const response = await fInsert(name, email, roleID, password)
-        if(response['success'] ===1) {
-          setName("")
-          setRoleID("")
-          setEmail("")
-          setPassword("")
-          fetchEmployees()
-          setToastM("insert")
-          setLarge(false);
-      }else{
-          setToastM("failed")
-      }
-      addToast()
-    }
+    // async function insert(){
+    //   const response = await fInsert(name, email, roleID, password)
+    //     if(response['success'] ===1) {
+    //       setName("")
+    //       setRoleID("")
+    //       setEmail("")
+    //       setPassword("")
+    //       fetchEmployees()
+    //       setToastM("insert")
+    //       setLarge(false);
+    //   }else{
+    //       setToastM("failed")
+    //   }
+    //   addToast()
+    // }
 
     async function update(){
-      const response = await fUpdate(idUpdate, nameUpdate, emailUpdate, roleIDUpdate, passwordUpdate)
+      const response = await fUpdate(employeeU.nama, employeeU.alamat, employeeU.kota, employeeU.telepon, employeeU.fax, employeeU.login, employeeU.password, employeeU.kode)
         if(response['success'] ===1) {
             setNameUpdate("")
             setAddressUpdate("")
@@ -157,8 +158,8 @@ function Employees({ }) {
         }
         addToast()
     }
-    async function deleteCat(){
-        const response = await fDelete(idUpdate)
+    async function deleteCat(kode){
+        const response = await fDelete(kode)
         if(response['success'] === 1){
             fetchEmployees();
             setToastM("delete")
@@ -169,13 +170,39 @@ function Employees({ }) {
         addToast()
         return response;
     }
+
+    const handleAddInput = ({ target }) => {
+        const name = target.name;
+        const value = target.value;
+        setEmployee(prevState => ({ ...prevState, [ name ]: value }));
+      }
+    const handleeDITInput = ({ target }) => {
+        const name = target.name;
+        const value = target.value;
+        setEmployeeU(prevState => ({ ...prevState, [ name ]: value }));
+      }
+    
+      async function insert(){
+        const response = await fInsert(employee.nama, employee.alamat, employee.kota, employee.telepon, employee.fax, employee.login, employee.password)
+        if (response['success'] === 1) {
+            fetchEmployees()
+          setEmployee({})
+          setToastM("insert")
+          setLarge(false)
+        }else{
+          setToastM("failed")
+        }
+        setNotifMsg(response['msg'])
+        addToast()
+      }
+
     const [large, setLarge] = useState(false)
     const [edit, setEdit] = useState(false)
     return (
         <>
             <AddModal
-                large={large}
-                setLarge={setLarge}
+                showAddModal={large}
+                setShowAddModal={setLarge}
                 name={name}
                 setName={setName}
                 roles={roles}
@@ -185,10 +212,14 @@ function Employees({ }) {
                 password={password}
                 setPassword={setPassword}
                 insert={insert}
-            />
+                handleAddInput={handleAddInput}
+                employee={employee}
+                />
             <UpdateModal
-                edit={edit}
-                setEdit={setEdit}
+                handleAddInput={handleeDITInput}
+            employeeU={employeeU}
+            showAddModal={edit}
+                setShowAddModal={setEdit}
                 idUpdate={idUpdate}
                 nameUpdate={nameUpdate}
                 setNameUpdate={setNameUpdate}
@@ -201,11 +232,12 @@ function Employees({ }) {
                 passwordUpdate={passwordUpdate}
                 setPasswordUpdate={setPasswordUpdate}
                 deleteCat={deleteCat}
-                update={update}
+                insert={update}
             />
             <Toaster
                 toaster={toasts}
                 toastM={toastM}
+                notifMsg={notifMsg}
             />
             <CRow>
                 <CCol>
@@ -232,12 +264,15 @@ function Employees({ }) {
                                             width: '10%',
                                         },
                                     },
-                                    { title: 'Nama', field: 'name' },
-                                    { title: 'Jabatan', field: 'rName' },
-                                    { title: 'Email', field: 'email' },
+                                    { title: 'Kode', field: 'kode' },
+                                    { title: 'Nama', field: 'nama' },
+                                    { title: 'Login', field: 'login' },
+                                    { title: 'alamat', field: 'alamat' },
+                                    { title: 'kota', field: 'kota' },
+                                    { title: 'telepon', field: 'telepon' },
                                 ]}
                                 data={tableData}
-                                onRowClick={((evt, selectedRow) => editModal(selectedRow.id, selectedRow.name, selectedRow.roleID, selectedRow.rName, selectedRow.email))}
+                                onRowClick={((evt, selectedRow) => editModal(selectedRow))}
                                 options={{
                                     rowStyle: rowData => ({
                                         backgroundColor: (rowData.tableData.id%2===0) ? '#EEE' : '#FFF'
