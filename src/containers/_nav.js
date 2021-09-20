@@ -36,6 +36,16 @@ const _nav = [
       },
       {
         _tag: 'CSidebarNavItem',
+        name: 'Retur Pembelian',
+        to: '/return-buy-transactions',
+      },
+      {
+        _tag: 'CSidebarNavItem',
+        name: 'Barang Masuk',
+        to: '/goods-receipt',
+      },
+      {
+        _tag: 'CSidebarNavItem',
         name: 'Kasbon',
         to: '/debts',
       },
@@ -156,14 +166,9 @@ const _nav = [
   },
   // {
   //   _tag: 'CSidebarNavItem',
-  //   name: 'Pengaturan Akun',
-  //   to: '/settings',
+  //   name: 'Bantuan',
+  //   to: '/help',
   // },
-  {
-    _tag: 'CSidebarNavItem',
-    name: 'Bantuan',
-    to: '/help',
-  },
   // {
   //   _tag: 'CSidebarNavTitle',
   //   _children: ['Theme']

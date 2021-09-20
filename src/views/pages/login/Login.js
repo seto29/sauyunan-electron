@@ -21,6 +21,8 @@ import {
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import axios from '../../../axios';
+import { setBlackList } from "../../../helpoers/storage"
+
 const Login = (props) => {
   const {history} = props;
   const [username, setUsername] = useState("");
@@ -59,6 +61,7 @@ const Login = (props) => {
     
     if (response['data']['success'] === 1) {
       Cookies.set('user', response['data']['msg'][0]);
+      setBlackList(JSON.stringify(response['data']['msg'][0]));
       history.push('/dashboard');
     }else{
       addToast();

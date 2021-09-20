@@ -1,4 +1,5 @@
 import React, { useEffect, useState, forwardRef } from 'react'
+import Moment from 'moment';
 import MaterialTable from 'material-table';
 import {
     CCard,
@@ -24,8 +25,9 @@ import SaveAlt from '@material-ui/icons/SaveAlt';
 import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
 import Toaster from '../components/Toaster'
-import {fDelete, fUpdate, fInsert} from '../../services/ProductsCode'
-import {getAll} from '../../services/ReturnBuyTransactions'
+import {fDelete, fUpdate} from '../../services/ProductsCode'
+import {getAll as getProducts} from '../../services/Products'
+import {getAll, getAllSupp, getAllProduct, fInsert} from '../../services/ReturnBuyTransactions'
 import Download from './Download'
 import AddModal from './AddModal'
 import UpdateModal from './UpdateModal'
@@ -53,6 +55,20 @@ const tableIcons = {
 const initialProductsCodeState = { id:'', label:'' }
 
 function ProductsCode(props) {
+  
+  let today = new Date();
+  let dayBefore = new Date(today - 1000 * 60 * 60 * 24 * 7);
+
+  let todayMonth = today.getMonth() + 1;
+  let todayYear = today.getFullYear();
+  let todayDate = today.getDate();
+
+  let dayBeforeMonth = dayBefore.getMonth() + 1;
+  let dayBeforeYear = dayBefore.getFullYear();
+  let dayBeforeDate = dayBefore.getDate();
+
+  let showToday = todayYear + "-" + todayMonth + "-" + todayDate;
+  let showDayBefore = dayBeforeYear + "-" + dayBeforeMonth + "-" + dayBeforeDate;
   const [toastM, setToastM] = useState("")
   const [notifMsg, setNotifMsg] = useState("")
   const [toasts, setToasts] = useState([])
@@ -61,14 +77,20 @@ function ProductsCode(props) {
   const [autohideValue] = useState(1000)
   const [closeButton] = useState(true)
   const [fade] = useState(true)
-  const [productsCode, setProductCode] = useState([]);
   const [metrics, setMetrics] = useState([]);
   const [productsCodeAdd, setProductsCodeAdd] = useState(initialProductsCodeState)
+  const [productInsert, setProductInsert] = useState({})
   const [productsCodeUpdate, setProductsCodeUpdate] = useState(initialProductsCodeState)
-  const [idUpdate, setIDUpdate] = useState("");
+  const [products, setProducts] = useState([]);
+  const [suppliers, setSuppliers] = useState([]);
+  const [supplier, setSupplier] = useState({});
   const [nameUpdate, setNameUpdate] = useState("");
   const [showAddModal, setShowAddModal] = useState(false)
+  const [qtyBuy, setQtyBuy]=useState(0)
+  const [qtyRetur, setQtyRetur]=useState(0)
+  const [priceBuy, setPriceBuy]=useState(0)
   const [edit, setEdit] = useState(false)
+  const [date, setDate] = useState(Moment(showToday).format('YYYY-MM-DD'))
   let number = 0
 
   const addToast = () => {
@@ -101,11 +123,14 @@ function ProductsCode(props) {
   }
 
   useEffect(() => {
+    fetchProducts()
     fetchProductsCode()
   }, [])
 
   async function insert(){
-    const response = await fInsert(productsCodeAdd.kode, productsCodeAdd.nama, productsCodeAdd.komisi, productsCodeAdd.nilai_minimum)
+    let inputList =[]
+    inputList[0]=productInsert
+    const response = await fInsert( date, supplier.value, supplier.nama, supplier.alamat_supplier, supplier.kota, supplier.telepon, inputList)
     if (response['success'] === 1) {
       fetchProductsCode()
       setProductsCodeAdd(initialProductsCodeState)
@@ -158,6 +183,66 @@ function ProductsCode(props) {
     setProductsCodeUpdate(prevState => ({ ...prevState, [ name ]: value }));
   }
 
+  const handleProductInput=(e)=>{
+    setQtyBuy(0)
+    setPriceBuy(0)
+    setQtyRetur(0)
+    setSupplier({})
+    getSupplier(e.target.value)
+    setProductInsert(e.target)
+  }
+
+  const handleSupplierInput=(e)=>{
+    setQtyBuy(0)
+    setPriceBuy(0)
+    setQtyRetur(0)
+    setSupplier(e.target)
+    getProductDetails(productInsert.value,e.target.value)
+  }
+  
+  async function getSupplier(kode) {
+    const response = await getAllSupp(kode)
+    if(response.success===1){
+      let list = []
+      let i = 0;
+      response.kode_supplier.map(value => {
+        list[i] = {
+          id: value.kode_supplier, value: value.kode_supplier, label: value.kode_supplier+' - '+ value.nama_supplier,
+          target: { type: 'select', name: 'kode_supplier', value: value.kode_supplier, label: value.kode_supplier+' - '+ value.nama_supplier, nama_supplier:value.nama_supplier, alamat_supplier:value.alamat_supplier, kota:value.kota, telepon:value.telepon, nama:value.nama_supplier}
+        }
+        i++;
+        return i;
+      })
+      setSuppliers(list)
+    }
+  }
+
+  async function getProductDetails(kode, kodes) {
+    const response = await getAllProduct(kode, kodes)
+    if(response.success===1){
+      setQtyBuy(parseInt(response.buyTransactions[0].qty))
+      setPriceBuy(parseInt(response.buyTransactions[0].total_harga_beli))
+    }
+  }
+
+  async function fetchProducts(id) {
+    const response = await getProducts(id)
+    if(response.success===1){
+      let list = []
+      let i = 0;
+      response.products.map(value => {
+        list[i] = {
+          id: value.kode, value: value.kode, label: value.nama +' - '+value.kode,
+          target: { type: 'select', name: 'kode_products', value: value.kode, label: value.nama +' - '+value.kode, part_number: value.part_number, nama: value.nama, merk: value.merk, telepon: value.telepon, satuan:value.satuan, qty:value.qty, harga_beli:value.beli, barcode:value.barcode, nama_barang:value.nama, kode_barang:value.kode}
+        }
+        i++;
+        return i;
+      })
+      console.log(list)
+      setProducts(list)
+    }
+  }
+
     return (
         <>
             <AddModal
@@ -166,6 +251,18 @@ function ProductsCode(props) {
               productsCodeAdd={productsCodeAdd}
               handleAddInput={handleAddInput}
               insert={insert}
+              handleProductInput={handleProductInput}
+              productInsert={productInsert}
+              products={products}
+              suppliers={suppliers}
+              supplier={supplier}
+              priceBuy={priceBuy}
+              qtyBuy={qtyBuy}
+              qtyRetur={qtyRetur}
+              setQtyRetur={setQtyRetur}
+              date={date}
+              setDate={setDate}
+              handleSupplierInput={handleSupplierInput}
             />
             <UpdateModal
               edit={edit}
@@ -217,7 +314,7 @@ function ProductsCode(props) {
                                 { title: 'Sisa', field: 'sisa' },
                             ]}
                             data={tableData}
-                            onRowClick={((evt, selectedRow) => editModal(edit,selectedRow))}
+                            // onRowClick={((evt, selectedRow) => editModal(edit,selectedRow))}
                             options={{
                                 rowStyle: rowData => ({
                                     backgroundColor: (rowData.tableData.kode%2===0) ? '#EEE' : '#FFF'

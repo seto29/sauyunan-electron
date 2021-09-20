@@ -6,13 +6,13 @@ import {
   TheHeader
 } from './index'
 
-const TheLayout = () => {
-
+const TheLayout = (props) => {
+  console.log(props)
   return (
     <div className="c-app c-default-layout">
       <TheSidebar/>
       <div className="c-wrapper">
-        <TheHeader/>
+        <TheHeader history={props.history}/>
         <div className="c-body">
           <TheContent/>
         </div>

@@ -1,5 +1,4 @@
 import axios from '../axios';
-import Cookies from 'js-cookie';
 
 export const getAll = async () => {
     const response = await axios.get('/salesTransaction/GetAll.php')
@@ -60,7 +59,7 @@ export const fDelete = async (id) => {
     return response.data;
 };
 
-export const fInsert = async ( jatuh_tempo, tanggal_jual, kode_sales, kode_pelanggan, nama_pelanggan, alamat_pelanggan, kota, telepon, inputList) => {
+export const fInsert = async ( jatuh_tempo, tanggal_jual, kode_sales, kode_pelanggan, nama_pelanggan, alamat_pelanggan, kota, telepon, inputList, kode_user, nama_user) => {
     var bodyFormData = new FormData();
     bodyFormData.append('jatuh_tempo', jatuh_tempo)
     bodyFormData.append('tanggal_jual', tanggal_jual)
@@ -71,8 +70,8 @@ export const fInsert = async ( jatuh_tempo, tanggal_jual, kode_sales, kode_pelan
     bodyFormData.append('kota', kota)
     bodyFormData.append('telepon', telepon)
     bodyFormData.append('inputList', JSON.stringify(inputList))
-    bodyFormData.append('kode_user', "A0001")
-    bodyFormData.append('nama_user', "ADMIN")
+    bodyFormData.append('kode_user', kode_user)
+    bodyFormData.append('nama_user', nama_user)
     const response = await axios({
       method: 'post',
       url: '/salesTransaction/Insert.php',

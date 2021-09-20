@@ -25,7 +25,7 @@ function AddModal(props) {
                 size="lg"
             >
                 <CModalHeader closeButton>
-                    <CModalTitle>Tambah Kasbon</CModalTitle>
+                    <CModalTitle>Tambah Pembayaran</CModalTitle>
                 </CModalHeader>
                 <CModalBody>
                     <CCol xs="12" md="12">

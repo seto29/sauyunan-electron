@@ -10,13 +10,14 @@ import {
   CImg
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
+import { cleanBlackList } from "../helpoers/storage"
 
 const TheHeaderDropdown = (props) => {
+  console.log(props)
   // const {history} = props;
   function Logout(){
-    Cookies.remove('user');
-    Cookies.remove('role');
-    window.location.reload();
+    cleanBlackList()
+    props.history.push('/login')
   }
 
   return (

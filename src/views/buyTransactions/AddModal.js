@@ -155,6 +155,10 @@ function AddModal(props) {
                     </CCol>
                 </CModalBody>
                 <CModalFooter>
+                <CButton >
+
+                {/* <a href={"http://localhost/bngkl-sauyunan/snippets/prints/invoice.php?id="+JSON.parse({jatuh_tempo:props.productsCodeAdd.jatuh_tempo})} target="_blank">Print</a> */}
+                </CButton>
                     <CButton color="primary" disabled={checker} onClick={() => props.insert()}>Simpan</CButton>
                     <CButton color="secondary" onClick={() => props.setShowAddModal(false)}>Batal</CButton>
                 </CModalFooter>

@@ -97,10 +97,13 @@ function AddModal(props) {
                             <CCol xs="12" md="12">
                             <CCol>
                                     <CRow>
-                                        <CCol xs="5" md="5">
+                                        <CCol xs="3" md="3">
                                             Nama - Kode Barang
                                         </CCol>
-                                        <CCol xs="3" md="3">
+                                        <CCol xs="2" md="2">
+                                            Stok Tersedia
+                                        </CCol>
+                                        <CCol xs="2" md="2">
                                             Qty
                                         </CCol>
 
@@ -122,7 +125,7 @@ function AddModal(props) {
                                 return (
                                     <CCol>
                                     <CRow>
-                                        <CCol xs="5" md="5">
+                                        <CCol xs="3" md="3">
                                         <Select
                                             name="productName"
                                             options={props.products}
@@ -131,13 +134,26 @@ function AddModal(props) {
                                             onChange={(e) => props.handleSelectChange(e, i)}
                                         />
                                         </CCol>
-                                        <CCol xs="3" md="3">
+                                        <CCol xs="2" md="2">
+                                        <CInput
+                                            className="ml10"
+                                            name="qty"
+                                            placeholder="Stok"
+                                            type="number"
+                                            value={x.barang.qty}
+                                            readOnly
+                                            // onChange={e => props.handleInputChange(e, i)}
+                                        />
+                                        </CCol>
+                                        <CCol xs="2" md="2">
                                         <CInput
                                             className="ml10"
                                             name="qty"
                                             placeholder="Stok"
                                             type="number"
                                             value={x.qty}
+                                            max={parseInt(x.barang.qty)}
+                                            min={1}
                                             onChange={e => props.handleInputChange(e, i)}
                                         />
                                         </CCol>
@@ -163,6 +179,27 @@ function AddModal(props) {
                                         <div style={{ height: '1%' }}>&nbsp;</div>
                                         </CCol>
                                     </CRow>
+                                    <CRow>
+                                        <CCol>
+                                          No. Part : {x.barang.part_number}
+                                        </CCol>
+                                    </CRow>
+                                    <CRow>
+                                        <CCol>
+                                          Merk : {x.barang.merk}
+                                        </CCol>
+                                    </CRow>
+                                    <CRow>
+                                        <CCol>
+                                          Nama Barang : {x.barang.label}
+                                        </CCol>
+                                    </CRow>
+                                    <CRow>
+                                        <CCol>
+                                          Kode Barang : {x.barang.value}
+                                        </CCol>
+                                    </CRow>
+                                    <br/>
                                     <CCol xs="12" md="12" align='right'>
                                         {props.inputList.length - 1 === i && <CRow> <CCol xs="7" md="7">&nbsp;</CCol> <CCol xs="4" md="4"><CButton color="primary" onClick={props.handleAddClick}>Tambah Barang</CButton></CCol></CRow>}
                                     </CCol>

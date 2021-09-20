@@ -133,12 +133,16 @@ function Goodsreceipts({ }) {
       setInputList(list);
     };
     const handleSelectChange = (e, index) => {
-      const { name, value } = e.target;
-      const list = [...inputList];
-      list[index]['product'] = e.target
-      list[index]['productID'] = e.target.value
-      list[index]['productName'] = e.target.label;
-      setInputList(list);
+      
+    const list = [...inputList];
+    list[index]['barang'] = e.target
+    list[index]['kode_barang'] = e.target.value
+    list[index]['nama_barang'] = e.target.label;
+    list[index]['part_number'] = e.target.part_number;
+    list[index]['merk'] = e.target.merk;
+    list[index]['harga_beli'] = e.target.beli
+    list[index]['qty'] = 1;
+    setInputList(list);
     };
    
     // handle click event of the Remove button
@@ -206,34 +210,37 @@ function Goodsreceipts({ }) {
       return response
   }
   async function fetchDetails(id) {
-    const response = await axios.get('/goodsreceipts/GetDetailByID.php?id='+id)
-    setDetails(response['data']['details'])
+    const response = await axios.get('/buyTransactions/GetByKdtrx.php?id='+id)
+    setInputList(response['data']['details'])
     return response
 }
-  let list = [];
+
   async function fetchProducts() {
       const response = await axios.get('/products/GetAll.php')
+    if(response.data.success===1){
+      let list = []
       let i = 0;
-      if(response['data']['success']===1 || response['data']['success']==='1'){
-        response['data']['products'].map(value => {
-            list[i] = {
-                id: value.id, value: value.name, label: value.name, sku: value.sku,
-                target: { type: 'select', name: 'list', value: value.id, label: value.name }
-            }
-            i++;
-            return i;
-        })
-      }
+      response.data.products.map(value => {
+        list[i] = {
+          id: value.kode, value: value.kode, label: value.nama +' - '+value.kode,
+          target: { type: 'select', name: 'kode_barang', value: value.kode, label: value.nama +' - '+value.kode, part_number: value.part_number, nama_barang: value.nama_barang, merk: value.merk, telepon: value.telepon, satuan:value.satuan, jual1:value.jual1, jual2:value.jual2, jual3:value.jual3, beli:value.beli}
+        }
+        i++;
+        return i;
+      })
+      console.log(list)
       setProducts(list)
+    }
   }
+
   let list2 = [];
   async function fetchSuppliers() {
-      const response = await axios.get('/suppliers/GetDropdown.php')
+      const response = await axios.get('/buyTransactions/GetNotAccept.php')
       let i = 0;
-      response['data']['suppliers'].map(value => {
+      response['data']['salesTransactions'].map(value => {
           list2[i] = {
-              id: value.id, value: value.name, label: value.name+" "+value.address,
-              target: { type: 'select', name: 'list', value: value.id, label: value.name+"-"+value.address }
+              id: value.kode_transaksi, value: value.kode_transaksi, label: value.kode_transaksi+" -  "+value.nama_supplier+" - "+value.tanggal_beli,
+              target: { type: 'select', name: 'list', value: value.kode_transaksi, id:value.kode_transaksi, label: value.kode_transaksi+" - "+value.nama_supplier+" - "+value.tanggal_beli, alamat_supplier:value.alamat_supplier, kode_supplier:value.kode_supplier, kode_transaksi:value.kode_transaksi, nama_supplier:value.nama_supplier, kota:value.kota, telepon:value.telepon  }
           }
           i++;
           return i;
@@ -244,28 +251,29 @@ function Goodsreceipts({ }) {
         fetchGoodsreceipts()
         fetchProducts()
         fetchSuppliers()
-    }, ['/goodsreceipts/GetAll.php'])
+    }, [])
 
     async function insert(){
-      if(don === null){
-        don = "-"
-      }
-      const response = await fInsert(don, dod, sID, inputList)
-        if(response['success'] ===1) {
-          setName("")
-          setDON("")
-          setDOD(new Date().toISOString().substr(0,10))
-          setInputList([{ "product": {} ,"productName": "", "qty": 0 }])
-          setAddress("")
-          setPhone("")
-          fetchGoodsreceipts()
-          setToastM("insert")
-          setLarge(!large)
-        }else{
-          setToastM("failed")
-        }
-        addToast()
-        return response;
+      console.log(dod)
+      console.log(don)
+      console.log(sID)
+      console.log(inputList)
+      // const response = await fInsert(don, dod, sID, inputList)
+      //   if(response['success'] ===1) {
+      //     setName("")
+      //     setDON("")
+      //     setDOD(new Date().toISOString().substr(0,10))
+      //     setInputList([{ "product": {} ,"productName": "", "qty": 0 }])
+      //     setAddress("")
+      //     setPhone("")
+      //     fetchGoodsreceipts()
+      //     setToastM("insert")
+      //     setLarge(!large)
+      //   }else{
+      //     setToastM("failed")
+      //   }
+      //   addToast()
+      //   return response;
       }
       
       async function deleteCat(){
@@ -351,6 +359,7 @@ function Goodsreceipts({ }) {
             setDON={setDON}
             suppliers={suppliers}
             setSID={setSID}
+            fetchDetails={fetchDetails}
             dod={dod}
             setDOD={setDOD}
             inputList={inputList}

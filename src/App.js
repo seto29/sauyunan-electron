@@ -1,7 +1,11 @@
 import React, { Component } from 'react';
 import { HashRouter, Route, Switch,Redirect } from 'react-router-dom';
-
 import './scss/style.scss';
+
+// ipcMain.on(FETCH_DATA_FROM_STORAGE, (event, message)=>{
+//   console.log(" main receivedL FETCJ_DATA_FROM_STORAGE with message", message)
+
+// })
 
 const loading = (
   <div className="pt-3 text-center">

@@ -105,12 +105,7 @@ const MainChartExample = attributes => {
 
   // render
   return (
-    <CChartLine
-      {...attributes}
-      datasets={defaultDatasets}
-      options={defaultOptions}
-      labels={labels}
-    />
+    ""
   )
 }
 

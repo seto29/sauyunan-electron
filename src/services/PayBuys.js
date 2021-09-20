@@ -2,17 +2,11 @@ import axios from '../axios';
 import Cookies from 'js-cookie';
 
 export const getAll = async () => {
-    const response = await axios.get('/ReturnBuyTransaction/GetAll.php')
+    const response = await axios.get('/payBuys/GetAll.php')
     return response.data
 }
-
-export const getAllSupp = async (kode) => {
-    const response = await axios.get('/ReturnBuyTransaction/GetAllSuppByProduct.php?kode_product='+kode)
-    return response.data
-}
-
-export const getAllProduct = async (kode,kodeS) => {
-    const response = await axios.get('/ReturnBuyTransaction/GetAllProductsBuys.php?kode_product='+kode+'&kode_supplier='+kodeS)
+export const getAllDD = async () => {
+    const response = await axios.get('/payBuys/getAllTransaction.php')
     return response.data
 }
 
@@ -57,7 +51,7 @@ export const fDelete = async (id) => {
     bodyFormData.append('id',id);
     const response = await axios({
       method: 'post',
-      url: '/sales/Delete.php',
+      url: '/debts/Delete.php',
       data: bodyFormData,
       headers: {'Content-Type' : 'multipart/form-data'}
     });
@@ -65,20 +59,34 @@ export const fDelete = async (id) => {
     return response.data;
 };
 
-export const fInsert = async ( tanggal_retur, kode_supplier, nama_supplier, alamat_supplier, kota, telepon, inputList) => {
+export const fInsert = async (kode_penjualan,nama_pelanggan, kode_pelanggan, harga, jumlah_bayar, sisa, kode_transaksi, komisi, tanggal_bayar,  jumlah_retur, no_giro1, bank1, nilai_giro1, tanggal_cair1, no_giro2, bank2, nilai_giro2, tanggal_cair2, no_giro3, bank3, nilai_giro3, tanggal_cair3, jumlah_potongan) => {
     var bodyFormData = new FormData();
-    bodyFormData.append('tanggal_retur', tanggal_retur)
-    bodyFormData.append('kode_supplier', kode_supplier)
-    bodyFormData.append('nama_supplier', nama_supplier)
-    bodyFormData.append('alamat_supplier', alamat_supplier)
-    bodyFormData.append('kota', kota)
-    bodyFormData.append('telepon', telepon)
-    bodyFormData.append('inputList', JSON.stringify(inputList))
-    bodyFormData.append('kode_user', "A0001")
-    bodyFormData.append('nama_user', "ADMIN")
+    bodyFormData.append('kode_penjualan', kode_penjualan)
+    bodyFormData.append('nama_pelanggan', nama_pelanggan)
+    bodyFormData.append('kode_pelanggan', kode_pelanggan)
+    bodyFormData.append('harga', harga)
+    bodyFormData.append('jumlah_bayar', jumlah_bayar)
+    bodyFormData.append('sisa', sisa)
+    bodyFormData.append('kode_transaksi', kode_transaksi)
+    bodyFormData.append('komisi', komisi)
+    bodyFormData.append('tanggal_bayar', tanggal_bayar)
+    bodyFormData.append('jumlah_retur', jumlah_retur)
+    bodyFormData.append('no_giro1', no_giro1)
+    bodyFormData.append('bank1', bank1)
+    bodyFormData.append('nilai_giro1', nilai_giro1)
+    bodyFormData.append('tanggal_cair1', tanggal_cair1)
+    bodyFormData.append('no_giro2', no_giro2)
+    bodyFormData.append('bank2', bank2)
+    bodyFormData.append('nilai_giro2', nilai_giro2)
+    bodyFormData.append('tanggal_cair2', tanggal_cair2)
+    bodyFormData.append('no_giro3', no_giro3)
+    bodyFormData.append('bank3', bank3)
+    bodyFormData.append('nilai_giro3', nilai_giro3)
+    bodyFormData.append('tanggal_cair3', tanggal_cair3)
+    bodyFormData.append('jumlah_potongan', jumlah_potongan)
     const response = await axios({
       method: 'post',
-      url: '/ReturnBuyTransaction/Insert.php',
+      url: '/payBuys/Insert.php',
       data: bodyFormData,
       headers: {'Content-Type': 'multipart/form-data' }
       });

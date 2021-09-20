@@ -39,7 +39,7 @@ function AddModal(props) {
                     onError={props.handleError}
                     onScan={(e)=>props.handleScan(e)}
                   />
-                    <CCol xs="20" md="10">
+                    <CCol xs="12" md="12">
                         <CForm action="" method="post" className="form-horizontal">
                             <CFormGroup row>
                                 <CCol md="3">
@@ -53,19 +53,23 @@ function AddModal(props) {
                             </CFormGroup>
                             <CFormGroup row>
                                 <CCol md="3">
-                                    <CLabel htmlFor="name">Supplier</CLabel>
+                                    <CLabel htmlFor="name">Pembelian</CLabel>
                                 </CCol>
                                 <CCol xs="12" md="9">
                                     <Select
                                         options={props.suppliers}
-                                        placeholder="Pilih supplier"
-                                        onChange={(e) => props.setSID(e.target.value)}
+                                        value={props.sid}
+                                        placeholder="Pilih Kode Pembelian"
+                                        onChange={(e) => {
+                                            props.setSID(e.target)
+                                            props.fetchDetails(e.target.value)
+                                        }}
                                     />
                                 </CCol>
                             </CFormGroup>
                             <CFormGroup row>
                                 <CCol md="3">
-                                    <CLabel htmlFor="name">Tanggal Pengiriman</CLabel>
+                                    <CLabel htmlFor="name">Tanggal Barang Masuk</CLabel>
                                 </CCol>
                                 <CCol xs="12" md="9">
                                     <CInput type="date" value={props.dod} onChange={(e)=> props.setDOD(e.target.value)} />
@@ -82,26 +86,34 @@ function AddModal(props) {
                             return (
                               <CCol>
                                 <CRow>
-                                <CCol xs="5" md="5">
+                                <CCol xs="9" md="9">
                                 <Select
                                     name="productName"
                                     options={props.products}
                                     placeholder="Pilih produk"
-                                    value={x.product}
-                                    onChange={(e) =>props. handleSelectChange(e, i)}
+                                    value={{id:x.kode_barang, value:x.kode_barang, label:x.kode_barang+" - "+x.nama_barang+ " - "+x.merk+ " - " + x.part_number}}
+                                    // onChange={(e) =>props. handleSelectChange(e, i)}
+                                    isDisabled={true}
                                 />
                                 </CCol>
-                                <CCol xs="2" md="2">
+                                <CCol xs="3" md="3">
+                                  <CInputGroup className="input-prepend">
                                   <CInput
                                   className="ml10"
                                   name="qty"
                                   placeholder="Stok"
                                   type="number"
+                                  max={x.qty}
+                                  disabled
                                   value={x.qty}
                                   onChange={e => props.handleInputChange(e, i)}
                                   />
+                                        <CInputGroupAppend>
+                                            <CInputGroupText>{x.satuan}</CInputGroupText>
+                                        </CInputGroupAppend>
+                                    </CInputGroup>
                                 </CCol>
-                                <CCol xs="1" md="1">
+                                {/* <CCol xs="1" md="1">
                                   <div className="btn-box">
                                   {props.inputList.length !== 1 && <CButton
                                     color="danger"
@@ -109,11 +121,8 @@ function AddModal(props) {
                                   
                                 </div>
                                 <div style={{height: '1%'}}>&nbsp;</div>
-                                </CCol>
+                                </CCol> */}
                                 </CRow>
-                                <CCol xs="12" md="9">
-                                  {props.inputList.length - 1 === i && <CRow> <CCol xs="7" md="7">&nbsp;</CCol> <CCol xs="4" md="4"><CButton color="primary" onClick={props.handleAddClick}>Tambah Barang</CButton></CCol></CRow>}
-                                </CCol>
                               </CCol>
                             );
                           })}

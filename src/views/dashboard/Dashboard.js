@@ -1,4 +1,6 @@
 import React, { useEffect, useState, forwardRef, lazy } from 'react'
+
+import { getBlackList } from "../../helpoers/storage"
 import NumberFormat from 'react-number-format';
 import axios from '../../axios';
 import {
@@ -35,6 +37,11 @@ var monthBefore = ("0" + (d.getMonth())).slice(-2);
 // var initdateMin = 20  + "-" + monthBefore + "-" + date;
 
 function Dashboard({ }) {
+  useEffect(()=>{
+    var a = getBlackList();
+    console.log(a)
+    console.log(typeof a)
+  })
 //   const [ dateTo, setDateTo] = useState(datestringNow)
 //   const [ dateFrom, setDateFrom] = useState("2021-01-01")
 //   const dateMin = useState("2021-01-01")

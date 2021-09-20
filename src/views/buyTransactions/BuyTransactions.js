@@ -1,4 +1,5 @@
 import React, { useEffect, useState, forwardRef } from 'react'
+import { getBlackList } from "../../helpoers/storage"
 import MaterialTable from 'material-table';
 import NumberFormat from 'react-number-format';
 import {
@@ -75,6 +76,8 @@ function ProductsCode(props) {
   const [nameUpdate, setNameUpdate] = useState("");
   const [showAddModal, setShowAddModal] = useState(false)
   const [edit, setEdit] = useState(false)
+  const [kode_user, setKode_user] = useState("")
+  const [nama_user, setNama_user] = useState("")
   const [inputList, setInputList] = useState([{ "barang": {}, "kode_barang": "", "nama_barang":"", "part_number":"", "merk":"","qty": 0, "harga_beli": 0 }]);
   let number = 0
 
@@ -148,9 +151,19 @@ function ProductsCode(props) {
     fetchSuppliers()
   }, [])
 
+  useEffect(() => {
+    
+    var a = getBlackList();
+    a = JSON.parse(a)
+    setKode_user(a.kode)
+    setNama_user(a.nama)
+  })
+
   async function insert(){
-    const response = await fInsert(productsCodeAdd.jatuh_tempo, productsCodeAdd.tanggal_beli, productsCodeAdd.kode_sales, productsCodeAdd.kode_supplier, productsCodeAdd.nama_supplier, productsCodeAdd.alamat_supplier, productsCodeAdd.kota, productsCodeAdd.telepon, inputList)
+    const response = await fInsert(productsCodeAdd.jatuh_tempo, productsCodeAdd.tanggal_beli, productsCodeAdd.kode_sales, productsCodeAdd.kode_supplier, productsCodeAdd.nama_supplier, productsCodeAdd.alamat_supplier, productsCodeAdd.kota, productsCodeAdd.telepon, inputList, kode_user, nama_user)
     if (response['success'] === 1) {
+      let url1 = "http://localhost/bngkl-sauyunan/snippets/prints/invoiceBuy.php?id="+response.kode
+window.open(url1, 'sharer1', 'toolbar=0,status=0,width=1200,height=800')
       fetchProductsCode()
       setProductsCodeAdd(initialProductsCodeState)
       setSupplier({})
@@ -348,7 +361,11 @@ function ProductsCode(props) {
                                 { title: 'Lama Tempo', field: 'lama_tempo' },
                             ]}
                             data={tableData}
-                            // onRowClick={((evt, selectedRow) => editModal(edit,selectedRow))}
+                            onRowClick={((evt, selectedRow) => {
+                              let url1 = "http://localhost/bngkl-sauyunan/snippets/prints/invoiceBuy.php?id="+selectedRow.kode_transaksi
+                              
+window.open(url1, 'sharer1', 'toolbar=0,status=0,width=1200,height=800')
+                            })}
                             options={{
                                 rowStyle: rowData => ({
                                     backgroundColor: (rowData.tableData.kode%2===0) ? '#EEE' : '#FFF'

@@ -394,7 +394,7 @@ function Goodsreceipts({ }) {
                                     <CButton block color="primary" onClick={() => setLarge(!large)} className="mr-1">Tambah Data</CButton>
                                 </CCol>
                                 <CCol col="6" sm="4" md="2" m className="mb-3 mb-xl-0">
-                                    <ExcelFile filename={fileName} element={<CButton block color="success" className="mr-1">Download Data</CButton>}>
+                                    <ExcelFile filename={fileName} element={<CButton block color="success" className="mr-1">Preview Data</CButton>}>
                                       <ExcelSheet data={tableData} name="Barang Keluar">
                                           <ExcelColumn label="No." value="no"/>
                                           <ExcelColumn label="No. Surat Jalan" value="don"/>

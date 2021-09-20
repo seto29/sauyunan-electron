@@ -1,14 +1,12 @@
 import React, { useEffect, useState, forwardRef } from 'react'
 import MaterialTable from 'material-table';
-import NumberFormat from 'react-number-format';
 import {
     CCard,
     CCardBody,
     CCardHeader,
     CCol,
     CRow,
-    CLabel,
-    CInput,
+    CButton,
 } from '@coreui/react'
 import AddBox from '@material-ui/icons/AddBox';
 import ArrowDownward from '@material-ui/icons/ArrowDownward';
@@ -25,8 +23,12 @@ import Remove from '@material-ui/icons/Remove';
 import SaveAlt from '@material-ui/icons/SaveAlt';
 import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
-import {getAll} from '../../services/PaySells'
+import Toaster from '../components/Toaster'
+import {fDelete, fUpdate} from '../../services/ProductsCode'
+import {getAll, getAllDD, fInsert} from '../../services/PayBuys'
 import Download from './Download'
+import AddModal from './AddModal'
+import UpdateModal from './UpdateModal'
 
 const tableIcons = {
     Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -48,151 +50,222 @@ const tableIcons = {
     ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
 };
 
-const d = new Date();
-var month = ("0" + (d.getMonth() + 1)).slice(-2); 
-var date = ("0" + d.getDate()).slice(-2); 
-var datestringNow = d.getFullYear()  + "-" + month + "-" + date;
-var datebefore = ("0" + (d.getDate() - 7 < 0 ? 1 : d.getDate() - 7)).slice(-2);
-var datestringFrom = d.getFullYear()  + "-" + month + "-" + datebefore;
-var monthBefore = ("0" + (d.getMonth())).slice(-2);
-var initdateMin = d.getFullYear()  + "-" + monthBefore + "-" + date;
+const initialProductsCodeState = { kode_supplier:'', harga:'', jumlah_bayar:'', sisa:'', komisi:'', nama_supplier:'', alamat_pelanggan:'', kota:'', telepon:'', kode_sales:'',nama_sales:'', harga:'', jumlah_bayar:0, jumlah_retur:0, jumlah_giro1:0,jumlah_giro2:0,jumlah_giro3:0,jumlah_potongan:0, sisa:0, tanggal_beli:'', tanggal_bayar:'', jatuh_tempo:'', lama_tempo:0, no_giro1:'', bank1:'', nilai_giro1:0, tanggal_cair1:'', cair1:'Tidak', no_giro2:'', bank2:'', nilai_giro2:0, tanggal_cair2:'', cair2:'Tidak', no_giro3:'', bank3:'', nilai_giro3:0, tanggal_cair3:'', cair3:'Tidak', status:'', komisi:0 }
 
-function Grossprofit({ }) {
-  const [ dateTo, setDateTo] = useState(datestringNow)
-  const [ dateFrom, setDateFrom] = useState(datestringFrom)
-  const dateMin = useState(initdateMin)
-  const dateMax = useState(datestringNow)
-    const [grossprofit, setGrossprofit] = useState([]);
-    let number = 0
-    let balance2 = 0
-    let pBalance2 = ""
-    let tableData = grossprofit && grossprofit.map(({ id, code, created_at, sName, eName, itemCount, qtySum, total, totQty, totP, tot, totC }) => {
-        number++
-        balance2 += parseInt(tot) - parseInt(totC)
-        pBalance2 = <NumberFormat value={balance2} displayType={'text'} thousandSeparator={true} prefix={'Rp. '} />
-        const data = {
-          no: number,
-          id: id,
-          code: code,
-          sName: sName,
-          eName: eName,
-          itemCount: itemCount,
-          qtySum: qtySum,
-          total: total,
-          pTotal: <NumberFormat value={tot} displayType={'text'} thousandSeparator={true} prefix={'Rp. '} />,
-          totQty: totQty,
-          totP: totP,
-          totC: totC,
-          pTotC: <NumberFormat value={totC} displayType={'text'} thousandSeparator={true} prefix={'Rp. '} />,
-          balance: parseInt(tot) - parseInt(totC),
-          pBalance: parseInt(tot) - parseInt(totC) < 0 ? <NumberFormat value={parseInt(tot) - parseInt(totC)} displayType={'text'} thousandSeparator={true} prefix={'Rp. '} /> : <NumberFormat value={parseInt(tot) - parseInt(totC)} displayType={'text'} thousandSeparator={true} prefix={'Rp. '} />,
-        }
-        return data;
-      });
-    let number2 = 0
-    let exportData = grossprofit && grossprofit.map(({ id, name, phone, address }) => {
-      number2++
-      const data = {
-          no: number2,
-          id: id,
-          name: name,
-          phone: phone,
-          address: address,
-      }
-      return data;
+function ProductsCode(props) {
+  const [toastM, setToastM] = useState("")
+  const [notifMsg, setNotifMsg] = useState("")
+  const [toasts, setToasts] = useState([])
+  const [position] = useState('top-right')
+  const [autohide] = useState(true)
+  const [autohideValue] = useState(1000)
+  const [closeButton] = useState(true)
+  const [fade] = useState(true)
+  const [productsCode, setProductCode] = useState([]);
+  const [salesTransactions, setSalesTransactions] = useState([]);
+  const [salesTransaction, setSalesTransaction] = useState({});
+  const [metrics, setMetrics] = useState([]);
+  const [productsCodeAdd, setProductsCodeAdd] = useState(initialProductsCodeState)
+  const [productsCodeUpdate, setProductsCodeUpdate] = useState(initialProductsCodeState)
+  const [idUpdate, setIDUpdate] = useState("");
+  const [nameUpdate, setNameUpdate] = useState("");
+  const [showAddModal, setShowAddModal] = useState(false)
+  const [edit, setEdit] = useState(false)
+  let number = 0
+
+  const addToast = () => {
+    setToasts([
+      ...toasts,
+      { position, autohide: autohide && autohideValue, closeButton, fade }
+    ])
+  }
+
+  let tableData = metrics && metrics.map(({kode_transaksi, kode_pembelian, kode_supplier, nama_supplier, harga, jumlah_bayar, sisa, komisi, tanggal_beli, jatuh_tempo}) => {
+    number++
+    const data = {
+      no:number,
+      kode_pembelian:kode_pembelian,
+      kode_transaksi:kode_transaksi,
+      kode_supplier:kode_supplier,
+      nama_supplier:nama_supplier,
+      harga:harga,
+      jumlah_bayar:jumlah_bayar,
+      sisa:sisa,
+      komisi:komisi,
+      tanggal_beli:tanggal_beli,
+      jatuh_tempo:jatuh_tempo,
+    }
+    return data;
   });
-    async function fetchGrossprofit(dateTo, dateFrom) {
-      const response = await getAll(dateTo, dateFrom)
-      if(response['success']===1){
-        setGrossprofit(response['paySells'])
-      }else{
-        setGrossprofit([])
-      }
-  }
-    useEffect(() => {
-        fetchGrossprofit(dateTo, dateFrom)
-    }, [])
-    
-    async function changeDateFrom(e) {
-      setDateFrom(e)
-      fetchGrossprofit(dateTo,e)
+
+  function editModal(edit, slctd){
+    setProductsCodeUpdate(slctd)
+    setEdit(!edit);
   }
 
-  async function changeDateTo(e) {
-      setDateTo(e)
-      fetchGrossprofit(e,dateFrom)
+  async function fetchProductsCode() {
+    const response = await getAll()
+    console.log(response.payBuys)
+    setMetrics(response.payBuys)
   }
+
+  async function fetchSales() {
+    const response = await getAllDD()
+    if(response.success===1){
+      let list = []
+      let list1 = []
+      let i = 0;
+      response.payBuys.map(value => {
+        list[i] = {
+          id: value.kode_transaksi, value: value.kode_pembelian, label: value.nama_supplier +' - '+value.kode_pembelian + ' - ' +value.tanggal_beli,
+          target: { type: 'select', name: 'kode_pembelian', value: value.kode_pembelian, label: value.nama_supplier +' - '+value.kode_pembelian + ' - ' +value.tanggal_beli, kode_supplier:value.kode_supplier, harga:value.harga ,jumlah_bayar:value.jumlah_bayar, sisa:value.sisa, komisi:value.komisi, kode_transaksi:value.kode_transaksi, nama_supplier:value.nama_supplier}
+        }
+        i++;
+        return i;
+      })
+      setSalesTransactions(list)
+    }
+  }
+
+  useEffect(() => {
+    fetchProductsCode()
+    fetchSales()
+  }, [])
+
+  async function insert(){
+    const response = await fInsert(productsCodeAdd.kode_pembelian,productsCodeAdd.nama_supplier, productsCodeAdd.kode_supplier, productsCodeAdd.harga, productsCodeAdd.jumlah_bayar, productsCodeAdd.sisa, productsCodeAdd.kode_transaksi, productsCodeAdd.komisi, productsCodeAdd.tanggal_bayar,  productsCodeAdd.jumlah_retur, productsCodeAdd.no_giro1, productsCodeAdd.bank1, productsCodeAdd.nilai_giro1, productsCodeAdd.tanggal_cair1, productsCodeAdd.no_giro2, productsCodeAdd.bank2, productsCodeAdd.nilai_giro2, productsCodeAdd.tanggal_cair2, productsCodeAdd.no_giro3, productsCodeAdd.bank3, productsCodeAdd.nilai_giro3, productsCodeAdd.tanggal_cair3, productsCodeAdd.jumlah_potongan)
+    if (response['success'] === 1) {
+      fetchProductsCode()
+      setProductsCodeAdd(initialProductsCodeState)
+      setToastM("insert")
+      setShowAddModal(false)
+    }else{
+      setToastM("failed")
+    }
+    setNotifMsg(response['msg'])
+    addToast()
+  }
+
+  async function update(){
+    const response = await fUpdate(productsCodeUpdate.kode, productsCodeUpdate.nama, productsCodeUpdate.komisi, productsCodeUpdate.nilai_minimum)
+    if (response['success'] === 1) {
+      fetchProductsCode()
+      setProductsCodeUpdate(initialProductsCodeState)
+      setToastM("update")
+      setEdit(false)
+    }else{
+      setToastM("failed")
+    }
+    setNotifMsg(response['msg'])
+    addToast()
+  }
+
+  async function deleteCat(){
+    const response = await fDelete(productsCodeUpdate.kode)
+    if (response['success'] === 1) {
+      fetchProductsCode()
+      setProductsCodeUpdate(initialProductsCodeState)
+      setToastM("delete")
+      setEdit(false)
+    }else{
+      setToastM("failed")
+    }
+    setNotifMsg(response['msg'])
+    addToast()
+  }
+
+  const handleAddInput = ({ target }) => {
+    const name = target.name;
+    const value = target.value;
+    
+
+    if(name==="kode_pembelian"){
+        setSalesTransaction({value:target.value, label:target.label})
+        setProductsCodeAdd(prevState => ({ ...prevState, [ name ]: value, nama_supplier:target.nama_supplier, kode_supplier:target.kode_supplier, harga:target.harga, jumlah_bayar:target.jumlah_bayar, sisa:target.sisa, kode_transaksi:target.kode_transaksi, komisi:target.komisi }));
+      }else{
+          setProductsCodeAdd(prevState => ({ ...prevState, [ name ]: value }));
+      }
+  }
+
+  const handleUpdateInput = ({ target }) => {
+    const name = target.name;
+    const value = target.value;
+    setProductsCodeUpdate(prevState => ({ ...prevState, [ name ]: value }));
+  }
+
     return (
         <>
+            <AddModal
+              showAddModal={showAddModal}
+              setShowAddModal={setShowAddModal}
+              productsCodeAdd={productsCodeAdd}
+              handleAddInput={handleAddInput}
+              salesTransactions={salesTransactions}
+              salesTransaction={salesTransaction}
+              insert={insert}
+            />
+            <UpdateModal
+              edit={edit}
+              setEdit={setEdit}
+              productsCodeUpdate={productsCodeUpdate}
+              handleUpdateInput={handleUpdateInput}
+              nameUpdate={nameUpdate}
+              setNameUpdate={setNameUpdate}
+              deleteCat={deleteCat}
+              update={update}
+            />
+            <Toaster
+                toaster={toasts}
+                toastM={toastM}
+                notifMsg={notifMsg}
+            />
             <CRow>
                 <CCol>
                     <CCard>
                         <CCardHeader>
-                            <CRow className="align-items-center">
-                                <CCol col="10" l className="mb-3 mb-xl-0">
-                                    <h4>Laba Kotor</h4>
-                                </CCol>
-                                <CCol col="6" sm="4" md="2" m className="mb-3 mb-xl-0">
-                                     <h4>{pBalance2}</h4>
-                                </CCol>
-                                <Download exportData={exportData}/>
-                            </CRow>
+                          <CRow className="align-items-center">
+                            <CCol col="10" l className="mb-3 mb-xl-0">
+                              <h4>Pembayaran Pembelian</h4>
+                            </CCol>
+                            <CCol col="6" sm="4" md="2" m className="mb-3 mb-xl-0">
+                                <CButton block color="primary" onClick={() => setShowAddModal(true)} className="mr-1">Tambah Data</CButton>
+                            </CCol>
+                            <Download 
+                              tableData={tableData}
+                              setShowAddModal={setShowAddModal}
+                              showAddModal={showAddModal}
+                            />  
+                          </CRow>
                         </CCardHeader>
                         <CCardBody>
-                            <CRow className="align-items-right">
-                                <CCol lg="6">
-                                </CCol>
-                                <CCol lg="3">
-                                    <CLabel htmlFor="name">Dari</CLabel>
-                                    <CInput type="date" value={dateFrom} onChange={(e) => changeDateFrom(e.target.value)}  min={dateMin} max={dateTo}/>
-                                </CCol>
-                                <CCol lg="3">
-                                    <CLabel htmlFor="name">Hingga</CLabel>
-                                    <CInput type="date" value={dateTo} min={dateFrom} max={dateMax} onChange={(e) => changeDateTo(e.target.value)} />
-                                </CCol>
-                            </CRow>
-                            <br/>
-                        <MaterialTable
-                icons={tableIcons}
-                // other props
-                title=""
-                columns={[
-                    {
-                        title: 'No', field: 'no', cellStyle: {
-                            width: '10%',
-                        },
-                    },
-                    { title: 'No. Penjualan', field: 'code' },
-                    { title: 'Harga Modal', field: 'pTotC' },
-                    { title: 'Harga Jual', field: 'pTotal' },
-                    { title: 'Laba / Rugi', field: 'pBalance' },
-                    // no: number,
-                    // id: id,
-                    // code: code,
-                    // sName: sName,
-                    // eName: eName,
-                    // received: Intl.DateTimeFormat("id-ID", {
-                    //   year: "numeric",
-                    //   month: "long",
-                    //   day: "numeric",
-                    // }).format(Date.parse(created_at)),
-                    // itemCount: itemCount,
-                    // qtySum: qtySum,
-                    // total: total,
-                    // pTotal: <NumberFormat value={tot} displayType={'text'} thousandSeparator={true} prefix={'Rp. '} />,
-                    // totQty: totQty,
-                    // totP: totP,
-                    // totC: totC,
-                ]}
-                data={tableData}
-                onRowClick={((evt, selectedRow) => console.log(selectedRow.id, selectedRow.name, selectedRow.address, selectedRow.phone))}
-                options={{
-                    rowStyle: rowData => ({
-                        backgroundColor: (rowData.tableData.id%2===0) ? '#EEE' : '#FFF'
-                    }),
-                    filtering: true
-                }}
-            />
+                          <MaterialTable
+                            icons={tableIcons}
+                            // other props
+                            title=""
+                            columns={[
+                                {
+                                    title: 'No', field: 'no', cellStyle: {
+                                        width: '10%',
+                                    },
+                                },
+                                { title: 'Kode Pembelian', field: 'kode_pembelian' },
+                                { title: 'Kode Supplier', field: 'kode_supplier' },
+                                { title: 'Nama Supplier', field: 'nama_supplier' },
+                                { title: 'Tanggal Beli', field: 'tanggal_beli' },
+                                { title: 'Jatuh Tempo', field: 'jatuh_tempo' },
+                                { title: 'Harga', field: 'harga' },
+                                { title: 'Jumlah Bayar', field: 'jumlah_bayar' },
+                                { title: 'Sisa', field: 'sisa' },
+                            ]}
+                            data={tableData}
+                            // onRowClick={((evt, selectedRow) => editModal(edit,selectedRow))}
+                            options={{
+                                rowStyle: rowData => ({
+                                    backgroundColor: (rowData.tableData.kode%2===0) ? '#EEE' : '#FFF'
+                                }),
+                                filtering: true
+                            }}
+                          />
                         </CCardBody>
                     </CCard>
                 </CCol>
@@ -201,4 +274,4 @@ function Grossprofit({ }) {
     )
 };
 
-export default Grossprofit
+export default ProductsCode

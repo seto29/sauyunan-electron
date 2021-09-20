@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react'
+import React, { Suspense, useEffect, useState } from 'react'
 import {
   Redirect,
   Route,
@@ -6,6 +6,7 @@ import {
 } from 'react-router-dom'
 import Cookies from 'js-cookie'
 import { CContainer, CFade } from '@coreui/react'
+import { getBlackList } from "../helpoers/storage"
 
 // routes config
 import routes from '../routes'
@@ -17,12 +18,21 @@ const loading = (
 )
 
 const TheContent = () => {
+  const [loged, setLoged]=useState(false)
   const user = Cookies.get('user');
 
+  useEffect(()=>{
+    var a = getBlackList();
+    if(a===""){
+      setLoged(false)
+    }else{
+      setLoged(true)
+    }
+  })
   return (
     <main className="c-main">
-    {/* {
-      user? */}
+    {
+      user?
         <CContainer fluid>
           <Suspense fallback={loading}>
             <Switch>
@@ -40,14 +50,14 @@ const TheContent = () => {
                     )} />
                 )
               })}
-              <Redirect from="/" to="/login" />
+              <Redirect from="/" to="/dashboard" />
             </Switch>
           </Suspense>
         </CContainer>
-      {/* :
+      :
         <Redirect
         to="/login"/>
-    } */}
+    }
     </main>
   )
 }

@@ -1,6 +1,8 @@
 import React, { useEffect, useState, forwardRef } from 'react'
+import { getBlackList } from "../../helpoers/storage"
 import MaterialTable from 'material-table';
 import NumberFormat from 'react-number-format';
+import Moment from 'moment';
 import {
     CCard,
     CCardBody,
@@ -55,9 +57,23 @@ const tableIcons = {
     ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
 };
 
-const initialProductsCodeState = { kode_transaksi:'', kode_kanvas:'', kode_barang:'', nama_barang:'', part_number:'', merk:'', kode_pelanggan:'', nama_pelanggan:'', alamat_pelanggan:'', kota:'', telepon:'', kode_sales:'', nama_sales:'', kode_user:'', nama_user:'', harga_beli:'', harga_jual:'', qty:'', satuan:'', total_harga_beli:'', total_harga_jual:'', keuntungan:'', komisi:'', total_keuntungan:'', tanggal_jual:'', jatuh_tempo:'', lama_tempo:'', kw:'', nama_kw:'', retur:'' }
+let today = new Date();
+let dayBefore = new Date();
+
+let todayMonth = today.getMonth() + 1;
+let todayYear = today.getFullYear();
+let todayDate = today.getDate();
+
+let dayBeforeMonth = dayBefore.getMonth() + 2;
+let dayBeforeYear = dayBefore.getFullYear();
+let dayBeforeDate = dayBefore.getDate();
+
+let showToday = todayYear + "-" + todayMonth + "-" + todayDate;
+let showDayBefore = dayBeforeYear + "-" + dayBeforeMonth + "-" + dayBeforeDate;
+const initialProductsCodeState = { kode_transaksi:'', kode_kanvas:'', kode_barang:'', nama_barang:'', part_number:'', merk:'', kode_pelanggan:'', nama_pelanggan:'', alamat_pelanggan:'', kota:'', telepon:'', kode_sales:'', nama_sales:'', kode_user:'', nama_user:'', harga_beli:'', harga_jual:'', qty:'', satuan:'', total_harga_beli:'', total_harga_jual:'', keuntungan:'', komisi:'', total_keuntungan:'', tanggal_jual:Moment(showToday).format('YYYY-MM-DD'), jatuh_tempo:Moment(showDayBefore).format('YYYY-MM-DD'), lama_tempo:'', kw:'', nama_kw:'', retur:'' }
 
 function ProductsCode(props) {
+  
   const [toastM, setToastM] = useState("")
   const [notifMsg, setNotifMsg] = useState("")
   const [toasts, setToasts] = useState([])
@@ -80,6 +96,8 @@ function ProductsCode(props) {
   const [nameUpdate, setNameUpdate] = useState("");
   const [showAddModal, setShowAddModal] = useState(false)
   const [edit, setEdit] = useState(false)
+  const [kode_user, setKode_user] = useState("")
+  const [nama_user, setNama_user] = useState("")
   const [inputList, setInputList] = useState([{ "barang": {}, "kode_barang": "", "nama_barang":"", "part_number":"", "merk":"","qty": 0, "harga_jual": 0 }]);
   let priceTot = 0;
   
@@ -175,7 +193,7 @@ function ProductsCode(props) {
       response.custumers.map(value => {
         list[i] = {
           id: value.kode, value: value.kode, label: value.nama +' - '+value.kode,
-          target: { type: 'select', name: 'kode_pelanggan', value: value.kode, label: value.nama +' - '+value.kode, nama_pelanggan: value.nama, alamat_pelanggan: value.alamat, kota: value.kota, telepon: value.telepon, level_harga:value.harga, plafon:value.plafon, kode_sales:value.kode_sales}
+          target: { type: 'select', name: 'kode_pelanggan', value: value.kode, label: value.nama +' - '+value.kode, nama_pelanggan: value.nama, alamat_pelanggan: value.alamat, kota: value.kota, telepon: value.telepon, level_harga:value.harga, plafon:value.plafon, kode_sales:value.kode_sales, nama_sales:value.nama_sales}
         }
         i++;
         return i;
@@ -192,7 +210,7 @@ function ProductsCode(props) {
       response.products.map(value => {
         list[i] = {
           id: value.kode, value: value.kode, label: value.nama +' - '+value.kode,
-          target: { type: 'select', name: 'kode_barang', value: value.kode, label: value.nama +' - '+value.kode, part_number: value.part_number, nama_barang: value.nama_barang, merk: value.merk, telepon: value.telepon, satuan:value.satuan, jual1:value.jual1, jual2:value.jual2, jual3:value.jual3, beli:value.beli}
+          target: { type: 'select', name: 'kode_barang', value: value.kode, label: value.nama +' - '+value.kode, part_number: value.part_number, nama_barang: value.nama_barang, merk: value.merk, telepon: value.telepon, satuan:value.satuan, jual1:value.jual1, jual2:value.jual2, jual3:value.jual3, beli:value.beli, qty:value.qty}
         }
         i++;
         return i;
@@ -225,12 +243,30 @@ function ProductsCode(props) {
     fetchSales()
   }, [])
 
+  useEffect(() => {
+    
+    var a = getBlackList();
+    a = JSON.parse(a)
+    setKode_user(a.kode)
+    setNama_user(a.nama)
+  })
+
   async function insert(){
-    const response = await fInsert(productsCodeAdd.jatuh_tempo, productsCodeAdd.tanggal_jual, productsCodeAdd.kode_sales, productsCodeAdd.kode_pelanggan, productsCodeAdd.nama_pelanggan, productsCodeAdd.alamat_pelanggan, productsCodeAdd.kota, productsCodeAdd.telepon, inputList)
+    const response = await fInsert(productsCodeAdd.jatuh_tempo, productsCodeAdd.tanggal_jual, productsCodeAdd.kode_sales, productsCodeAdd.kode_pelanggan, productsCodeAdd.nama_pelanggan, productsCodeAdd.alamat_pelanggan, productsCodeAdd.kota, productsCodeAdd.telepon, inputList, kode_user, nama_user)
     if (response['success'] === 1) {
+      
+      let url1 = "http://localhost/bngkl-sauyunan/snippets/prints/invoiceSales.php?id="+response.kode
+      
+      let url2 = "http://localhost/bngkl-sauyunan/snippets/prints/delivery.php?id="+response.kode
+                              
+window.open(url1, 'sharer1', 'toolbar=0,status=0,width=1200,height=800')
+window.open(url2, 'sharer2', 'toolbar=0,status=0,width=1200,height=800')
       fetchProductsCode()
+      setCustomer({})
+      setSale({})
       setProductsCodeAdd(initialProductsCodeState)
       setToastM("insert")
+      setInputList([{ "barang": {}, "kode_barang": "", "nama_barang":"", "part_number":"", "merk":"","qty": 0, "harga_jual": 0 }]);
       setShowAddModal(false)
     }else{
       setToastM("failed")
@@ -272,7 +308,7 @@ function ProductsCode(props) {
     let value = target.value;
     if(name==="kode_pelanggan"){
       setCustomer({value:target.value, label:target.label})
-      setSale({value:target.kode_sales, label:target.kode_sales})
+      setSale({value:target.kode_sales, label:target.nama_sales+' - '+target.kode_sales})
       setProductsCodeAdd(prevState => ({ ...prevState, [ name ]: value, nama_pelanggan:target.nama_pelanggan, alamat_pelanggan:target.alamat_pelanggan, plafon:target.plafon, level_harga:target.level_harga, kode_sales:target.kode_sales }));
     }else if(name==="kode_sales"){
       console.log(target)
@@ -401,7 +437,14 @@ function ProductsCode(props) {
                                 { title: 'Retur', field: 'retur' },
                             ]}
                             data={tableData}
-                            // onRowClick={((evt, selectedRow) => editModal(edit,selectedRow))}
+                            onRowClick={((evt, selectedRow) => {
+                              let url1 = "http://localhost/bngkl-sauyunan/snippets/prints/invoiceSales.php?id="+selectedRow.kode_transaksi
+                              let url2 = "http://localhost/bngkl-sauyunan/snippets/prints/delivery.php?id="+selectedRow.kode_transaksi
+                              
+                              window.open(url1, 'sharer1', 'toolbar=0,status=0,width=1200,height=800')
+                              
+                              window.open(url2, 'sharer2', 'toolbar=0,status=0,width=1100,height=845')
+                            })}
                             options={{
                                 rowStyle: rowData => ({
                                     backgroundColor: (rowData.tableData.kode%2===0) ? '#EEE' : '#FFF'

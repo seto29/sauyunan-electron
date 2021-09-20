@@ -55,7 +55,7 @@ export const fDelete = async (id) => {
     return response.data;
 };
 
-export const fInsert = async ( jatuh_tempo, tanggal_beli, kode_sales, kode_supplier, nama_supplier, alamat_supplier, kota, telepon, inputList) => {
+export const fInsert = async ( jatuh_tempo, tanggal_beli, kode_sales, kode_supplier, nama_supplier, alamat_supplier, kota, telepon, inputList, kode_user, nama_user) => {
     var bodyFormData = new FormData();
     bodyFormData.append('jatuh_tempo', jatuh_tempo)
     bodyFormData.append('tanggal_beli', tanggal_beli)
@@ -66,8 +66,8 @@ export const fInsert = async ( jatuh_tempo, tanggal_beli, kode_sales, kode_suppl
     bodyFormData.append('kota', kota)
     bodyFormData.append('telepon', telepon)
     bodyFormData.append('inputList', JSON.stringify(inputList))
-    bodyFormData.append('kode_user', "A0001")
-    bodyFormData.append('nama_user', "ADMIN")
+    bodyFormData.append('kode_user', kode_user)
+    bodyFormData.append('nama_user', nama_user)
     const response = await axios({
       method: 'post',
       url: '/buyTransactions/Insert.php',
