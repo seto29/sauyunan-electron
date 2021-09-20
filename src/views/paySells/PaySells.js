@@ -132,7 +132,8 @@ function ProductsCode(props) {
   }, [])
 
   async function insert(){
-    const response = await fInsert(productsCodeAdd.kode_penjualan,productsCodeAdd.nama_pelanggan, productsCodeAdd.kode_pelanggan, productsCodeAdd.harga, productsCodeAdd.jumlah_bayar, productsCodeAdd.sisa, productsCodeAdd.kode_transaksi, productsCodeAdd.komisi, productsCodeAdd.tanggal_bayar,  productsCodeAdd.jumlah_retur, productsCodeAdd.no_giro1, productsCodeAdd.bank1, productsCodeAdd.nilai_giro1, productsCodeAdd.tanggal_cair1, productsCodeAdd.no_giro2, productsCodeAdd.bank2, productsCodeAdd.nilai_giro2, productsCodeAdd.tanggal_cair2, productsCodeAdd.no_giro3, productsCodeAdd.bank3, productsCodeAdd.nilai_giro3, productsCodeAdd.tanggal_cair3, productsCodeAdd.jumlah_potongan)
+    console.log(productsCodeAdd)
+    const response = await fInsert(productsCodeAdd.kode_penjualan,productsCodeAdd.nama_pelanggan, productsCodeAdd.kode_pelanggan, productsCodeAdd.harga, productsCodeAdd.jumlah_bayar, productsCodeAdd.sisa, productsCodeAdd.kode_transaksi, productsCodeAdd.komisi, productsCodeAdd.tanggal_bayar,  productsCodeAdd.jumlah_retur, productsCodeAdd.no_giro1, productsCodeAdd.bank1, productsCodeAdd.nilai_giro1, productsCodeAdd.tanggal_cair1, productsCodeAdd.no_giro2, productsCodeAdd.bank2, productsCodeAdd.nilai_giro2, productsCodeAdd.tanggal_cair2, productsCodeAdd.no_giro3, productsCodeAdd.bank3, productsCodeAdd.nilai_giro3, productsCodeAdd.tanggal_cair3, productsCodeAdd.jumlah_potongan, productsCodeAdd.kota, productsCodeAdd.telepon, productsCodeAdd.alamat_pelanggan)
     if (response['success'] === 1) {
       fetchProductsCode()
       setProductsCodeAdd(initialProductsCodeState)

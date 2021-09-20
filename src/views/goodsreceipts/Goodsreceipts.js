@@ -1,5 +1,6 @@
 import React, { useEffect, useState, forwardRef } from 'react'
 import MaterialTable from 'material-table';
+import { getBlackList } from "../../helpoers/storage"
 import ReactExport from "react-data-export";
 import Select from 'react-select';
 import {
@@ -120,6 +121,8 @@ function Goodsreceipts({ }) {
     const [name, setName] = useState("")
     const [phone, setPhone] = useState("")
     const [address, setAddress] = useState("")
+    const [kode_user, setKode_user] = useState("")
+    const [nama_user, setNama_user] = useState("")
 
     const [idUpdate, setIDUpdate] = useState("")
     const [nameUpdate, setNameUpdate] = useState("")
@@ -132,6 +135,15 @@ function Goodsreceipts({ }) {
       list[index][name] = value;
       setInputList(list);
     };
+
+    useEffect(() => {
+    
+      var a = getBlackList();
+      a = JSON.parse(a)
+      setKode_user(a.kode)
+      setNama_user(a.nama)
+    })
+
     const handleSelectChange = (e, index) => {
       
     const list = [...inputList];
@@ -159,25 +171,30 @@ function Goodsreceipts({ }) {
 
     let number = 0
     // SELECT gr.*, s.name AS sName, e.name as eName
-    let tableData = goodsreceipts && goodsreceipts.map(({ id, delivery_order_number, delivery_order_date, created_at, sName, eName }) => {
+    let tableData = goodsreceipts && goodsreceipts.map(({ alamat_supplier, kode_barang,  kode_pembelian, kode_supplier, kode_user, kota, merk, nama_barang, nama_supplier, nama_user, nomor_surat_jalan, part_number, qty, satuan, tanggal_masuk, telepon}) => {
         number++
         const data = {
             no: number,
-            id: id,
-            don: delivery_order_number,
-            sName: sName,
-            eName: eName,
-            // received: created_at,
-            dod: Intl.DateTimeFormat("id-ID", {
+            nomor_surat_jalan: nomor_surat_jalan,
+            kode_barang: kode_barang,
+            nama_barang: nama_barang,
+            merk: merk,
+            part_number: part_number,
+            qty: qty,
+            satuan: satuan,
+            kode_pembelian: kode_pembelian,
+            kode_supplier: kode_supplier,
+            nama_supplier: nama_supplier,
+            alamat_supplier: alamat_supplier,
+            kota: kota,
+            telepon: telepon,
+            kode_user: kode_user,
+            nama_user: nama_user,
+            tanggal_masuk: Intl.DateTimeFormat("id-ID", {
               year: "numeric",
               month: "long",
               day: "numeric",
-            }).format(Date.parse(delivery_order_date)),
-            received: Intl.DateTimeFormat("id-ID", {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            }).format(Date.parse(created_at)),
+            }).format(Date.parse(tanggal_masuk)),
         }
         return data;
     });
@@ -254,26 +271,24 @@ function Goodsreceipts({ }) {
     }, [])
 
     async function insert(){
-      console.log(dod)
-      console.log(don)
-      console.log(sID)
-      console.log(inputList)
-      // const response = await fInsert(don, dod, sID, inputList)
-      //   if(response['success'] ===1) {
-      //     setName("")
-      //     setDON("")
-      //     setDOD(new Date().toISOString().substr(0,10))
-      //     setInputList([{ "product": {} ,"productName": "", "qty": 0 }])
-      //     setAddress("")
-      //     setPhone("")
-      //     fetchGoodsreceipts()
-      //     setToastM("insert")
-      //     setLarge(!large)
-      //   }else{
-      //     setToastM("failed")
-      //   }
-      //   addToast()
-      //   return response;
+      const response = await fInsert(dod, don, sID.kode_transaksi, sID.kode_supplier, sID.nama_supplier, sID.alamat_supplier, sID.kota, sID.telepon, kode_user, nama_user, inputList)
+        if(response['success'] ===1) {
+          setName("")
+          setDON("")
+          setDOD(new Date().toISOString().substr(0,10))
+          setInputList([{ "product": {} ,"productName": "", "qty": 0 }])
+          setAddress("")
+          setPhone("")
+          fetchGoodsreceipts()
+          fetchProducts()
+          fetchSuppliers()
+          setToastM("insert")
+          setLarge(!large)
+        }else{
+          setToastM("failed")
+        }
+        addToast()
+        return response;
       }
       
       async function deleteCat(){
@@ -409,16 +424,26 @@ function Goodsreceipts({ }) {
                                         width: '10%',
                                     },
                                 },
-                                { title: 'No. Surat Jalan', field: 'don' },
-                                { title: 'Tanggal Pengiriman', field: 'dod' },
-                                { title: 'Supplier', field: 'sName' },
-                                
-                                { title: 'Diterima Oleh', field: 'eName', hidden: JSON.parse(Cookies.get('user')).role_id==='1'?false:true },
-                                { title: 'Tanggal Input', field: 'received' },
+                                { title: 'No. Surat Jalan', field: 'nomor_surat_jalan' },
+                                { title: 'Kode Pembelian', field: 'kode_pembelian' },
+                                { title: 'Tanggal Masuk', field: 'tanggal_masuk' },
+                                { title: 'Kode Barang', field: 'kode_barang' },
+                                { title: 'Nama Barang', field: 'nama_barang' },
+                                { title: 'Part Number', field: 'part_number' },
+                                { title: 'Merk', field: 'merk' },
+                                { title: 'Jumlah', field: 'qty' },
+                                { title: 'Satuan', field: 'satuan' },
+                                { title: 'Kode Supplier', field: 'kode_supplier' },
+                                { title: 'Nama Supplier', field: 'nama_supplier' },
+                                { title: 'Alamat Supplier', field: 'alamat_supplier' },
+                                { title: 'Kota', field: 'kota' },
+                                { title: 'Telepon', field: 'telepon' },
+                                { title: 'Kode Pembuat', field: 'kode_user' },
+                                { title: 'Nama Pembuat', field: 'nama_user' },
                             ]}
                             data={tableData}
                             // onRowClick={((evt, selectedRow) => editModal(edit,id, name))}
-                            onRowClick={((evt, selectedRow) => editModal(selectedRow.id))}
+                            // onRowClick={((evt, selectedRow) => editModal(selectedRow.id))}
                             options={{
                                 rowStyle: rowData => ({
                                     backgroundColor: (rowData.tableData.id%2===0) ? '#EEE' : '#FFF'

@@ -47,20 +47,26 @@ export const fUpdate = async (id, name) => {
     return response.data;
 };
 
-export const fInsert = async (don, dod, sID, inputList) => {
+export const fInsert = async (dod, don, kode_pembelian, kode_supplier, nama_supplier, alamat_supplier, kota, telepon, kode_user, nama_user, details) => {
     
     let insertData = {
         "don": don,
         "dod": dod,
-        "sID": sID,
-        "createdBy": JSON.parse(Cookies.get('user')).id,
-        "details": JSON.stringify(inputList)
+        "kode_pembelian": kode_pembelian,
+        "kode_supplier": kode_supplier,
+        "nama_supplier": nama_supplier,
+        "alamat_supplier": alamat_supplier,
+        "kota": kota,
+        "telepon": telepon,
+        "kode_user": kode_user,
+        "nama_user": nama_user,
+        "details": JSON.stringify(details)
       }
       const response = await axios({
         method: 'post',
         url: '/goodsreceipts/HandleJSON.php',
         data: JSON.stringify(insertData),
-        headers: {'Content-Type': 'multipart/form-data' }
+        headers: {'Content-Type': 'application/json' }
         });
     return response.data;
 };

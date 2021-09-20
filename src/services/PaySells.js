@@ -59,7 +59,7 @@ export const fDelete = async (id) => {
     return response.data;
 };
 
-export const fInsert = async (kode_penjualan,nama_pelanggan, kode_pelanggan, harga, jumlah_bayar, sisa, kode_transaksi, komisi, tanggal_bayar,  jumlah_retur, no_giro1, bank1, nilai_giro1, tanggal_cair1, no_giro2, bank2, nilai_giro2, tanggal_cair2, no_giro3, bank3, nilai_giro3, tanggal_cair3, jumlah_potongan) => {
+export const fInsert = async (kode_penjualan,nama_pelanggan, kode_pelanggan, harga, jumlah_bayar, sisa, kode_transaksi, komisi, tanggal_bayar,  jumlah_retur, no_giro1, bank1, nilai_giro1, tanggal_cair1, no_giro2, bank2, nilai_giro2, tanggal_cair2, no_giro3, bank3, nilai_giro3, tanggal_cair3, jumlah_potongan, kota, telepon, alamat_pelanggan) => {
     var bodyFormData = new FormData();
     bodyFormData.append('kode_penjualan', kode_penjualan)
     bodyFormData.append('nama_pelanggan', nama_pelanggan)
@@ -83,6 +83,9 @@ export const fInsert = async (kode_penjualan,nama_pelanggan, kode_pelanggan, har
     bodyFormData.append('bank3', bank3)
     bodyFormData.append('nilai_giro3', nilai_giro3)
     bodyFormData.append('tanggal_cair3', tanggal_cair3)
+    bodyFormData.append('kota', kota)
+    bodyFormData.append('telepon', telepon)
+    bodyFormData.append('alamat_pelanggan', alamat_pelanggan)
     bodyFormData.append('jumlah_potongan', jumlah_potongan)
     const response = await axios({
       method: 'post',
