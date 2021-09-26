@@ -162,6 +162,26 @@ const _nav = [
         name: 'Transaksi Pembelian',
         to: '/report-buy-transactions',
       },
+      {
+        _tag: 'CSidebarNavItem',
+        name: 'Daftar Harga Pembelian',
+        to: '/list-buy-price',
+      },
+      {
+        _tag: 'CSidebarNavItem',
+        name: 'Daftar Umur Hutang',
+        to: '/list-debt-age',
+      },
+      {
+        _tag: 'CSidebarNavItem',
+        name: 'Laporan Kanvas Sales',
+        to: '/report-kanvas-sales',
+      },
+      {
+        _tag: 'CSidebarNavItem',
+        name: 'Laporan Kanvas Transaksi',
+        to: '/report-kanvas-transaction',
+      },
     ],
   },
   // {

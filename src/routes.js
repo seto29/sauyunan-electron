@@ -33,6 +33,10 @@ const KanvasTransactions = React.lazy(() => import('./views/kanvasTransactions/K
 const PricePercents = React.lazy(() => import('./views/pricePercents/PricePercents'))
 const ReportSaleTransactions = React.lazy(() => import('./views/reportSaleTransactions/ReportSaleTransactions'))
 const ReportBuyTransactions = React.lazy(() => import('./views/reportBuyTransactions/ReportBuyTransactions'))
+const ListBuyPrice = React.lazy(() => import('./views/listBuyPrice/ListBuyPrice'))
+const ListDebtAge = React.lazy(() => import('./views/listDebtAge/ListDebtAge'))
+const ReportKanvasSales = React.lazy(() => import('./views/reportKanvasSales/ReportKanvasSales'))
+const ReportKanvasTransaksi = React.lazy(() => import('./views/reportKanvasTransaksi/ReportKanvasTransaksi'))
 const routes = [
   { path: '/', exact: true, name: 'Home', auth: 1 },
   { path: '/dashboard', name: 'Dashboard', component: Dashboard, auth: 1 },
@@ -68,6 +72,10 @@ const routes = [
   { path: '/price-percents', name: 'Persentasi Jual', component: PricePercents, auth: 1 },
   { path: '/report-sale-transactions', name: 'Transaksi Penjualan', component: ReportSaleTransactions, auth: 1 },
   { path: '/report-buy-transactions', name: 'Transaksi Pembelian', component: ReportBuyTransactions, auth: 1 },
+  { path: '/list-buy-price', name: 'Daftar Harga Pembelian', component: ListBuyPrice, auth: 1 },
+  { path: '/list-debt-age', name: 'Daftar Umur Hutang', component: ListDebtAge, auth: 1 },
+  { path: '/report-kanvas-sales', name: 'Laporan Kanvas (Sales)', component: ReportKanvasSales, auth: 1 },
+  { path: '/report-kanvas-transaction', name: 'Laporan Kanvas (Transaksi)', component: ReportKanvasTransaksi, auth: 1 },
 
 ]
 

@@ -6,6 +6,16 @@ export const getAllTakeStocks = async () => {
     return response.data
 }
 
+export const getAllTakeStocksDate = async (dateFrom, dateUntil) => {
+    const response = await axios.get('/kanvas/GetAllTakeStocksDate.php?dateFrom='+dateFrom+"&dateUntil="+dateUntil)
+    return response.data
+}
+
+export const getAllTransactionDate = async (dateFrom, dateUntil) => {
+    const response = await axios.get('/kanvas/GetAllKanvasTransactionsDate.php?dateFrom='+dateFrom+"&dateUntil="+dateUntil)
+    return response.data
+}
+
 export const getAllReturnStocks = async () => {
     const response = await axios.get('/kanvas/GetAllReturnStocks.php')
     return response.data
