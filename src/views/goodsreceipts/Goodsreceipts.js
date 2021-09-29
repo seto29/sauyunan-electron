@@ -190,26 +190,22 @@ function Goodsreceipts({ }) {
             telepon: telepon,
             kode_user: kode_user,
             nama_user: nama_user,
-            tanggal_masuk: Intl.DateTimeFormat("id-ID", {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            }).format(Date.parse(tanggal_masuk)),
+            tanggal_masuk: tanggal_masuk,
         }
         return data;
     });
 
-  let number3 = 0;
-  let tableDetailData = details && details.map(({ id, qty, pName}) => {
-    number3++
-    const data = {
-        no: number3,
-        id: id,
-        qty: qty, 
-        pName: pName,
-    }
-    return data;
-});
+//   let number3 = 0;
+//   let tableDetailData = details && details.map(({ id, qty, pName}) => {
+//     number3++
+//     const data = {
+//         no: number3,
+//         id: id,
+//         qty: qty, 
+//         pName: pName,
+//     }
+//     return data;
+// });
     function editModal(id){
       fetchDetails(id)
       setIDUpdate(id)
@@ -219,6 +215,7 @@ function Goodsreceipts({ }) {
     }
     async function fetchGoodsreceipts() {
       const response = await getAll()
+      console.log(response)
       if(response['success']===1){
         setGoodsreceipts(response['goodsreceipts'])
       }else{
@@ -254,15 +251,23 @@ function Goodsreceipts({ }) {
   async function fetchSuppliers() {
       const response = await axios.get('/buyTransactions/GetNotAccept.php')
       let i = 0;
-      response['data']['salesTransactions'].map(value => {
+      if(response['data']['success']==="1" || response['data']['success']===1){
+
+        response['data']['salesTransactions'].map(value => {
           list2[i] = {
-              id: value.kode_transaksi, value: value.kode_transaksi, label: value.kode_transaksi+" -  "+value.nama_supplier+" - "+value.tanggal_beli,
-              target: { type: 'select', name: 'list', value: value.kode_transaksi, id:value.kode_transaksi, label: value.kode_transaksi+" - "+value.nama_supplier+" - "+value.tanggal_beli, alamat_supplier:value.alamat_supplier, kode_supplier:value.kode_supplier, kode_transaksi:value.kode_transaksi, nama_supplier:value.nama_supplier, kota:value.kota, telepon:value.telepon  }
+            id: value.kode_transaksi, value: value.kode_transaksi, label: value.kode_transaksi+" -  "+value.nama_supplier+" - "+value.tanggal_beli,
+            target: { type: 'select', name: 'list', value: value.kode_transaksi, id:value.kode_transaksi, label: value.kode_transaksi+" - "+value.nama_supplier+" - "+value.tanggal_beli, alamat_supplier:value.alamat_supplier, kode_supplier:value.kode_supplier, kode_transaksi:value.kode_transaksi, nama_supplier:value.nama_supplier, kota:value.kota, telepon:value.telepon  }
           }
           i++;
           return i;
-      })
-      setSuppliers(list2)
+        })
+        console.log(list2)
+        setSuppliers(list2)
+      }else{
+        setSuppliers([])
+        console.log(list2)
+
+      }
   }
     useEffect(() => {
         fetchGoodsreceipts()
@@ -390,7 +395,7 @@ function Goodsreceipts({ }) {
             edit={edit}
             setEdit={setEdit}
             tableIcons={tableIcons}
-            tableDetailData={tableDetailData}
+            // tableDetailData={tableDetailData}
             deleteCat={deleteCat}
           />
             <Toaster

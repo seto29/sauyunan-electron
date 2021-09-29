@@ -11,6 +11,7 @@ import {
 import AddBox from '@material-ui/icons/AddBox';
 import ArrowDownward from '@material-ui/icons/ArrowDownward';
 import Check from '@material-ui/icons/Check';
+import NumberFormat from 'react-number-format';
 import ChevronLeft from '@material-ui/icons/ChevronLeft';
 import ChevronRight from '@material-ui/icons/ChevronRight';
 import Clear from '@material-ui/icons/Clear';
@@ -25,7 +26,7 @@ import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
 import Toaster from '../components/Toaster'
 import {fDelete, fUpdate} from '../../services/ProductsCode'
-import {getAll, getAllDD, fInsert} from '../../services/PayBuys'
+import {getAll, getAllDD, fInsert, getAllGiroNot, fUpdateGiro} from '../../services/PayBuys'
 import Download from './Download'
 import AddModal from './AddModal'
 import UpdateModal from './UpdateModal'
@@ -64,6 +65,7 @@ function ProductsCode(props) {
   const [productsCode, setProductCode] = useState([]);
   const [salesTransactions, setSalesTransactions] = useState([]);
   const [salesTransaction, setSalesTransaction] = useState({});
+  const [giro, setGiro] = useState([]);
   const [metrics, setMetrics] = useState([]);
   const [productsCodeAdd, setProductsCodeAdd] = useState(initialProductsCodeState)
   const [productsCodeUpdate, setProductsCodeUpdate] = useState(initialProductsCodeState)
@@ -80,7 +82,7 @@ function ProductsCode(props) {
     ])
   }
 
-  let tableData = metrics && metrics.map(({kode_transaksi, kode_pembelian, kode_supplier, nama_supplier, harga, jumlah_bayar, sisa, komisi, tanggal_beli, jatuh_tempo}) => {
+  let tableData = metrics && metrics.map(({kode_transaksi, kode_pembelian, kode_supplier, nama_supplier, harga, jumlah_bayar, sisa, komisi, tanggal_beli, jatuh_tempo, jumlah_giro_cair}) => {
     number++
     const data = {
       no:number,
@@ -90,7 +92,12 @@ function ProductsCode(props) {
       nama_supplier:nama_supplier,
       harga:harga,
       jumlah_bayar:jumlah_bayar,
+      jumlah_giro_cair:jumlah_giro_cair,
       sisa:sisa,
+      v_harga:<NumberFormat value={harga}displayType={'text'} thousandSeparator={"."} decimalSeparator={","} prefix={'Rp'} />,
+      v_jumlah_bayar:<NumberFormat value={jumlah_bayar}displayType={'text'} thousandSeparator={"."} decimalSeparator={","} prefix={'Rp'} />,
+      v_jumlah_giro_cair:<NumberFormat value={jumlah_giro_cair}displayType={'text'} thousandSeparator={"."} decimalSeparator={","} prefix={'Rp'} />,
+      v_sisa:<NumberFormat value={sisa}displayType={'text'} thousandSeparator={"."} decimalSeparator={","} prefix={'Rp'} />,
       komisi:komisi,
       tanggal_beli:tanggal_beli,
       jatuh_tempo:jatuh_tempo,
@@ -98,15 +105,15 @@ function ProductsCode(props) {
     return data;
   });
 
-  function editModal(edit, slctd){
-    setProductsCodeUpdate(slctd)
-    setEdit(!edit);
-  }
 
   async function fetchProductsCode() {
     const response = await getAll()
-    console.log(response.payBuys)
     setMetrics(response.payBuys)
+  }
+
+  async function fetchGiro() {
+    const response = await getAllGiroNot()
+    setGiro(response.payBuys)
   }
 
   async function fetchSales() {
@@ -124,11 +131,15 @@ function ProductsCode(props) {
         return i;
       })
       setSalesTransactions(list)
+    }else{
+      
+      setSalesTransactions([])
     }
   }
 
   useEffect(() => {
     fetchProductsCode()
+    fetchGiro()
     fetchSales()
   }, [])
 
@@ -136,9 +147,25 @@ function ProductsCode(props) {
     const response = await fInsert(productsCodeAdd.kode_pembelian,productsCodeAdd.nama_supplier, productsCodeAdd.kode_supplier, productsCodeAdd.harga, productsCodeAdd.jumlah_bayar, productsCodeAdd.sisa, productsCodeAdd.kode_transaksi, productsCodeAdd.komisi, productsCodeAdd.tanggal_bayar,  productsCodeAdd.jumlah_retur, productsCodeAdd.no_giro1, productsCodeAdd.bank1, productsCodeAdd.nilai_giro1, productsCodeAdd.tanggal_cair1, productsCodeAdd.no_giro2, productsCodeAdd.bank2, productsCodeAdd.nilai_giro2, productsCodeAdd.tanggal_cair2, productsCodeAdd.no_giro3, productsCodeAdd.bank3, productsCodeAdd.nilai_giro3, productsCodeAdd.tanggal_cair3, productsCodeAdd.jumlah_potongan)
     if (response['success'] === 1) {
       fetchProductsCode()
+      fetchGiro()
       setProductsCodeAdd(initialProductsCodeState)
       setToastM("insert")
       setShowAddModal(false)
+    }else{
+      setToastM("failed")
+    }
+    setNotifMsg(response['msg'])
+    addToast()
+  }
+
+  async function updateGiro(kode_penjualan, kode_transaksi, index_giro, nilai_giro, id_detail){
+    const response = await fUpdateGiro(kode_penjualan, kode_transaksi, index_giro, nilai_giro, id_detail)
+    if (response['success'] === 1) {
+      fetchProductsCode()
+      fetchGiro()
+      setProductsCodeAdd(initialProductsCodeState)
+      setToastM("insert")
+      setEdit(false)
     }else{
       setToastM("failed")
     }
@@ -150,6 +177,7 @@ function ProductsCode(props) {
     const response = await fUpdate(productsCodeUpdate.kode, productsCodeUpdate.nama, productsCodeUpdate.komisi, productsCodeUpdate.nilai_minimum)
     if (response['success'] === 1) {
       fetchProductsCode()
+      fetchGiro()
       setProductsCodeUpdate(initialProductsCodeState)
       setToastM("update")
       setEdit(false)
@@ -164,6 +192,7 @@ function ProductsCode(props) {
     const response = await fDelete(productsCodeUpdate.kode)
     if (response['success'] === 1) {
       fetchProductsCode()
+      fetchGiro()
       setProductsCodeUpdate(initialProductsCodeState)
       setToastM("delete")
       setEdit(false)
@@ -213,6 +242,8 @@ function ProductsCode(props) {
               setNameUpdate={setNameUpdate}
               deleteCat={deleteCat}
               update={update}
+              giro={giro}
+              updateGiro={updateGiro}
             />
             <Toaster
                 toaster={toasts}
@@ -228,7 +259,9 @@ function ProductsCode(props) {
                               <h4>Pembayaran Pembelian</h4>
                             </CCol>
                             <CCol col="6" sm="4" md="2" m className="mb-3 mb-xl-0">
-                                <CButton block color="primary" onClick={() => setShowAddModal(true)} className="mr-1">Tambah Data</CButton>
+                                <CButton block color="primary" onClick={() => setShowAddModal(true)} className="mr-1">Bayar</CButton>
+                                {" "}
+                                <CButton block color="primary" onClick={() => setEdit(true)} className="mr-1">Giro Cair</CButton>
                             </CCol>
                             <Download 
                               tableData={tableData}
@@ -248,14 +281,16 @@ function ProductsCode(props) {
                                         width: '10%',
                                     },
                                 },
+                                { title: 'Kode Transaksi', field: 'kode_transaksi' },
                                 { title: 'Kode Pembelian', field: 'kode_pembelian' },
                                 { title: 'Kode Supplier', field: 'kode_supplier' },
                                 { title: 'Nama Supplier', field: 'nama_supplier' },
                                 { title: 'Tanggal Beli', field: 'tanggal_beli' },
                                 { title: 'Jatuh Tempo', field: 'jatuh_tempo' },
-                                { title: 'Harga', field: 'harga' },
-                                { title: 'Jumlah Bayar', field: 'jumlah_bayar' },
-                                { title: 'Sisa', field: 'sisa' },
+                                { title: 'Harga', field: 'v_harga' },
+                                { title: 'Jumlah Bayar', field: 'v_jumlah_bayar' },
+                                { title: 'Jumlah Giro Cair', field: 'v_jumlah_giro_cair' },
+                                { title: 'Sisa', field: 'v_sisa' },
                             ]}
                             data={tableData}
                             // onRowClick={((evt, selectedRow) => editModal(edit,selectedRow))}

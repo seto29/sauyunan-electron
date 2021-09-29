@@ -152,7 +152,7 @@ function AddModal(props) {
                                             placeholder="Stok"
                                             type="number"
                                             value={x.qty}
-                                            max={parseInt(x.barang.qty)}
+                                            max={x.barang && x.barang.qty?parseInt(x.barang.qty):0}
                                             min={1}
                                             onChange={e => props.handleInputChange(e, i)}
                                         />

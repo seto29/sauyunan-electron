@@ -5,6 +5,10 @@ export const getAll = async () => {
     const response = await axios.get('/debts/GetAll.php')
     return response.data
 }
+export const getAllDate = async (dateFrom, dateUntil) => {
+    const response = await axios.get('/debts/GetAllDate.php?dateFrom='+dateFrom+"&dateUntil="+dateUntil)
+    return response.data
+}
 
 export const getDetails = async (id) => {
     const response = await axios.get('/sales/GetDetailByID.php?id=' + id)

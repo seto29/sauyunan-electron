@@ -293,7 +293,7 @@ function Products({ }) {
                                     { title: 'Kode', field: 'kode' },
                                     { title: 'Part Number', field: 'part_number' },
                                     { title: 'Barcode', field: 'barcode' },
-                                    { title: 'Barcode', field: 'barcode' },
+                                    // { title: 'Barcode', field: 'barcode' },
                                     { title: 'Nama', field: 'nama' },
                                     { title: 'Merk', field: 'merk' },
                                     { title: 'Satuan', field: 'satuan' },

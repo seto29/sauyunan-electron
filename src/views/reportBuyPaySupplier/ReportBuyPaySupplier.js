@@ -1,5 +1,6 @@
 import React, { useEffect, useState, forwardRef } from 'react'
 import MaterialTable from 'material-table';
+import Moment from 'moment';
 import {
     CCard,
     CCardBody,
@@ -7,6 +8,8 @@ import {
     CCol,
     CRow,
     CButton,
+    CLabel,
+    CInput,
 } from '@coreui/react'
 import NumberFormat from 'react-number-format';
 import AddBox from '@material-ui/icons/AddBox';
@@ -26,7 +29,7 @@ import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
 import Toaster from '../components/Toaster'
 import {fDelete, fUpdate} from '../../services/ProductsCode'
-import {getAll, getAllDD, fInsert, getAllGiroNot, fUpdateGiro} from '../../services/PaySells'
+import {getAllOnlyLatest as getAll, getAllDD, fInsert, getAllGiroNot, fUpdateGiro} from '../../services/PayBuys'
 import Download from './Download'
 import AddModal from './AddModal'
 import UpdateModal from './UpdateModal'
@@ -51,9 +54,25 @@ const tableIcons = {
     ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
 };
 
-const initialProductsCodeState = { kode_pelanggan:'', harga:'', jumlah_bayar:'', sisa:'', komisi:'', nama_pelanggan:'', alamat_pelanggan:'', kota:'', telepon:'', kode_sales:'',nama_sales:'', harga:'', jumlah_bayar:0, jumlah_retur:0, jumlah_giro1:0,jumlah_giro2:0,jumlah_giro3:0,jumlah_potongan:0, sisa:0, tanggal_jual:'', tanggal_bayar:'', jatuh_tempo:'', lama_tempo:0, no_giro1:'', bank1:'', nilai_giro1:0, tanggal_cair1:'', cair1:'Tidak', no_giro2:'', bank2:'', nilai_giro2:0, tanggal_cair2:'', cair2:'Tidak', no_giro3:'', bank3:'', nilai_giro3:0, tanggal_cair3:'', cair3:'Tidak', status:'', komisi:0 }
+const initialProductsCodeState = { kode_supplier:'', harga:'', jumlah_bayar:'', sisa:'', komisi:'', nama_supplier:'', alamat_pelanggan:'', kota:'', telepon:'', kode_sales:'',nama_sales:'', harga:'', jumlah_bayar:0, jumlah_retur:0, jumlah_giro1:0,jumlah_giro2:0,jumlah_giro3:0,jumlah_potongan:0, sisa:0, tanggal_beli:'', tanggal_bayar:'', jatuh_tempo:'', lama_tempo:0, no_giro1:'', bank1:'', nilai_giro1:0, tanggal_cair1:'', cair1:'Tidak', no_giro2:'', bank2:'', nilai_giro2:0, tanggal_cair2:'', cair2:'Tidak', no_giro3:'', bank3:'', nilai_giro3:0, tanggal_cair3:'', cair3:'Tidak', status:'', komisi:0 }
 
 function ProductsCode(props) {
+  
+  let today = new Date();
+    let dayBefore = new Date(today - 1000 * 60 * 60 * 24 * 7);
+
+    let todayMonth = today.getMonth() + 1;
+    let todayYear = today.getFullYear();
+    let todayDate = today.getDate();
+
+    let dayBeforeMonth = dayBefore.getMonth() + 1;
+    let dayBeforeYear = dayBefore.getFullYear();
+    let dayBeforeDate = dayBefore.getDate();
+
+    let showToday = todayYear + "-" + todayMonth + "-" + todayDate;
+    let showDayBefore = dayBeforeYear + "-" + dayBeforeMonth + "-" + dayBeforeDate;
+    const [dateFrom, setDateFrom] = useState(Moment(showDayBefore).format('YYYY-MM-DD'));
+    const [dateUntil, setDateUntil] = useState(Moment(showToday).format('YYYY-MM-DD'));
   const [toastM, setToastM] = useState("")
   const [notifMsg, setNotifMsg] = useState("")
   const [toasts, setToasts] = useState([])
@@ -82,14 +101,14 @@ function ProductsCode(props) {
     ])
   }
 
-  let tableData = metrics && metrics.map(({kode_transaksi, kode_penjualan, kode_pelanggan, nama_pelanggan, harga, jumlah_bayar, sisa, komisi, tanggal_jual, jatuh_tempo, jumlah_giro_cair}) => {
+  let tableData = metrics && metrics.map(({kode_transaksi, kode_pembelian, kode_supplier, nama_supplier, harga, jumlah_bayar, sisa, komisi, tanggal_beli, jatuh_tempo, jumlah_giro_cair}) => {
     number++
     const data = {
       no:number,
-      kode_penjualan:kode_penjualan,
+      kode_pembelian:kode_pembelian,
       kode_transaksi:kode_transaksi,
-      kode_pelanggan:kode_pelanggan,
-      nama_pelanggan:nama_pelanggan,
+      kode_supplier:kode_supplier,
+      nama_supplier:nama_supplier,
       harga:harga,
       jumlah_bayar:jumlah_bayar,
       jumlah_giro_cair:jumlah_giro_cair,
@@ -99,7 +118,7 @@ function ProductsCode(props) {
       v_sisa:<NumberFormat value={sisa}displayType={'text'} thousandSeparator={"."} decimalSeparator={","} prefix={'Rp'} />,
       sisa:sisa,
       komisi:komisi,
-      tanggal_jual:tanggal_jual,
+      tanggal_beli:tanggal_beli,
       jatuh_tempo:jatuh_tempo,
     }
     return data;
@@ -110,8 +129,21 @@ function ProductsCode(props) {
     setEdit(!edit);
   }
 
-  async function updateGiro(kode_penjualan, kode_transaksi, index_giro, nilai_giro, id_detail){
-    const response = await fUpdateGiro(kode_penjualan, kode_transaksi, index_giro, nilai_giro, id_detail)
+  async function transactionListDateFromSearch(e) {
+    setDateFrom(e);
+    // fetchByPaymentMethod(e, dateUntil);
+    // fetchByPartnerID(e, dateUntil);
+    // fetchPartnerIncomeDaily(e, dateUntil);
+  }
+
+  async function transactionListDateUntilSearch(e) {
+      setDateUntil(e)
+      // fetchByPaymentMethod(dateFrom, e);
+      // fetchPartnerIncomeDaily(dateFrom, e);
+  }
+
+  async function updateGiro(kode_pembelian, kode_transaksi, index_giro, nilai_giro, id_detail){
+    const response = await fUpdateGiro(kode_pembelian, kode_transaksi, index_giro, nilai_giro, id_detail)
     if (response['success'] === 1) {
       fetchProductsCode()
       fetchGiro()
@@ -126,7 +158,7 @@ function ProductsCode(props) {
   }
 
   async function fetchProductsCode() {
-    const response = await getAll()
+    const response = await getAll(dateFrom, dateUntil)
     setMetrics(response.paySells)
   }
 
@@ -143,8 +175,8 @@ function ProductsCode(props) {
       let i = 0;
       response.paySells.map(value => {
         list[i] = {
-          id: value.kode_transaksi, value: value.kode_penjualan, label: value.nama_pelanggan +' - '+value.kode_penjualan + ' - ' +value.tanggal_jual,
-          target: { type: 'select', name: 'kode_penjualan', value: value.kode_penjualan, label: value.nama_pelanggan +' - '+value.kode_penjualan + ' - ' +value.tanggal_jual, kode_pelanggan:value.kode_pelanggan, harga:value.harga ,jumlah_bayar:value.jumlah_bayar, sisa:value.sisa, komisi:value.komisi, kode_transaksi:value.kode_transaksi, nama_pelanggan:value.nama_pelanggan}
+          id: value.kode_transaksi, value: value.kode_pembelian, label: value.nama_supplier +' - '+value.kode_pembelian + ' - ' +value.tanggal_beli,
+          target: { type: 'select', name: 'kode_pembelian', value: value.kode_pembelian, label: value.nama_supplier +' - '+value.kode_pembelian + ' - ' +value.tanggal_beli, kode_supplier:value.kode_supplier, harga:value.harga ,jumlah_bayar:value.jumlah_bayar, sisa:value.sisa, komisi:value.komisi, kode_transaksi:value.kode_transaksi, nama_supplier:value.nama_supplier}
         }
         i++;
         return i;
@@ -160,11 +192,11 @@ function ProductsCode(props) {
     fetchProductsCode()
     fetchGiro()
     fetchSales()
-  }, [])
+  }, [dateFrom, dateUntil])
 
   async function insert(){
     console.log(productsCodeAdd)
-    const response = await fInsert(productsCodeAdd.kode_penjualan,productsCodeAdd.nama_pelanggan, productsCodeAdd.kode_pelanggan, productsCodeAdd.harga, productsCodeAdd.jumlah_bayar, productsCodeAdd.sisa, productsCodeAdd.kode_transaksi, productsCodeAdd.komisi, productsCodeAdd.tanggal_bayar,  productsCodeAdd.jumlah_retur, productsCodeAdd.no_giro1, productsCodeAdd.bank1, productsCodeAdd.nilai_giro1, productsCodeAdd.tanggal_cair1, productsCodeAdd.no_giro2, productsCodeAdd.bank2, productsCodeAdd.nilai_giro2, productsCodeAdd.tanggal_cair2, productsCodeAdd.no_giro3, productsCodeAdd.bank3, productsCodeAdd.nilai_giro3, productsCodeAdd.tanggal_cair3, productsCodeAdd.jumlah_potongan, productsCodeAdd.kota, productsCodeAdd.telepon, productsCodeAdd.alamat_pelanggan)
+    const response = await fInsert(productsCodeAdd.kode_pembelian,productsCodeAdd.nama_supplier, productsCodeAdd.kode_supplier, productsCodeAdd.harga, productsCodeAdd.jumlah_bayar, productsCodeAdd.sisa, productsCodeAdd.kode_transaksi, productsCodeAdd.komisi, productsCodeAdd.tanggal_bayar,  productsCodeAdd.jumlah_retur, productsCodeAdd.no_giro1, productsCodeAdd.bank1, productsCodeAdd.nilai_giro1, productsCodeAdd.tanggal_cair1, productsCodeAdd.no_giro2, productsCodeAdd.bank2, productsCodeAdd.nilai_giro2, productsCodeAdd.tanggal_cair2, productsCodeAdd.no_giro3, productsCodeAdd.bank3, productsCodeAdd.nilai_giro3, productsCodeAdd.tanggal_cair3, productsCodeAdd.jumlah_potongan, productsCodeAdd.kota, productsCodeAdd.telepon, productsCodeAdd.alamat_pelanggan)
     if (response['success'] === 1) {
       fetchProductsCode()
       fetchGiro()
@@ -213,9 +245,9 @@ function ProductsCode(props) {
     const value = target.value;
     
 
-    if(name==="kode_penjualan"){
+    if(name==="kode_pembelian"){
         setSalesTransaction({value:target.value, label:target.label})
-        setProductsCodeAdd(prevState => ({ ...prevState, [ name ]: value, nama_pelanggan:target.nama_pelanggan, kode_pelanggan:target.kode_pelanggan, harga:target.harga, jumlah_bayar:target.jumlah_bayar, sisa:target.sisa, kode_transaksi:target.kode_transaksi, komisi:target.komisi }));
+        setProductsCodeAdd(prevState => ({ ...prevState, [ name ]: value, nama_supplier:target.nama_supplier, kode_supplier:target.kode_supplier, harga:target.harga, jumlah_bayar:target.jumlah_bayar, sisa:target.sisa, kode_transaksi:target.kode_transaksi, komisi:target.komisi }));
       }else{
           setProductsCodeAdd(prevState => ({ ...prevState, [ name ]: value }));
       }
@@ -261,18 +293,26 @@ function ProductsCode(props) {
                     <CCard>
                         <CCardHeader>
                           <CRow className="align-items-center">
-                            <CCol col="10" l className="mb-3 mb-xl-0">
-                              <h4>Pembayaran Penjualan</h4>
-                            </CCol>
-                            <CCol col="6" sm="4" md="2" m className="mb-3 mb-xl-0">
-                                <CButton block color="primary" onClick={() => setShowAddModal(!showAddModal)} className="mr-1">Bayar</CButton>
-                                {" "}
-                                <CButton block color="primary" onClick={() => setEdit(true)} className="mr-1">Giro Cair</CButton>
-                            </CCol>
+                            <CCol col="4" className="mb-3 mb-xl-0">
+                              <h4>Pembayaran Pembelian</h4>
+                                </CCol>
+                                <CCol lg="2" className="mb-3 mb-xl-0">
+                                    <CLabel>Tanggal :</CLabel>
+                                </CCol>
+                                <CCol lg="3" className="mb-3 mb-xl-0">
+                                    <CInput type="date" placeholder="Dari" value={dateFrom} max={dateUntil} onChange={(e) => transactionListDateFromSearch(e.target.value)} />
+                                </CCol>
+                                <CCol lg="3" className="mb-3 mb-xl-0">
+                                    <CInput type="date" placeholder="Sampai" value={dateUntil} max={Moment(showToday).format('YYYY-MM-DD')} min={dateFrom} onChange={(e) => transactionListDateUntilSearch(e.target.value)} />
+                                </CCol>
+                            </CRow>
+                          <CRow className="align-items-center">
                             <Download 
                               tableData={tableData}
                               setShowAddModal={setShowAddModal}
                               showAddModal={showAddModal}
+                              dateFrom={dateFrom}
+                              dateUntil={dateUntil}
                             />  
                           </CRow>
                         </CCardHeader>
@@ -288,10 +328,10 @@ function ProductsCode(props) {
                                     },
                                 },
                                 { title: 'Kode Transaksi', field: 'kode_transaksi' },
-                                { title: 'Kode Penjualan', field: 'kode_penjualan' },
-                                { title: 'Kode Pelanggan', field: 'kode_pelanggan' },
-                                { title: 'Nama Pelanggan', field: 'nama_pelanggan' },
-                                { title: 'Tanggal Jual', field: 'tanggal_jual' },
+                                { title: 'Kode Pembelian', field: 'kode_pembelian' },
+                                { title: 'Kode Supplier', field: 'kode_supplier' },
+                                { title: 'Nama Supplier', field: 'nama_supplier' },
+                                { title: 'Tanggal Beli', field: 'tanggal_beli' },
                                 { title: 'Jatuh Tempo', field: 'jatuh_tempo' },
                                 { title: 'Harga', field: 'v_harga' },
                                 { title: 'Jumlah Bayar', field: 'v_jumlah_bayar' },

@@ -15,16 +15,18 @@ function Download(props) {
         year: "numeric",
         month: "long"
     }).format(Date.parse(newDate))
-    let fileName = "Data Kode Barang per "+date;
+    let fileName = "Data Laba Kotor Cap per "+date;
             
     return (
         <>
-            <CCol col="6" sm="4" md="2" m className="mb-3 mb-xl-0">
-                <a href={"http://localhost/bngkl-sauyunan/reports/listRepostKanvasTransaksi.php?dateFrom="+props.dateFrom+"&dateUntil="+props.dateUntil} style={{textDecoration:'none'}}>
+        <CCol xs='10' style={{textAlign:'right'}} className="mb-3 mb-xl-0">
+            </CCol>
+        <CCol xs='2' style={{textAlign:'right'}} className="mb-3 mb-xl-0">
+                <a href={"http://localhost/bngkl-sauyunan/reports/listPaymentSales.php?dateFrom="+props.dateFrom+"&dateUntil="+props.dateUntil} style={{textDecoration:'none'}}>
                     <CButton block color="success" className="mr-1">Preview Data</CButton>
                 </a>
             </CCol>
-        </>
+            </>
     )
 
 };

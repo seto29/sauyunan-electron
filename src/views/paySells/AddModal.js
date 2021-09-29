@@ -80,7 +80,7 @@ function AddModal(props) {
                                 </CCol>
                                 <CCol xs="12" md="9">
                                     
-                                    <CInput type="text" value={props.productsCodeAdd.no_giro1} name="giro1" onChange={(e)=> props.handleAddInput(e)}/>
+                                    <CInput type="text" value={props.productsCodeAdd.no_giro1} name="no_giro1" onChange={(e)=> props.handleAddInput(e)}/>
                                 </CCol>
                             </CFormGroup>
                             <CFormGroup row>
@@ -116,7 +116,7 @@ function AddModal(props) {
                                 </CCol>
                                 <CCol xs="12" md="9">
                                     
-                                    <CInput type="text" value={props.productsCodeAdd.no_giro2} name="giro2" onChange={(e)=> props.handleAddInput(e)}/>
+                                    <CInput type="text" value={props.productsCodeAdd.no_giro2} name="no_giro2" onChange={(e)=> props.handleAddInput(e)}/>
                                 </CCol>
                             </CFormGroup>
                             <CFormGroup row>
@@ -152,7 +152,7 @@ function AddModal(props) {
                                 </CCol>
                                 <CCol xs="12" md="9">
                                     
-                                    <CInput type="text" value={props.productsCodeAdd.no_giro3} name="giro3" onChange={(e)=> props.handleAddInput(e)}/>
+                                    <CInput type="text" value={props.productsCodeAdd.no_giro3} name="no_giro3" onChange={(e)=> props.handleAddInput(e)}/>
                                 </CCol>
                             </CFormGroup>
                             <CFormGroup row>

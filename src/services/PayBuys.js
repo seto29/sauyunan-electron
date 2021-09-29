@@ -5,6 +5,15 @@ export const getAll = async () => {
     const response = await axios.get('/payBuys/GetAll.php')
     return response.data
 }
+export const getAllOnlyLatest = async (dateFrom, dateUntil) => {
+    const response = await axios.get('/payBuys/GetAllOnlyLatest.php?dateFrom='+dateFrom+"&dateUntil="+dateUntil)
+    return response.data
+}
+
+export const getAllGiroNot = async () => {
+    const response = await axios.get('/payBuys/GetGiroNotCashOut.php')
+    return response.data
+}
 export const getAllDD = async () => {
     const response = await axios.get('/payBuys/getAllTransaction.php')
     return response.data
@@ -87,6 +96,22 @@ export const fInsert = async (kode_penjualan,nama_pelanggan, kode_pelanggan, har
     const response = await axios({
       method: 'post',
       url: '/payBuys/Insert.php',
+      data: bodyFormData,
+      headers: {'Content-Type': 'multipart/form-data' }
+      });
+    return response.data;
+};
+
+export const fUpdateGiro = async (kode_penjualan, kode_transaksi, index_giro, nilai_giro, id_detail) => {
+    var bodyFormData = new FormData();
+    bodyFormData.append('kode_penjualan', kode_penjualan)
+    bodyFormData.append('kode_transaksi', kode_transaksi)
+    bodyFormData.append('index_giro', index_giro)
+    bodyFormData.append('nilai_giro', nilai_giro)
+    bodyFormData.append('id_detail', id_detail)
+    const response = await axios({
+      method: 'post',
+      url: '/payBuys/UpdateGiro.php',
       data: bodyFormData,
       headers: {'Content-Type': 'multipart/form-data' }
       });

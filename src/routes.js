@@ -27,6 +27,7 @@ const BuyTransactions = React.lazy(() => import('./views/buyTransactions/BuyTran
 const ReturnSaleTransactions = React.lazy(() => import('./views/returnSaleTransactions/ReturnSaleTransactions'))
 const ReturnBuyTransactions = React.lazy(() => import('./views/returnBuyTransactions/ReturnBuyTransactions'))
 const Debts = React.lazy(() => import('./views/debts/Debts'))
+const ReportKasbon = React.lazy(() => import('./views/reportKasbon/ReportKasbon'))
 const KanvasTakeStocks = React.lazy(() => import('./views/kanvasTakeStocks/KanvasTakeStocks'))
 const KanvasReturnStocks = React.lazy(() => import('./views/kanvasReturnStocks/KanvasReturnStocks'))
 const KanvasTransactions = React.lazy(() => import('./views/kanvasTransactions/KanvasTransactions'))
@@ -37,6 +38,8 @@ const ListBuyPrice = React.lazy(() => import('./views/listBuyPrice/ListBuyPrice'
 const ListDebtAge = React.lazy(() => import('./views/listDebtAge/ListDebtAge'))
 const ReportKanvasSales = React.lazy(() => import('./views/reportKanvasSales/ReportKanvasSales'))
 const ReportKanvasTransaksi = React.lazy(() => import('./views/reportKanvasTransaksi/ReportKanvasTransaksi'))
+const ReportKanvasTransaksiCustomer = React.lazy(() => import('./views/reportSalePayCustomers/ReportSalePayCustomers'))
+const ReportBuyPaySupplier = React.lazy(() => import('./views/reportBuyPaySupplier/ReportBuyPaySupplier'))
 const routes = [
   { path: '/', exact: true, name: 'Home', auth: 1 },
   { path: '/dashboard', name: 'Dashboard', component: Dashboard, auth: 1 },
@@ -66,6 +69,7 @@ const routes = [
   { path: '/return-sale-transactions', name: 'Retur Penjualan', component: ReturnSaleTransactions, auth: 1 },
   { path: '/return-buy-transactions', name: 'Retur Pembelian', component: ReturnBuyTransactions, auth: 1 },
   { path: '/debts', name: 'Kasbon', component: Debts, auth: 1 },
+  { path: '/debt-report', name: 'Kasbon', component: ReportKasbon, auth: 1 },
   { path: '/kanvas-take-stocks', name: 'Kanvas Ambil Stock', component: KanvasTakeStocks, auth: 1 },
   { path: '/kanvas-return-stocks', name: 'Kanvas Kembalikan Stock', component: KanvasReturnStocks, auth: 1 },
   { path: '/kanvas-transactions', name: 'Kanvas Transaksi', component: KanvasTransactions, auth: 1 },
@@ -76,6 +80,8 @@ const routes = [
   { path: '/list-debt-age', name: 'Daftar Umur Hutang', component: ListDebtAge, auth: 1 },
   { path: '/report-kanvas-sales', name: 'Laporan Kanvas (Sales)', component: ReportKanvasSales, auth: 1 },
   { path: '/report-kanvas-transaction', name: 'Laporan Kanvas (Transaksi)', component: ReportKanvasTransaksi, auth: 1 },
+  { path: '/report-kanvas-customer-payment', name: 'Laporan Pembayaran Penjualan', component: ReportKanvasTransaksiCustomer, auth: 1 },
+  { path: '/report-buy-payment', name: 'Laporan Pembayaran Pembelian', component: ReportBuyPaySupplier, auth: 1 },
 
 ]
 

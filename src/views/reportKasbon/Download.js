@@ -20,7 +20,7 @@ function Download(props) {
     return (
         <>
             <CCol col="6" sm="4" md="2" m className="mb-3 mb-xl-0">
-                <a href={"http://localhost/bngkl-sauyunan/reports/listRepostKanvasTransaksi.php?dateFrom="+props.dateFrom+"&dateUntil="+props.dateUntil} style={{textDecoration:'none'}}>
+                <a href={"http://localhost/bngkl-sauyunan/reports/listKasbon.php?dateFrom="+props.dateFrom+"&dateUntil="+props.dateUntil} style={{textDecoration:'none'}}>
                     <CButton block color="success" className="mr-1">Preview Data</CButton>
                 </a>
             </CCol>

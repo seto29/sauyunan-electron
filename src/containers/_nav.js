@@ -164,6 +164,21 @@ const _nav = [
       },
       {
         _tag: 'CSidebarNavItem',
+        name: 'Transaksi Kasbon',
+        to: '/debt-report',
+      },
+      {
+        _tag: 'CSidebarNavItem',
+        name: 'Pembayaran Penjualan',
+        to: '/report-kanvas-customer-payment',
+      },
+      {
+        _tag: 'CSidebarNavItem',
+        name: 'Pembayaran Pembelian',
+        to: '/report-buy-payment',
+      },
+      {
+        _tag: 'CSidebarNavItem',
         name: 'Daftar Harga Pembelian',
         to: '/list-buy-price',
       },

@@ -1,5 +1,6 @@
 import React, { useEffect, useState, forwardRef } from 'react'
 import MaterialTable from 'material-table';
+import Moment from 'moment';
 import {
     CCard,
     CCardBody,
@@ -7,6 +8,8 @@ import {
     CCol,
     CRow,
     CButton,
+    CLabel,
+    CInput,
 } from '@coreui/react'
 import NumberFormat from 'react-number-format';
 import AddBox from '@material-ui/icons/AddBox';
@@ -26,7 +29,7 @@ import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
 import Toaster from '../components/Toaster'
 import {fDelete, fUpdate} from '../../services/ProductsCode'
-import {getAll, getAllDD, fInsert, getAllGiroNot, fUpdateGiro} from '../../services/PaySells'
+import {getAllOnlyLatest as getAll, getAllDD, fInsert, getAllGiroNot, fUpdateGiro} from '../../services/PaySells'
 import Download from './Download'
 import AddModal from './AddModal'
 import UpdateModal from './UpdateModal'
@@ -54,6 +57,22 @@ const tableIcons = {
 const initialProductsCodeState = { kode_pelanggan:'', harga:'', jumlah_bayar:'', sisa:'', komisi:'', nama_pelanggan:'', alamat_pelanggan:'', kota:'', telepon:'', kode_sales:'',nama_sales:'', harga:'', jumlah_bayar:0, jumlah_retur:0, jumlah_giro1:0,jumlah_giro2:0,jumlah_giro3:0,jumlah_potongan:0, sisa:0, tanggal_jual:'', tanggal_bayar:'', jatuh_tempo:'', lama_tempo:0, no_giro1:'', bank1:'', nilai_giro1:0, tanggal_cair1:'', cair1:'Tidak', no_giro2:'', bank2:'', nilai_giro2:0, tanggal_cair2:'', cair2:'Tidak', no_giro3:'', bank3:'', nilai_giro3:0, tanggal_cair3:'', cair3:'Tidak', status:'', komisi:0 }
 
 function ProductsCode(props) {
+  
+  let today = new Date();
+    let dayBefore = new Date(today - 1000 * 60 * 60 * 24 * 7);
+
+    let todayMonth = today.getMonth() + 1;
+    let todayYear = today.getFullYear();
+    let todayDate = today.getDate();
+
+    let dayBeforeMonth = dayBefore.getMonth() + 1;
+    let dayBeforeYear = dayBefore.getFullYear();
+    let dayBeforeDate = dayBefore.getDate();
+
+    let showToday = todayYear + "-" + todayMonth + "-" + todayDate;
+    let showDayBefore = dayBeforeYear + "-" + dayBeforeMonth + "-" + dayBeforeDate;
+    const [dateFrom, setDateFrom] = useState(Moment(showDayBefore).format('YYYY-MM-DD'));
+    const [dateUntil, setDateUntil] = useState(Moment(showToday).format('YYYY-MM-DD'));
   const [toastM, setToastM] = useState("")
   const [notifMsg, setNotifMsg] = useState("")
   const [toasts, setToasts] = useState([])
@@ -110,6 +129,19 @@ function ProductsCode(props) {
     setEdit(!edit);
   }
 
+  async function transactionListDateFromSearch(e) {
+    setDateFrom(e);
+    // fetchByPaymentMethod(e, dateUntil);
+    // fetchByPartnerID(e, dateUntil);
+    // fetchPartnerIncomeDaily(e, dateUntil);
+  }
+
+  async function transactionListDateUntilSearch(e) {
+      setDateUntil(e)
+      // fetchByPaymentMethod(dateFrom, e);
+      // fetchPartnerIncomeDaily(dateFrom, e);
+  }
+
   async function updateGiro(kode_penjualan, kode_transaksi, index_giro, nilai_giro, id_detail){
     const response = await fUpdateGiro(kode_penjualan, kode_transaksi, index_giro, nilai_giro, id_detail)
     if (response['success'] === 1) {
@@ -126,7 +158,7 @@ function ProductsCode(props) {
   }
 
   async function fetchProductsCode() {
-    const response = await getAll()
+    const response = await getAll(dateFrom, dateUntil)
     setMetrics(response.paySells)
   }
 
@@ -160,7 +192,7 @@ function ProductsCode(props) {
     fetchProductsCode()
     fetchGiro()
     fetchSales()
-  }, [])
+  }, [dateFrom, dateUntil])
 
   async function insert(){
     console.log(productsCodeAdd)
@@ -261,18 +293,26 @@ function ProductsCode(props) {
                     <CCard>
                         <CCardHeader>
                           <CRow className="align-items-center">
-                            <CCol col="10" l className="mb-3 mb-xl-0">
+                            <CCol col="4" className="mb-3 mb-xl-0">
                               <h4>Pembayaran Penjualan</h4>
-                            </CCol>
-                            <CCol col="6" sm="4" md="2" m className="mb-3 mb-xl-0">
-                                <CButton block color="primary" onClick={() => setShowAddModal(!showAddModal)} className="mr-1">Bayar</CButton>
-                                {" "}
-                                <CButton block color="primary" onClick={() => setEdit(true)} className="mr-1">Giro Cair</CButton>
-                            </CCol>
+                                </CCol>
+                                <CCol lg="2" className="mb-3 mb-xl-0">
+                                    <CLabel>Tanggal :</CLabel>
+                                </CCol>
+                                <CCol lg="3" className="mb-3 mb-xl-0">
+                                    <CInput type="date" placeholder="Dari" value={dateFrom} max={dateUntil} onChange={(e) => transactionListDateFromSearch(e.target.value)} />
+                                </CCol>
+                                <CCol lg="3" className="mb-3 mb-xl-0">
+                                    <CInput type="date" placeholder="Sampai" value={dateUntil} max={Moment(showToday).format('YYYY-MM-DD')} min={dateFrom} onChange={(e) => transactionListDateUntilSearch(e.target.value)} />
+                                </CCol>
+                            </CRow>
+                          <CRow className="align-items-center">
                             <Download 
                               tableData={tableData}
                               setShowAddModal={setShowAddModal}
                               showAddModal={showAddModal}
+                              dateFrom={dateFrom}
+                              dateUntil={dateUntil}
                             />  
                           </CRow>
                         </CCardHeader>
