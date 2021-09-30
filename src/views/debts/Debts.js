@@ -24,8 +24,8 @@ import SaveAlt from '@material-ui/icons/SaveAlt';
 import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
 import Toaster from '../components/Toaster'
-import {fDelete, fUpdate} from '../../services/ProductsCode'
-import {getAll, fInsert} from '../../services/Debts'
+import {fDelete} from '../../services/ProductsCode'
+import {getAll, fInsert, fUpdate} from '../../services/Debts'
 import Download from './Download'
 import AddModal from './AddModal'
 import UpdateModal from './UpdateModal'
@@ -68,7 +68,10 @@ function ProductsCode(props) {
   const [idUpdate, setIDUpdate] = useState("");
   const [nameUpdate, setNameUpdate] = useState("");
   const [showAddModal, setShowAddModal] = useState(false)
+  const [selectDebts, setSelectDebt] = useState({})
+  const [optionsDebts, setOptionsDebt] = useState([])
   const [edit, setEdit] = useState(false)
+  const [debit, setDebit] = useState(0)
   let number = 0
 
   const addToast = () => {
@@ -94,13 +97,31 @@ function ProductsCode(props) {
   });
 
   function editModal(edit, slctd){
+    setSelectDebt({
+      id: slctd.kode, value: slctd.kode, label: slctd.kode+' - '+slctd.nama , kredit:slctd.kredit, debit:slctd.debit,
+      target: { type: 'select', name: 'debts', id: slctd.kode, value: slctd.kode, label: slctd.kode+' - '+slctd.nama , kredit:slctd.kredit, debit:slctd.debit}})
     setProductsCodeUpdate(slctd)
     setEdit(!edit);
   }
 
   async function fetchProductsCode() {
     const response = await getAll()
-    setMetrics(response.debts)
+    if(response.success===1){
+      setMetrics(response.debts)
+      let list = []
+      let i = 0;
+      response.debts.map(value => {
+        list[i] = {
+          id: value.kode, value: value.kode, label: value.kode+' - '+value.nama , kredit:value.kredit, debit:value.debit,
+          target: { type: 'select', name: 'debts', id: value.kode, value: value.kode, label: value.kode+' - '+value.nama , kredit:value.kredit, debit:value.debit,}
+        }
+        i++;
+        return i;
+      })
+      setOptionsDebt(list)
+    }else{
+      setMetrics([])
+    }
   }
 
   useEffect(() => {
@@ -122,10 +143,11 @@ function ProductsCode(props) {
   }
 
   async function update(){
-    const response = await fUpdate(productsCodeUpdate.kode, productsCodeUpdate.nama, productsCodeUpdate.komisi, productsCodeUpdate.nilai_minimum)
+    const response = await fUpdate(selectDebts.id, debit)
     if (response['success'] === 1) {
       fetchProductsCode()
-      setProductsCodeUpdate(initialProductsCodeState)
+      setSelectDebt({})
+      setDebit(0)
       setToastM("update")
       setEdit(false)
     }else{
@@ -179,6 +201,11 @@ function ProductsCode(props) {
               setNameUpdate={setNameUpdate}
               deleteCat={deleteCat}
               update={update}
+              optionsDebts={optionsDebts}
+              selectDebts={selectDebts}
+              setSelectDebt={setSelectDebt}
+              debit={debit}
+              setDebit={setDebit}
             />
             <Toaster
                 toaster={toasts}
@@ -223,7 +250,7 @@ function ProductsCode(props) {
                                 { title: 'Keterangan', field: 'Keterangan' },
                             ]}
                             data={tableData}
-                            // onRowClick={((evt, selectedRow) => editModal(edit,selectedRow))}
+                            onRowClick={((evt, selectedRow) => editModal(edit,selectedRow))}
                             options={{
                                 rowStyle: rowData => ({
                                     backgroundColor: (rowData.tableData.kode%2===0) ? '#EEE' : '#FFF'

@@ -73,6 +73,17 @@ function Employees({ }) {
   const [passwordUpdate, setPasswordUpdate] = useState("")
   const [phoneUpdate, setPhoneUpdate] = useState("")
   const [addressUpdate, setAddressUpdate] = useState("")
+  const [state1Insert, setState1Insert] = useState("0")
+  const [state2Insert, setState2Insert] = useState("0")
+  const [state3Insert, setState3Insert] = useState("0")
+  const [state4Insert, setState4Insert] = useState("0")
+  const [state5Insert, setState5Insert] = useState("0")
+  const [state1Update, setState1Update] = useState("0")
+  const [state2Update, setState2Update] = useState("0")
+  const [state3Update, setState3Update] = useState("0")
+  const [state4Update, setState4Update] = useState("0")
+  const [state5Update, setState5Update] = useState("0")
+  
   
   const [notifMsg, setNotifMsg] = useState("")
   let number = 0
@@ -83,7 +94,7 @@ function Employees({ }) {
       { position, autohide: autohide && autohideValue, closeButton, fade }
     ])
   }
-    let tableData = employees && employees.map(({ kode, login, nama, alamat, telepon, kota }) => {
+    let tableData = employees && employees.map(({ kode, login, nama, alamat, telepon, kota, state1, state2, state3, state4, state5 }) => {
         number++
         const data = {
             no: number,
@@ -93,12 +104,23 @@ function Employees({ }) {
             alamat: alamat,
             telepon: telepon,
             kota: kota,
+            state1: state1,
+            state2: state2,
+            state3: state3,
+            state4: state4,
+            state5: state5,
         }
         return data;
     });
 
     function editModal(e){
         setEmployeeU(e)
+        console.log(e)
+        setState1Update(e.state1)
+        setState2Update(e.state2)
+        setState3Update(e.state3)
+        setState4Update(e.state4)
+        setState5Update(e.state5)
       setEdit(!edit)
 
     }
@@ -144,7 +166,7 @@ function Employees({ }) {
     // }
 
     async function update(){
-      const response = await fUpdate(employeeU.nama, employeeU.alamat, employeeU.kota, employeeU.telepon, employeeU.fax, employeeU.login, employeeU.password, employeeU.kode)
+      const response = await fUpdate(employeeU.nama, employeeU.alamat, employeeU.kota, employeeU.telepon, employeeU.fax, employeeU.login, employeeU.password, employeeU.kode, state1Update, state2Update, state3Update, state4Update, state5Update)
         if(response['success'] ===1) {
             setNameUpdate("")
             setAddressUpdate("")
@@ -174,6 +196,8 @@ function Employees({ }) {
     const handleAddInput = ({ target }) => {
         const name = target.name;
         const value = target.value;
+        console.log(name)
+        console.log(value)
         setEmployee(prevState => ({ ...prevState, [ name ]: value }));
       }
     const handleeDITInput = ({ target }) => {
@@ -183,7 +207,7 @@ function Employees({ }) {
       }
     
       async function insert(){
-        const response = await fInsert(employee.nama, employee.alamat, employee.kota, employee.telepon, employee.fax, employee.login, employee.password)
+        const response = await fInsert(employee.nama, employee.alamat, employee.kota, employee.telepon, employee.fax, employee.login, employee.password, state1Insert, state2Insert, state3Insert, state4Insert, state5Insert)
         if (response['success'] === 1) {
             fetchEmployees()
           setEmployee({})
@@ -214,6 +238,16 @@ function Employees({ }) {
                 insert={insert}
                 handleAddInput={handleAddInput}
                 employee={employee}
+                state1Insert={state1Insert}
+                setState1Insert={setState1Insert}
+                state2Insert={state2Insert}
+                setState2Insert={setState2Insert}
+                state3Insert={state3Insert}
+                setState3Insert={setState3Insert}
+                state4Insert={state4Insert}
+                setState4Insert={setState4Insert}
+                state5Insert={state5Insert}
+                setState5Insert={setState5Insert}
                 />
             <UpdateModal
                 handleAddInput={handleeDITInput}
@@ -233,6 +267,16 @@ function Employees({ }) {
                 setPasswordUpdate={setPasswordUpdate}
                 deleteCat={deleteCat}
                 insert={update}
+                state1Update={state1Update}
+                setState1Update={setState1Update}
+                state2Update={state2Update}
+                setState2Update={setState2Update}
+                state3Update={state3Update}
+                setState3Update={setState3Update}
+                state4Update={state4Update}
+                setState4Update={setState4Update}
+                state5Update={state5Update}
+                setState5Update={setState5Update}
             />
             <Toaster
                 toaster={toasts}

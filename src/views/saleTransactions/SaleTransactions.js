@@ -247,6 +247,7 @@ function ProductsCode(props) {
     
     var a = getBlackList();
     a = JSON.parse(a)
+    console.log(a)
     setKode_user(a.kode)
     setNama_user(a.nama)
   })

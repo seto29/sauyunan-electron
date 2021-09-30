@@ -21,6 +21,16 @@ const TheContent = () => {
   const [loged, setLoged]=useState(false)
   const user = Cookies.get('user');
 
+  const [stating, setStating] = useState({state1:"0"})
+
+  useEffect(()=>{
+    let a = getBlackList();
+    if(a){
+      a = JSON.parse(a)
+      setStating(a)
+    }
+  },[])
+
   useEffect(()=>{
     var a = getBlackList();
     if(a===""){
@@ -28,7 +38,7 @@ const TheContent = () => {
     }else{
       setLoged(true)
     }
-  })
+  },[])
   return (
     <main className="c-main">
     {
@@ -38,6 +48,13 @@ const TheContent = () => {
             <Switch>
               {routes.map((route, idx) => {
                 return route.component && (
+                  ((route.path==="/sale-transactions") && stating.state1==="0")
+                      ?
+                      <>
+                      
+                {console.log(route.path)}
+                      </>
+                      :
                   <Route
                     key={idx}
                     path={route.path}

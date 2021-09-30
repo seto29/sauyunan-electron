@@ -73,3 +73,16 @@ export const fInsert = async (nama, kredit, debit, Keterangan) => {
       });
     return response.data;
 };
+
+export const fUpdate = async (kode, pay) => {
+    var bodyFormData = new FormData();
+    bodyFormData.append('kode', kode)
+    bodyFormData.append('debit', pay)
+    const response = await axios({
+      method: 'post',
+      url: '/debts/Update.php',
+      data: bodyFormData,
+      headers: {'Content-Type': 'multipart/form-data' }
+      });
+    return response.data;
+};

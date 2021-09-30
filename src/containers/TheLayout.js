@@ -7,7 +7,6 @@ import {
 } from './index'
 
 const TheLayout = (props) => {
-  console.log(props)
   return (
     <div className="c-app c-default-layout">
       <TheSidebar/>

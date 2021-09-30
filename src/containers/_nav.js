@@ -164,8 +164,8 @@ const _nav = [
       },
       {
         _tag: 'CSidebarNavItem',
-        name: 'Transaksi Kasbon',
-        to: '/debt-report',
+        name: 'Transaksi Kanvas',
+        to: '/report-kanvas-transaction',
       },
       {
         _tag: 'CSidebarNavItem',
@@ -176,6 +176,16 @@ const _nav = [
         _tag: 'CSidebarNavItem',
         name: 'Pembayaran Pembelian',
         to: '/report-buy-payment',
+      },
+      {
+        _tag: 'CSidebarNavItem',
+        name: 'Giro Pembelian',
+        to: '/report-buy-giro',
+      },
+      {
+        _tag: 'CSidebarNavItem',
+        name: 'Giro Penjualan',
+        to: '/report-sale-giro',
       },
       {
         _tag: 'CSidebarNavItem',
@@ -194,8 +204,8 @@ const _nav = [
       },
       {
         _tag: 'CSidebarNavItem',
-        name: 'Laporan Kanvas Transaksi',
-        to: '/report-kanvas-transaction',
+        name: 'Kas',
+        to: '/debt-report',
       },
     ],
   },

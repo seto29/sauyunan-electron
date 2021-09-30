@@ -29,7 +29,7 @@ import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
 import Toaster from '../components/Toaster'
 import {fDelete, fUpdate} from '../../services/ProductsCode'
-import {getAllOnlyLatest as getAll, getAllDD, fInsert, getAllGiroNot, fUpdateGiro} from '../../services/PayBuys'
+import {getAllOnlyLatestGiro as getAll, getAllDD, fInsert, getAllGiroNot, fUpdateGiro} from '../../services/PayBuys'
 import Download from './Download'
 import AddModal from './AddModal'
 import UpdateModal from './UpdateModal'
@@ -54,7 +54,7 @@ const tableIcons = {
     ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
 };
 
-const initialProductsCodeState = { kode_supplier:'', harga:'', jumlah_bayar:'', sisa:'', komisi:'', nama_supplier:'', alamat_pelanggan:'', kota:'', telepon:'', kode_sales:'',nama_sales:'', harga:'', jumlah_bayar:0, jumlah_retur:0, jumlah_giro1:0,jumlah_giro2:0,jumlah_giro3:0,jumlah_potongan:0, sisa:0, tanggal_beli:'', tanggal_bayar:'', jatuh_tempo:'', lama_tempo:0, no_giro1:'', bank1:'', nilai_giro1:0, tanggal_cair1:'', cair1:'Tidak', no_giro2:'', bank2:'', nilai_giro2:0, tanggal_cair2:'', cair2:'Tidak', no_giro3:'', bank3:'', nilai_giro3:0, tanggal_cair3:'', cair3:'Tidak', status:'', komisi:0 }
+const initialProductsCodeState = { kode_supplier:'', harga:'', jumlah_bayar:'', sisa:'', komisi:'', nama_supplier:'', alamat_supplier:'', kota:'', telepon:'', kode_user:'',nama_user:'', harga:'', jumlah_bayar:0, jumlah_retur:0, jumlah_giro1:0,jumlah_giro2:0,jumlah_giro3:0,jumlah_potongan:0, sisa:0, tanggal_jual:'', tanggal_bayar:'', jatuh_tempo:'', lama_tempo:0, no_giro1:'', bank1:'', nilai_giro1:0, tanggal_cair1:'', cair1:'Tidak', no_giro2:'', bank2:'', nilai_giro2:0, tanggal_cair2:'', cair2:'Tidak', no_giro3:'', bank3:'', nilai_giro3:0, tanggal_cair3:'', cair3:'Tidak', status:'', komisi:0 }
 
 function ProductsCode(props) {
   
@@ -82,8 +82,8 @@ function ProductsCode(props) {
   const [closeButton] = useState(true)
   const [fade] = useState(true)
   const [productsCode, setProductCode] = useState([]);
-  const [salesTransactions, setSalesTransactions] = useState([]);
-  const [salesTransaction, setSalesTransaction] = useState({});
+  const [userTransactions, setSalesTransactions] = useState([]);
+  const [userTransaction, setSalesTransaction] = useState({});
   const [metrics, setMetrics] = useState([]);
   const [productsCodeAdd, setProductsCodeAdd] = useState(initialProductsCodeState)
   const [productsCodeUpdate, setProductsCodeUpdate] = useState(initialProductsCodeState)
@@ -101,25 +101,35 @@ function ProductsCode(props) {
     ])
   }
 
-  let tableData = metrics && metrics.map(({kode_transaksi, kode_pembelian, kode_supplier, nama_supplier, harga, jumlah_bayar, sisa, komisi, tanggal_beli, jatuh_tempo, jumlah_giro_cair}) => {
+  let tableData = metrics && metrics.map(({jatuh_tempo, kode_transaksi, kode_supplier, nama_supplier, lama_tempo, harga, no_giro1, bank1, nilai_giro1, tanggal_cair1, cair1, no_giro2, bank2, nilai_giro2, tanggal_cair2, cair2, no_giro3, bank3, nilai_giro3, tanggal_cair3, cair3}) => {
     number++
     const data = {
       no:number,
-      kode_pembelian:kode_pembelian,
+      jatuh_tempo:jatuh_tempo,
       kode_transaksi:kode_transaksi,
       kode_supplier:kode_supplier,
       nama_supplier:nama_supplier,
+      lama_tempo:lama_tempo,
       harga:harga,
-      jumlah_bayar:jumlah_bayar,
-      jumlah_giro_cair:jumlah_giro_cair,
       v_harga:<NumberFormat value={harga}displayType={'text'} thousandSeparator={"."} decimalSeparator={","} prefix={'Rp'} />,
-      v_jumlah_bayar:<NumberFormat value={jumlah_bayar}displayType={'text'} thousandSeparator={"."} decimalSeparator={","} prefix={'Rp'} />,
-      v_jumlah_giro_cair:<NumberFormat value={jumlah_giro_cair}displayType={'text'} thousandSeparator={"."} decimalSeparator={","} prefix={'Rp'} />,
-      v_sisa:<NumberFormat value={sisa}displayType={'text'} thousandSeparator={"."} decimalSeparator={","} prefix={'Rp'} />,
-      sisa:sisa,
-      komisi:komisi,
-      tanggal_beli:tanggal_beli,
-      jatuh_tempo:jatuh_tempo,
+      no_giro1:no_giro1,
+      bank1:bank1,
+      nilai_giro1:nilai_giro1,
+      v_nilai_giro1:<NumberFormat value={nilai_giro1?nilai_giro1:0}displayType={'text'} thousandSeparator={"."} decimalSeparator={","} prefix={'Rp'} />,
+      tanggal_cair1:tanggal_cair1,
+      cair1:cair1,
+      no_giro2:no_giro2,
+      bank2:bank2,
+      nilai_giro2:nilai_giro2,
+      v_nilai_giro2:<NumberFormat value={nilai_giro2?nilai_giro2:0}displayType={'text'} thousandSeparator={"."} decimalSeparator={","} prefix={'Rp'} />,
+      tanggal_cair2:tanggal_cair2,
+      cair2:cair2,
+      no_giro3:no_giro3,
+      bank3:bank3,
+      nilai_giro3:nilai_giro3,
+      v_nilai_giro3:<NumberFormat value={nilai_giro3?nilai_giro3:0}displayType={'text'} thousandSeparator={"."} decimalSeparator={","} prefix={'Rp'} />,
+      tanggal_cair3:tanggal_cair3,
+      cair3:cair3,
     }
     return data;
   });
@@ -142,8 +152,8 @@ function ProductsCode(props) {
       // fetchPartnerIncomeDaily(dateFrom, e);
   }
 
-  async function updateGiro(kode_pembelian, kode_transaksi, index_giro, nilai_giro, id_detail){
-    const response = await fUpdateGiro(kode_pembelian, kode_transaksi, index_giro, nilai_giro, id_detail)
+  async function updateGiro(kode_penjualan, kode_transaksi, index_giro, nilai_giro, id_detail){
+    const response = await fUpdateGiro(kode_penjualan, kode_transaksi, index_giro, nilai_giro, id_detail)
     if (response['success'] === 1) {
       fetchProductsCode()
       fetchGiro()
@@ -175,8 +185,8 @@ function ProductsCode(props) {
       let i = 0;
       response.paySells && response.paySells.map(value => {
         list[i] = {
-          id: value.kode_transaksi, value: value.kode_pembelian, label: value.nama_supplier +' - '+value.kode_pembelian + ' - ' +value.tanggal_beli,
-          target: { type: 'select', name: 'kode_pembelian', value: value.kode_pembelian, label: value.nama_supplier +' - '+value.kode_pembelian + ' - ' +value.tanggal_beli, kode_supplier:value.kode_supplier, harga:value.harga ,jumlah_bayar:value.jumlah_bayar, sisa:value.sisa, komisi:value.komisi, kode_transaksi:value.kode_transaksi, nama_supplier:value.nama_supplier}
+          id: value.kode_transaksi, value: value.kode_penjualan, label: value.nama_supplier +' - '+value.kode_penjualan + ' - ' +value.tanggal_jual,
+          target: { type: 'select', name: 'kode_penjualan', value: value.kode_penjualan, label: value.nama_supplier +' - '+value.kode_penjualan + ' - ' +value.tanggal_jual, kode_supplier:value.kode_supplier, harga:value.harga ,jumlah_bayar:value.jumlah_bayar, sisa:value.sisa, komisi:value.komisi, kode_transaksi:value.kode_transaksi, nama_supplier:value.nama_supplier}
         }
         i++;
         return i;
@@ -196,7 +206,7 @@ function ProductsCode(props) {
 
   async function insert(){
     console.log(productsCodeAdd)
-    const response = await fInsert(productsCodeAdd.kode_pembelian,productsCodeAdd.nama_supplier, productsCodeAdd.kode_supplier, productsCodeAdd.harga, productsCodeAdd.jumlah_bayar, productsCodeAdd.sisa, productsCodeAdd.kode_transaksi, productsCodeAdd.komisi, productsCodeAdd.tanggal_bayar,  productsCodeAdd.jumlah_retur, productsCodeAdd.no_giro1, productsCodeAdd.bank1, productsCodeAdd.nilai_giro1, productsCodeAdd.tanggal_cair1, productsCodeAdd.no_giro2, productsCodeAdd.bank2, productsCodeAdd.nilai_giro2, productsCodeAdd.tanggal_cair2, productsCodeAdd.no_giro3, productsCodeAdd.bank3, productsCodeAdd.nilai_giro3, productsCodeAdd.tanggal_cair3, productsCodeAdd.jumlah_potongan, productsCodeAdd.kota, productsCodeAdd.telepon, productsCodeAdd.alamat_pelanggan)
+    const response = await fInsert(productsCodeAdd.kode_penjualan,productsCodeAdd.nama_supplier, productsCodeAdd.kode_supplier, productsCodeAdd.harga, productsCodeAdd.jumlah_bayar, productsCodeAdd.sisa, productsCodeAdd.kode_transaksi, productsCodeAdd.komisi, productsCodeAdd.tanggal_bayar,  productsCodeAdd.jumlah_retur, productsCodeAdd.no_giro1, productsCodeAdd.bank1, productsCodeAdd.nilai_giro1, productsCodeAdd.tanggal_cair1, productsCodeAdd.no_giro2, productsCodeAdd.bank2, productsCodeAdd.nilai_giro2, productsCodeAdd.tanggal_cair2, productsCodeAdd.no_giro3, productsCodeAdd.bank3, productsCodeAdd.nilai_giro3, productsCodeAdd.tanggal_cair3, productsCodeAdd.jumlah_potongan, productsCodeAdd.kota, productsCodeAdd.telepon, productsCodeAdd.alamat_supplier)
     if (response['success'] === 1) {
       fetchProductsCode()
       fetchGiro()
@@ -245,7 +255,7 @@ function ProductsCode(props) {
     const value = target.value;
     
 
-    if(name==="kode_pembelian"){
+    if(name==="kode_penjualan"){
         setSalesTransaction({value:target.value, label:target.label})
         setProductsCodeAdd(prevState => ({ ...prevState, [ name ]: value, nama_supplier:target.nama_supplier, kode_supplier:target.kode_supplier, harga:target.harga, jumlah_bayar:target.jumlah_bayar, sisa:target.sisa, kode_transaksi:target.kode_transaksi, komisi:target.komisi }));
       }else{
@@ -266,8 +276,8 @@ function ProductsCode(props) {
               setShowAddModal={setShowAddModal}
               productsCodeAdd={productsCodeAdd}
               handleAddInput={handleAddInput}
-              salesTransactions={salesTransactions}
-              salesTransaction={salesTransaction}
+              userTransactions={userTransactions}
+              userTransaction={userTransaction}
               insert={insert}
             />
             <UpdateModal
@@ -294,7 +304,7 @@ function ProductsCode(props) {
                         <CCardHeader>
                           <CRow className="align-items-center">
                             <CCol col="4" className="mb-3 mb-xl-0">
-                              <h4>Pembayaran Pembelian</h4>
+                              <h4>Giro Pembelian</h4>
                                 </CCol>
                                 <CCol lg="2" className="mb-3 mb-xl-0">
                                     <CLabel>Tanggal :</CLabel>
@@ -327,16 +337,26 @@ function ProductsCode(props) {
                                         width: '10%',
                                     },
                                 },
+                                { title: 'Tgj Jatuh Tempo', field: 'jatuh_tempo' },
                                 { title: 'Kode Transaksi', field: 'kode_transaksi' },
-                                { title: 'Kode Pembelian', field: 'kode_pembelian' },
-                                { title: 'Kode Supplier', field: 'kode_supplier' },
-                                { title: 'Nama Supplier', field: 'nama_supplier' },
-                                { title: 'Tanggal Beli', field: 'tanggal_beli' },
-                                { title: 'Jatuh Tempo', field: 'jatuh_tempo' },
+                                { title: 'Kode', field: 'kode_supplier' },
+                                { title: 'Nama', field: 'nama_supplier' },
                                 { title: 'Harga', field: 'v_harga' },
-                                { title: 'Jumlah Bayar', field: 'v_jumlah_bayar' },
-                                { title: 'Jumlah Giro Cair', field: 'v_jumlah_giro_cair' },
-                                { title: 'Sisa', field: 'v_sisa' },
+                                { title: 'No. Gir1', field: 'no_giro1' },
+                                { title: 'Bank1', field: 'bank1' },
+                                { title: 'Nilai Giro1', field: 'v_nilai_giro1' },
+                                { title: 'Tgl Cair1', field: 'tanggal_cair1' },
+                                { title: 'Cair1', field: 'cair1' },
+                                { title: 'No. Gir2', field: 'no_giro2' },
+                                { title: 'Bank2', field: 'bank2' },
+                                { title: 'Nilai Giro2', field: 'v_nilai_giro2' },
+                                { title: 'Tgl Cair2', field: 'tanggal_cair2' },
+                                { title: 'Cair2', field: 'cair2' },
+                                { title: 'No. Gir3', field: 'no_giro3' },
+                                { title: 'Bank3', field: 'bank3' },
+                                { title: 'Nilai Giro3', field: 'v_nilai_giro3' },
+                                { title: 'Tgl Cair3', field: 'tanggal_cair3' },
+                                { title: 'Cair3', field: 'cair3' },
                             ]}
                             data={tableData}
                             // onRowClick={((evt, selectedRow) => editModal(edit,selectedRow))}

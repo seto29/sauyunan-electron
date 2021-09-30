@@ -1,4 +1,6 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+
+import { getBlackList } from "../helpoers/storage"
 import { useSelector, useDispatch } from 'react-redux'
 import {
   CCreateElement,
@@ -25,7 +27,31 @@ import navigationSGR from './_navSGR'
 const TheSidebar = () => {
   const dispatch = useDispatch()
   const show = useSelector(state => state.sidebarShow)
+  const [stating, setStating] = useState({})
+  
+  let sidebar = []
+  let number = 0;
 
+  useEffect(()=>{
+    let a = getBlackList();
+    if(a){
+      a = JSON.parse(a)
+      setStating(a)
+    }
+  },[])
+
+  navigation.map((value)=>{
+     if(stating && stating.state1==="0" && value.name==="Transaksi"){
+    }else if(stating && stating.state2==="0" && value.name==="Pembayaran"){
+    }else if(stating && stating.state3==="0" && value.name==="Data Entry"){
+    }else if(stating && stating.state4==="0" && value.name==="Data Setup"){
+    }else if(stating && stating.state5==="0" && value.name==="Laporan"){
+
+    }else{
+      sidebar[number]=value
+      number+=1
+    }
+  })
   return (
     <CSidebar
       show={show}
@@ -37,7 +63,7 @@ const TheSidebar = () => {
       <CSidebarNav>
 
         <CCreateElement
-          items={navigation}
+          items={sidebar}
           components={{
             CSidebarNavDivider,
             CSidebarNavDropdown,

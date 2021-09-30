@@ -13,7 +13,8 @@ import {
     CLabel,
     CInput,
     CBadge,
-    CTextarea
+    CTextarea,
+    CSwitch
 } from '@coreui/react'
 function AddModal(props) {
         
@@ -84,6 +85,74 @@ function AddModal(props) {
                                 </CCol>
                                 <CCol xs="12" md="9">
                                     <CInput type="text" placeholder="022-222 222 222" name="fax" value={props.employeeU.fax} onChange={(e)=> props.handleAddInput(e)} />
+                                </CCol>
+                            </CFormGroup>
+                            <hr />
+                            <b>Fitur</b>
+                            <CFormGroup row>
+                                <CCol md="3">
+                                    <CLabel htmlFor="fax">Transaksi</CLabel>
+                                </CCol>
+                                <CCol xs="12" md="3">
+                                    <CSwitch color={"primary"} checked={props.state1Update==="1"?true:false} onChange={(e)=>{
+                                        if(props.state1Update==="1"){
+                                            props.setState1Update("0")
+                                        }else{
+                                            props.setState1Update("1")
+                                        }
+                                    }}/>
+                                </CCol>
+                                <CCol md="3">
+                                    <CLabel htmlFor="fax">Pembayaran</CLabel>
+                                </CCol>
+                                <CCol xs="12" md="3">
+                                    <CSwitch color={"primary"} checked={props.state2Update==="1"?true:false} onChange={(e)=>{
+                                        if(props.state2Update==="1"){
+                                            props.setState2Update("0")
+                                        }else{
+                                            props.setState2Update("1")
+                                        }
+                                    }}/>
+                                </CCol>
+                            </CFormGroup>
+                            <CFormGroup row>
+                                <CCol md="3">
+                                    <CLabel htmlFor="fax">Data Entry</CLabel>
+                                </CCol>
+                                <CCol xs="12" md="3">
+                                    <CSwitch color={"primary"} checked={props.state3Update==="1"?true:false} onChange={(e)=>{
+                                        if(props.state3Update==="1"){
+                                            props.setState3Update("0")
+                                        }else{
+                                            props.setState3Update("1")
+                                        }
+                                    }}/>
+                                </CCol>
+                                <CCol md="3">
+                                    <CLabel htmlFor="fax">Data Setup</CLabel>
+                                </CCol>
+                                <CCol xs="12" md="3">
+                                    <CSwitch color={"primary"} checked={props.state4Update==="1"?true:false} onChange={(e)=>{
+                                        if(props.state4Update==="1"){
+                                            props.setState4Update("0")
+                                        }else{
+                                            props.setState4Update("1")
+                                        }
+                                    }}/>
+                                </CCol>
+                            </CFormGroup>
+                            <CFormGroup row>
+                                <CCol md="3">
+                                    <CLabel htmlFor="fax">Laporan</CLabel>
+                                </CCol>
+                                <CCol xs="12" md="3">
+                                    <CSwitch color={"primary"} checked={props.state5Update==="1"?true:false} onChange={(e)=>{
+                                        if(props.state5Update==="1"){
+                                            props.setState5Update("0")
+                                        }else{
+                                            props.setState5Update("1")
+                                        }
+                                    }}/>
                                 </CCol>
                             </CFormGroup>
                         </CForm>

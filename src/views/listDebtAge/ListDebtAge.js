@@ -318,7 +318,7 @@ function Products({ }) {
                         <CCardFooter>
 
                             <CCol col="6" sm="4" md="2" m className="mb-3 mb-xl-0">
-                <a href={type===1?"http://localhost/bngkl-sauyunan/reports/listDebtSalesAge.php?age="+age:"http://localhost/bngkl-sauyunan/reports/listDebtSalesAge.php?age="+age} style={{textDecoration:'none'}}>
+                <a href={type===1?"http://localhost/bngkl-sauyunan/reports/listDebtSalesAge.php?age="+age:"http://localhost/bngkl-sauyunan/reports/listDebtBuysAge.php?age="+age} style={{textDecoration:'none'}}>
                     <CButton block color="success" className="mr-1">Print</CButton>
                 </a>
             </CCol>

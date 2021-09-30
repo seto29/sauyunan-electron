@@ -368,9 +368,6 @@ function ProductsCode(props) {
                                 </CCol>
                             </CRow>
                           <CRow className="align-items-center">
-                            <CCol col="6" sm="4" md="2" m className="mb-3 mb-xl-0">
-                                <CButton block color="primary" onClick={() => setShowAddModal(!showAddModal)} className="mr-1">Tambah Data</CButton>
-                            </CCol>
                             <Download 
                               tableData={tableData}
                               setShowAddModal={setShowAddModal}

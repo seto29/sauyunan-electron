@@ -39,8 +39,8 @@ var monthBefore = ("0" + (d.getMonth())).slice(-2);
 function Dashboard({ }) {
   useEffect(()=>{
     var a = getBlackList();
-    console.log(a)
-    console.log(typeof a)
+    // console.log(a)
+    // console.log(typeof a)
   })
 //   const [ dateTo, setDateTo] = useState(datestringNow)
 //   const [ dateFrom, setDateFrom] = useState("2021-01-01")

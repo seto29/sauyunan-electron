@@ -9,6 +9,11 @@ export const getAllOnlyLatest = async (dateFrom, dateUntil) => {
     const response = await axios.get('/paySells/GetAllOnlyLatest.php?dateFrom='+dateFrom+"&dateUntil="+dateUntil)
     return response.data
 }
+
+export const getAllOnlyLatestGiro = async (dateFrom, dateUntil) => {
+    const response = await axios.get('/paySells/GetAllOnlyLatestGiro.php?dateFrom='+dateFrom+"&dateUntil="+dateUntil)
+    return response.data
+}
 export const getAllGiroNot = async () => {
     const response = await axios.get('/paySells/GetGiroNotCashOut.php')
     return response.data

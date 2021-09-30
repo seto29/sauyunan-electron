@@ -13,9 +13,11 @@ import {
     CLabel,
     CInput,
     CBadge,
-    CTextarea
+    CTextarea,
+    CSwitch
 } from '@coreui/react'
 function AddModal(props) {
+    console.log(props.employee)
         
     return (
         <>
@@ -51,7 +53,7 @@ function AddModal(props) {
                                     <CLabel htmlFor="name">Nama <CBadge color="warning">Wajib</CBadge></CLabel>
                                 </CCol>
                                 <CCol xs="12" md="9">
-                                    <CInput type="text" placeholder="Nama" name="nama" value={props.employee.login? props.employee.nama.toUpperCase(): ""} onChange={(e)=> props.handleAddInput(e)} />
+                                    <CInput type="text" placeholder="Nama" name="nama" value={props.employee.nama? props.employee.nama.toUpperCase(): ""} onChange={(e)=> props.handleAddInput(e)} />
                                 </CCol>
                             </CFormGroup>
                             <CFormGroup row>
@@ -84,6 +86,74 @@ function AddModal(props) {
                                 </CCol>
                                 <CCol xs="12" md="9">
                                     <CInput type="text" placeholder="022-222 222 222" name="fax" value={props.employee.fax} onChange={(e)=> props.handleAddInput(e)} />
+                                </CCol>
+                            </CFormGroup>
+                            <hr />
+                            <b>Fitur</b>
+                            <CFormGroup row>
+                                <CCol md="3">
+                                    <CLabel htmlFor="fax">Transaksi</CLabel>
+                                </CCol>
+                                <CCol xs="12" md="3">
+                                    <CSwitch color={"primary"} checked={props.state1Insert==="1"?true:false} onChange={(e)=>{
+                                        if(props.state1Insert==="1"){
+                                            props.setState1Insert("0")
+                                        }else{
+                                            props.setState1Insert("1")
+                                        }
+                                    }}/>
+                                </CCol>
+                                <CCol md="3">
+                                    <CLabel htmlFor="fax">Pembayaran</CLabel>
+                                </CCol>
+                                <CCol xs="12" md="3">
+                                    <CSwitch color={"primary"} checked={props.state2Insert==="1"?true:false} onChange={(e)=>{
+                                        if(props.state2Insert==="1"){
+                                            props.setState2Insert("0")
+                                        }else{
+                                            props.setState2Insert("1")
+                                        }
+                                    }}/>
+                                </CCol>
+                            </CFormGroup>
+                            <CFormGroup row>
+                                <CCol md="3">
+                                    <CLabel htmlFor="fax">Data Entry</CLabel>
+                                </CCol>
+                                <CCol xs="12" md="3">
+                                    <CSwitch color={"primary"} checked={props.state3Insert==="1"?true:false} onChange={(e)=>{
+                                        if(props.state3Insert==="1"){
+                                            props.setState3Insert("0")
+                                        }else{
+                                            props.setState3Insert("1")
+                                        }
+                                    }}/>
+                                </CCol>
+                                <CCol md="3">
+                                    <CLabel htmlFor="fax">Data Setup</CLabel>
+                                </CCol>
+                                <CCol xs="12" md="3">
+                                    <CSwitch color={"primary"} checked={props.state4Insert==="1"?true:false} onChange={(e)=>{
+                                        if(props.state4Insert==="1"){
+                                            props.setState4Insert("0")
+                                        }else{
+                                            props.setState4Insert("1")
+                                        }
+                                    }}/>
+                                </CCol>
+                            </CFormGroup>
+                            <CFormGroup row>
+                                <CCol md="3">
+                                    <CLabel htmlFor="fax">Laporan</CLabel>
+                                </CCol>
+                                <CCol xs="12" md="3">
+                                    <CSwitch color={"primary"} checked={props.state5Insert==="1"?true:false} onChange={(e)=>{
+                                        if(props.state5Insert==="1"){
+                                            props.setState5Insert("0")
+                                        }else{
+                                            props.setState5Insert("1")
+                                        }
+                                    }}/>
                                 </CCol>
                             </CFormGroup>
                         </CForm>

@@ -272,7 +272,7 @@ function Products({ }) {
                                     />
                                 </CCol>
                                 <CCol col="6" sm="4" md="2" m className="mb-3 mb-xl-0">
-                                    <CButton block color="primary" onClick={() => setLarge(!large)} className="mr-1">Tambah Data</CButton>
+                                    {/* <CButton block color="primary" onClick={() => setLarge(!large)} className="mr-1">Tambah Data</CButton> */}
                                 </CCol>
                                 <Download
                                     tableData={tableData}
@@ -297,7 +297,7 @@ function Products({ }) {
                                     { title: 'Harga', field: 'beli' },
                                 ]}
                                 data={tableData}
-                                onRowClick={((evt, selectedRow) => editModal(selectedRow))}
+                                // onRowClick={((evt, selectedRow) => editModal(selectedRow))}
                                 options={{
                                     rowStyle: rowData => ({
                                         backgroundColor: (rowData.tableData.kode%2===0) ? '#EEE' : '#FFF'

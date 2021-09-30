@@ -40,6 +40,8 @@ const ReportKanvasSales = React.lazy(() => import('./views/reportKanvasSales/Rep
 const ReportKanvasTransaksi = React.lazy(() => import('./views/reportKanvasTransaksi/ReportKanvasTransaksi'))
 const ReportKanvasTransaksiCustomer = React.lazy(() => import('./views/reportSalePayCustomers/ReportSalePayCustomers'))
 const ReportBuyPaySupplier = React.lazy(() => import('./views/reportBuyPaySupplier/ReportBuyPaySupplier'))
+const ReportSaleGiro = React.lazy(() => import('./views/reportSaleGiro/ReportSaleGiro'))
+const ReportBuyGiro = React.lazy(() => import('./views/reportBuyGiro/ReportBuyGiro'))
 const routes = [
   { path: '/', exact: true, name: 'Home', auth: 1 },
   { path: '/dashboard', name: 'Dashboard', component: Dashboard, auth: 1 },
@@ -82,6 +84,8 @@ const routes = [
   { path: '/report-kanvas-transaction', name: 'Laporan Kanvas (Transaksi)', component: ReportKanvasTransaksi, auth: 1 },
   { path: '/report-kanvas-customer-payment', name: 'Laporan Pembayaran Penjualan', component: ReportKanvasTransaksiCustomer, auth: 1 },
   { path: '/report-buy-payment', name: 'Laporan Pembayaran Pembelian', component: ReportBuyPaySupplier, auth: 1 },
+  { path: '/report-sale-giro', name: 'Laporan Giro Penjualan', component: ReportSaleGiro, auth: 1 },
+  { path: '/report-buy-giro', name: 'Laporan Giro Penjualan', component: ReportBuyGiro, auth: 1 },
 
 ]
 
